@@ -102,7 +102,7 @@ onMounted(() => {
 		<img v-if="imgurl" class="img-fluid" :src="imgurl">
 	</div>
 	<div v-if="imgurl" class="p-3 col-md-8 col-12">
-		<select v-model="selectedEvent" class="btn btn-outline-secondary dropdown-toggle mb-2">
+		<select v-model="selectedEvent" @change="input.eventID = selectedEvent.id" class="btn btn-outline-secondary dropdown-toggle mb-2">
 			<option v-for="event in allEvents" :key="event.id"
 				v-bind:value="event">
 				{{ event.name }}
@@ -111,7 +111,7 @@ onMounted(() => {
 
 		<span>Selected: {{ selectedEvent.id }}</span>
 
-    <input class="form-control mb-2" type="text"
+    <input class="form-control mb-2" disabled type="text"
       v-model="input.eventID"
       placeholder="イベントID ※urlに使用" />
 		<textarea v-if="props.needCaption" class="form-control mb-2" type="text"

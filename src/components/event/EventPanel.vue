@@ -20,7 +20,6 @@ const eventClicked = () => {
 <template>
   <div :class="styleTxt">
     <div class="py-1">{{event.name}}</div>
-    <div>{{event.id}}</div>
     <div class="panel-veil" @click="eventClicked"></div>
   </div>
 </template>

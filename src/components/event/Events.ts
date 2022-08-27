@@ -6,34 +6,28 @@ import { ref } from 'vue'
 interface eventInfo {
   id: string,
   name: string,
-  date: Date,
-  // works?: Work[]
+  date: Number,
 }
 
 const defaultEventData = ():eventInfo => ({
-  id: '' , name: '' , date: new Date 
+  id: '' , name: '' , date: new Date().getTime() 
 });
 
 export class EventData implements eventInfo{
   id: string;
   name: string;
-  date: Date;
-  // works: Work[] | undefined;
+  date: Number;
   
   constructor(init:Partial<eventInfo> = defaultEventData()){
     this.id = init.id ?? '';
     this.name = init.name ?? '';
-    this.date = init.date ?? new Date;
-    // if(init.works)
-    //   this.works = init.works;
+    this.date = init.date ?? new Date().getTime();
   }
 
   newEvent(doc:DocumentData){
-    // console.log(doc.id);
-    // console.log(doc.data());
     this.id = doc.data()?.id ?? '';
     this.name = doc.data()?.name ?? '';
-    this.date = doc.data()?.date ?? new Date;
+    this.date = doc.data()?.date ?? new Date().getTime();
     return this;
   }
 
@@ -45,20 +39,20 @@ export class EventData implements eventInfo{
     }
   }
 
+  doc () {
+    let docid = `${this.id}-${this.date}`;
+    return projectFirestore.collection("events").doc(docid);
+  }
+
   async setData() {
-    await projectFirestore.collection("events")
-    .doc(`${this.id}-${this.date.getTime()}`).set(this.getDataObj());
+    await this.doc().set(this.getDataObj());
   }
 
   updData() {
-    projectFirestore.collection("event")
-    .doc(this.id).update(this.getDataObj());
+    this.doc().update(this.getDataObj());
   }
 
   deleteData() {
-    projectFirestore.collection("event")
-    .doc(this.id).delete().then(() =>{
-      console.log('storeレコード削除完了');
-    });
+    this.doc().delete().then(() => console.log("deleted"));
   }
 }

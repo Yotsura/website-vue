@@ -11,32 +11,26 @@ const props = defineProps({
 const sortedWorks = computed(() => props.alldata.slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 ));
 
 const delData = () => {
-  if(confirm('全作品を削除しますか？')){
-      
-    props.alldata.forEach(dat => {
-      
-      dat.delImg().then(()=>{
-        console.log('workファイル削除完了');
-        let id = dat.id;
-        // projectFirestore.collection("works").doc(id).delete().then(() =>{
-        //   console.log('storeレコード削除完了');
-        // });
-      });
-    });
+  if(confirm('表示中の作品を削除しますか？')){
+    props.alldata.forEach(dat => dat.delImg());
   }
 }
 </script>
 
 <template>
-  <div class="container">
-    <div class="row g-lg-3 g-md-2 g-1">
-      <transition-group name="list">
-        <WorkPanel
-          v-for="work in sortedWorks"
-          :key="work.id" :workDat="work"
-          :delmode="delmode" />
-      </transition-group>
-    </div>
+  <div v-if="delmode" class="mb-3">
+    <button @click="delData" type="button" class="btn btn-danger">DELETE ALL</button>
+  </div>
+  <div v-else class="mb-3">
+    <button type="button" class="btn btn-outline-danger" disabled>DELETE ALL</button>
+  </div>
+  <div class="row g-lg-3 g-md-2 g-1">
+    <transition-group name="list">
+      <WorkPanel
+        v-for="work in sortedWorks"
+        :key="work.id" :workDat="work"
+        :delmode="delmode" />
+    </transition-group>
   </div>
 </template>
 

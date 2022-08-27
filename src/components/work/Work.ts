@@ -1,5 +1,6 @@
 import type { DocumentData } from '@firebase/firestore-types'
 import { downloadFile, deleteFile } from './fileCtrl'
+import { projectFirestore } from '@/firebase/config'
 
 interface workData {
     eventID: string,
@@ -66,7 +67,7 @@ export class Work implements work {
     
     async loadImg(){
         if(this.img) return;
-        console.log(`Dowloading:${this.id}`)
+        // console.log(`Dowloading:${this.id}`)
         await downloadFile(this.id , 'works').then((imgUrl) => {
             this.img = imgUrl??'';
         });
@@ -74,7 +75,7 @@ export class Work implements work {
     
     async loadLargeImg(){
         if(this.img_large) return;
-        console.log(`Dowloading:${this.id}`)
+        // console.log(`Dowloading:${this.id}`)
         await downloadFile((this.id+'_large'??'') ,'works').then((imgUrl) => {
             this.img_large = imgUrl??'';
         });
@@ -83,6 +84,7 @@ export class Work implements work {
     async delImg(){
         deleteFile((this.id ?? '') , 'works');
         deleteFile((this.id + '_large' ?? '') ,'works');
+        projectFirestore.collection("works").doc(this.id).delete();
     }
 
     async hideImg(){

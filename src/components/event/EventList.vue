@@ -26,6 +26,9 @@ const selectedEventURL = computed(() => {
 });
 const eventClicked = (event:EventData) => {
 	if( isDelMode.value){
+		if(confirm(`タグを削除しますか？：${event.name}`)){
+			event.deleteData();	
+		}
 	}else{
 		selectedEvent.value = event;
 	}
@@ -65,14 +68,8 @@ newEvent.name = "ALL";
   <h2>EventList</h2>
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
-	<div v-if="isDelMode" class="mb-3">
-		<button type="button" class="btn btn-danger">DELETE ALL</button>
-	</div>
-	<div v-else class="mb-3">
-		<button type="button" class="btn btn-danger" disabled>DELETE ALL</button>
-	</div>
 	<div><a :href="selectedEventURL" target="_blank">AccessURL : {{selectedEventURL}}</a></div>
-	<div class="row">
+	<div class="row m-0">
 		<EventPanelVue :event="newEvent" :delmode="isDelMode" @eventClicked="eventClicked(newEvent)" />
 		<EventPanelVue v-for="event in allEvents" :key="event.id"
 			:event="event" :delmode="isDelMode" @eventClicked="eventClicked(event)"/>

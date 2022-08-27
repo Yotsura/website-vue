@@ -14,7 +14,6 @@ const isDelMode = ref(false);
 
 const delData = () => {
     if(confirm('全作品を削除しますか？')){
-        
         props.allWorks.forEach(dat => {
             dat.delImg().then(()=>{
                 console.log('workファイル削除完了');
