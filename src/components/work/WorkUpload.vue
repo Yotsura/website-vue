@@ -41,16 +41,13 @@ const onSubmit = () => {
 			console.log('送信開始');
 			let id = new Date().getTime().toString();
 			console.log(`パス：img\\${props.dirName}\\${id}`);
-			//firestoreを更新するとsnapが変更を受け取って画像をDLしようとするため、先にstrogeに保存する。
-			await uploadFile(fileData.value ,props.dirName ,id).then(() => {
+			await input.value.upload(fileData.value ,props.dirName ,id).then(() => {
 				deletePreview();
-				projectFirestore.collection(props.dirName).doc(id).set(input.value.getDataObj()).then(() => {
-					input.value.caption='';
-					alert('作品の投稿が完了しました。');
-					submitting.value = false;
-				});
+				input.value.caption='';
+				console.log("作品の投稿が完了しました。")
+				alert('作品の投稿が完了しました。');
+				submitting.value = false;
 			});
-
 		} catch (err: any) {
 			error.value = err.message;
 			console.log(error.value);

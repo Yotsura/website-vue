@@ -1,5 +1,5 @@
 import type { DocumentData } from '@firebase/firestore-types'
-import { downloadFile, deleteFile } from './fileCtrl'
+import { uploadFile ,downloadFile, deleteFile } from './fileCtrl'
 import { projectFirestore } from '@/firebase/config'
 
 interface workData {
@@ -34,6 +34,18 @@ export class WorkData implements workData{
     countUp(){
         this.viewCnt++ ;
     }
+
+    async upload (file :File ,dirName: string ,id: string){
+        //firestoreを更新するとsnapが変更を受け取って画像をDLしようとするため、先にstrogeに保存する。
+        await uploadFile(file ,dirName ,id).then(() => {
+            console.log("work-upload-uploadfile")
+            projectFirestore.collection(dirName).doc(id)
+            .set(this.getDataObj()).then(() => {
+                console.log("work-upload-firestore")
+            });
+        });
+        console.log("work-upload-complete")
+   }
 }
 
 interface work {
