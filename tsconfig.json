@@ -1,0 +1,40 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noUnusedLocals": false,
+    "isolatedModules": false,
+    "importsNotUsedAsValues": "preserve",
+    
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "paths": {
+      "*": ["./node_modules/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    }
+  ]
+}

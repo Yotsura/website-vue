@@ -1,0 +1,130 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import useLogout from '../utils/useLogout';
+import { ref ,watch  } from 'vue'
+import type { PropType } from 'vue'
+import getUser from '@/utils/getUser';
+import { Work } from '@/components/work/Work';
+import { EventData } from '@/components/event/Events';
+
+import WorkCtrlVue from '@/components/work/WorkCtrl.vue';
+import EventCtrlVue from '@/components/event/EventCtrl.vue';
+// import SettingsCtrl from '@/components/SettinsCtrl.vue';
+
+const { error, logout } = useLogout();
+const router = useRouter();
+
+const signout = async () => {
+  if(confirm("ログアウトしますか？")){
+    await logout();
+    if (!error.value) {
+      console.log('user logged out');
+      // router.push({ name: 'login' });
+    }
+  }
+}
+
+const { user } = getUser();
+watch(user, () => { if (!user.value) router.push({ name: 'login' }); })
+
+const props = defineProps({
+  allWorks: {type: Array as PropType<Work[]> , required:true}
+});
+
+const selectedMenu = ref<number>(0);
+</script>
+
+<template>
+  <h1>AdminView
+    <RouterLink class="col-1 btn btn-outline-primary m-2" to="/" exact active-class="link--active">Home</RouterLink>
+    <button class="float-end btn btn-danger m-2" @click="signout">Sign out</button>
+  </h1>
+  <div class="col-lg-2 col-6 d-flex flex-column px-3">
+    <input type="radio" id="option1" :value="0" v-model="selectedMenu" class="d-none" />
+    <label for="option1" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==0">-MESSAGES</label>
+    <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
+    <label for="option2" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==1">-WORKS</label>
+    <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
+    <label for="option3" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==2">-EVENTS</label>
+    <input type="radio" id="option4" :value="3" v-model="selectedMenu" class="d-none" />
+    <label for="option4" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==3">-SETTINGS</label>
+  </div>
+  <div class="col-lg-10">
+    <transition name="fade" mode="out-in">
+      <div v-if="selectedMenu==1"><WorkCtrlVue :allWorks="allWorks" /></div>
+      <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div>
+      <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
+      <!-- <div  v-else><PostList /></div> -->
+    </transition>
+  </div>
+</template>
+
+<style>
+[isChecked=true] {
+	color: rgba(0, 0, 0, 1) !important;
+	font-size: 1.5rem;
+}
+.menulink{
+	user-select: none; /* CSS3 */
+    -moz-user-select: none; /* Firefox */
+    -webkit-user-select: none; /* Safari、Chromeなど */
+	position: relative;
+	color: rgba(0, 0, 0, 0.3);
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 1.3rem;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	-ms-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	transition: all 0.3s;
+}
+.menulink::after{
+	position: absolute;
+	left: 0;
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: #000000;
+	bottom: 0.5rem;
+	transform: scale(0, 1);
+	transform-origin: left top;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+
+@media (hover: hover) {
+    .menulink:hover {
+        cursor: pointer;
+    }
+    .menulink:hover::after {
+        transform: scale(1, 1);
+        transform-origin: left top; /*左から右に向かう*/
+    }
+}
+
+@media (hover: none) {
+    .menulink:active {
+        cursor: pointer;
+    }
+    .menulink:active::after {
+        transform: scale(1, 1);
+        transform-origin: left top; /*左から右に向かう*/
+    }
+}
+
+.fade-enter-active, .fade-leave-active {
+    -webkit-transition: opacity 0.3s;
+    -moz-transition: opacity 0.3s;
+    -ms-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+	transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to  {
+  opacity: 0;
+}
+</style>
