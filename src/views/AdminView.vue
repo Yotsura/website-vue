@@ -35,24 +35,22 @@ const selectedMenu = ref<number>(0);
 </script>
 
 <template>
-  <h1>Admin Control</h1>
-  <div class="col-lg-2 col-6 d-flex flex-column px-3">
+  <h1>Admin Control <button class="float-end btn btn-danger m-2" @click="signout">Sign out</button></h1>
+  <div class="col-lg-6 col-12 d-flex flex-row">
     <input type="radio" id="option1" :value="0" v-model="selectedMenu" class="d-none" />
-    <label for="option1" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==0">-MESSAGES</label>
+    <label for="option1" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==0">Messages</label>
     <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
-    <label for="option2" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==1">-WORKS</label>
+    <label for="option2" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==1">Works</label>
     <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
-    <label for="option3" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==2">-SETTINGS</label>
-    <label class="menulink px-2 mt-4 pb-2 flex-xs-fill text-nowrap" @click="signout">-SIGN OUT</label>
+    <label for="option3" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==2">Setings</label>
+    <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>
-  <div class="col-lg-10">
-    <transition name="fade" mode="out-in">
-      <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" /></div>
-      <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
-      <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
-      <!-- <div  v-else><PostList /></div> -->
-    </transition>
-  </div>
+  <transition name="fade" mode="out-in">
+    <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" /></div>
+    <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
+    <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
+    <!-- <div  v-else><PostList /></div> -->
+  </transition>
 </template>
 
 <style>

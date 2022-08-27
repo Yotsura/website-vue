@@ -29,7 +29,7 @@ const delRecord = () => {
 </script>
 
 <template>
-    <div class="col-lg-2 col-md-3 col-4">
+    <div class="col-md-2 col-3">
         <div class="border panel"
              :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
             <transition name="fade" mode="out-in">

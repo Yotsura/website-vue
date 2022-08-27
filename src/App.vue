@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// import NavBarVue from '@/components/NavBar.vue';
 import { ref ,onMounted } from 'vue'
-// import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 import { projectFirestore } from '@/firebase/config'
 import EventViewVue from './views/EventView.vue';
 import { Work } from '@/components/work/Work';

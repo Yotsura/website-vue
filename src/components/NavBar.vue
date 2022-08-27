@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { RouterLink, RouterView } from 'vue-router'
 // import getUser from '@/utils/getUser';
 // const { user } = getUser()
 // const props = defineProps({

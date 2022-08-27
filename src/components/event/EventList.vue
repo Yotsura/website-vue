@@ -63,7 +63,7 @@ newEvent.name = "ALL";
 <template>
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
-	<div><a :href="selectedEventURL" target="_blank">AccessURL : {{selectedEventURL}}</a></div>
+	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
 	<div class="row m-0">
 		<EventPanelVue :event="newEvent" @eventClicked="eventClicked(newEvent)" />
 		<EventPanelVue v-for="event in allEvents" :key="event.id"

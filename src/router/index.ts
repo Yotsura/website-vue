@@ -25,10 +25,10 @@ const router = createRouter({
       path: '/', name: 'home',
       component: HomeView
     },
-    // {
-    //   path: '/event', name: 'event',
-    //   component: () => import('../views/EventView.vue')
-    // },
+    {
+      path: '/event', name: 'event',
+      component: () => import('../views/EventView.vue')
+    },
     {
       path: '/gallery', name: 'gallery', props: true,
       component: () => import('../views/GalleryView.vue')
