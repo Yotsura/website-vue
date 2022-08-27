@@ -7,7 +7,7 @@ import { backfaceFixed } from '@/utils/backforceFixed';
 import { Work } from './Work';
 const props = defineProps({
 	delmode: Boolean,
-    alldata: {type: Array as PropType<Work[]> , required:true}
+	alldata: {type: Array as PropType<Work[]> , required:true}
 });
 
 const allWorks = ref([] as Array<Work>);
@@ -35,7 +35,7 @@ function loadData (){
 const indicateWorks = ref([] as Array<Work>);
 const allIndicated = computed(() => indicateWorks.value.length > allWorks.value.length);
 const addIndicateImg = () => {
-	console.log(`after-enter:${indicateWorks.value.length}：${allIndicated.value?'complete':''}`);
+	// console.log(`after-enter:${indicateWorks.value.length}：${allIndicated.value?'complete':''}`);
 	if(sortedWorks.value.length > indicateWorks.value.length)
 		indicateWorks.value.splice(indicateWorks.value.length ,0 ,sortedWorks.value[indicateWorks.value.length]);
 }
@@ -68,7 +68,7 @@ const ShowModal = (img :Work) => {
 	load();
 }
 const HideModal = () => {
-    showContent.value = false;
+	showContent.value = false;
 	document.documentElement.style.overflow = 'auto'
 	backfaceFixed(false);
 }

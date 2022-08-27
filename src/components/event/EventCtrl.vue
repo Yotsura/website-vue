@@ -6,6 +6,7 @@ import { Work } from "@/components/work/Work";
 import { EventData } from "./Events";
 import EventUploadVue from "./EventUpload.vue";
 import EventListVue from "./EventList.vue";
+
 // const props = defineProps({
 //   allEvents: { type: Array as PropType<EventData[]>, required: true },
 // });

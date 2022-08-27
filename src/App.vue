@@ -18,6 +18,8 @@ onMounted(() => {
 		const unsub = collectionRef.onSnapshot(
 		snap => {
 			allWorks.value = snap.docs.map(doc => new Work(doc));
+			allWorks.value.forEach(dat => dat.loadImg());
+			
 			error.value = null;
 		},
 		err => {

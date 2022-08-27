@@ -3,7 +3,8 @@ import { ref, onMounted } from 'vue'
 import { uploadFile } from './fileCtrl'
 import { WorkData } from './Work'
 import { projectFirestore } from '@/firebase/config'
-import { EventData } from '../event/Events'
+import { EventData } from '../event/Events';
+
 const props = defineProps({
 	needCaption:  {type: Boolean , required:true},
 	dirName: {type: String , required:true}
@@ -101,14 +102,15 @@ onMounted(() => {
 		<img v-if="imgurl" class="img-fluid" :src="imgurl">
 	</div>
 	<div v-if="imgurl" class="p-3 col-md-8 col-12">
-		<select v-model="selectedEvent">
+		<select v-model="selectedEvent" class="btn btn-outline-secondary dropdown-toggle mb-2">
 			<option v-for="event in allEvents" :key="event.id"
 				v-bind:value="event">
 				{{ event.name }}
 			</option>
 		</select>
-		<span>Selected: {{ selectedEvent.name }}</span>
-		
+
+		<span>Selected: {{ selectedEvent.id }}</span>
+
     <input class="form-control mb-2" type="text"
       v-model="input.eventID"
       placeholder="イベントID ※urlに使用" />

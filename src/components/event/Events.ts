@@ -7,7 +7,7 @@ interface eventInfo {
   id: string,
   name: string,
   date: Date,
-  works?: Work[]
+  // works?: Work[]
 }
 
 const defaultEventData = ():eventInfo => ({
@@ -18,14 +18,14 @@ export class EventData implements eventInfo{
   id: string;
   name: string;
   date: Date;
-  works: Work[] | undefined;
+  // works: Work[] | undefined;
   
   constructor(init:Partial<eventInfo> = defaultEventData()){
     this.id = init.id ?? '';
     this.name = init.name ?? '';
     this.date = init.date ?? new Date;
-    if(init.works)
-      this.works = init.works;
+    // if(init.works)
+    //   this.works = init.works;
   }
 
   newEvent(doc:DocumentData){
@@ -56,6 +56,9 @@ export class EventData implements eventInfo{
   }
 
   deleteData() {
-
+    projectFirestore.collection("event")
+    .doc(this.id).delete().then(() =>{
+      console.log('storeレコード削除完了');
+    });
   }
 }

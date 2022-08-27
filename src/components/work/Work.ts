@@ -17,7 +17,7 @@ export class WorkData implements workData{
     viewCnt: number;
     
     constructor(init:Partial<workData> = defaultWorkData()){
-        this.eventID = '';
+        this.eventID = init.eventID ?? '';
         this.caption = init.caption ?? '';
         this.viewCnt = init.viewCnt ?? 0;
     }
