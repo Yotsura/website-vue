@@ -39,11 +39,11 @@ const delData = () => {
 .list-move,
 .fade-enter-active, .fade-leave-active,
 .list-enter-active, .list-leave-active {
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -ms-transition: all 0.5s;
-    -o-transition: all 0.5s;
-	transition: all 0.5s;
+    -webkit-transition: all 0.8s;
+    -moz-transition: all 0.8s;
+    -ms-transition: all 0.8s;
+    -o-transition: all 0.8s;
+	transition: all 0.8s;
 }
 .list-enter-from, .list-leave-to {
   opacity: 0;
