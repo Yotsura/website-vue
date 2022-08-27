@@ -40,7 +40,7 @@ onMounted(() => {
 	<div id="wrapper" class="container" ontouchstart="">
     <div class="row">
       <h1>弓張月/<small>寄弦</small></h1>
-			<EventView v-if="param" :allWorks="allWorks" :param="param"/>
+			<EventView v-if="param" :allWorks="allWorks" />
       <RouterView v-else :allWorks="allWorks"/>
     </div>
   </div>

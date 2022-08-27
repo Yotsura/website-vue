@@ -19,17 +19,7 @@ function loadData (){
 	console.log(`■画像表示更新`);
 	indicateWorks.value = [];
 	allWorks.value = props.alldata;
-	if(allLoaded.value)
-		indicateWorks.value.splice(0 ,0 ,sortedWorks.value[0]);
-	else
-		allWorks.value.forEach(dat => {
-			dat.loadImg().then(() =>{
-				if(allLoaded.value){
-					console.log('load完了');
-					indicateWorks.value.splice(0 ,0 ,sortedWorks.value[0]);
-				}
-			});
-		})
+	indicateWorks.value.splice(0 ,0 ,sortedWorks.value[0]);
 }
 
 const indicateWorks = ref([] as Array<Work>);
@@ -41,11 +31,11 @@ const addIndicateImg = () => {
 }
 
 onUpdated(()=> {
-	// console.log("onupdated");
+	// console.log("■Work-onupdated");
 	loadData();
 });
 onMounted(() => {
-	// console.log("onMounted");
+	// console.log("■Work-onMounted");
 	loadData();
 });
 
