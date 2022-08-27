@@ -119,7 +119,7 @@ onMounted(() => {
 		placeholder="作品のキャプション" />
 		<div class=" btn-group d-flex my-2" role="group">
 			<button class="btn btn-primary flex-fill" :disabled="submitting" @click="deletePreview">CANCEL</button>
-			<button class="btn btn-danger flex-fill" :disabled="submitting" @click="onSubmit">UPLOAD</button>
+			<button class="btn btn-danger flex-fill" :disabled="submitting || input.eventID==''" @click="onSubmit">UPLOAD</button>
 		</div>
 	</div>
 </div>

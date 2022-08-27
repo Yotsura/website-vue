@@ -32,11 +32,11 @@ const onSubmit = () => {
   <h2>Create New Category</h2>
   <form @submit.prevent class="col-lg-5 my-3">
     <input class="form-control mb-2" type="text"
-      v-model="input.id"
-      placeholder="イベントID ※urlに使用" />
-    <input class="form-control mb-2" type="text"
       v-model="input.name"
-      placeholder="イベント名" />
+      placeholder="タグ名" />
+    <input class="form-control mb-2" type="text"
+      v-model="input.id"
+      placeholder="タグID ※urlに使用" />
     <button :disabled="!didInput" class="btn btn-primary btn-lg btn-block" type="button" @click="onSubmit">送信</button>
   </form>
 </template>

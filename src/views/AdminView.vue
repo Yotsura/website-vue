@@ -35,24 +35,20 @@ const selectedMenu = ref<number>(0);
 </script>
 
 <template>
-  <h1>AdminView
-    <RouterLink class="col-1 btn btn-outline-primary m-2" to="/" exact active-class="link--active">Home</RouterLink>
-    <button class="float-end btn btn-danger m-2" @click="signout">Sign out</button>
-  </h1>
+  <h1>Admin Control</h1>
   <div class="col-lg-2 col-6 d-flex flex-column px-3">
     <input type="radio" id="option1" :value="0" v-model="selectedMenu" class="d-none" />
     <label for="option1" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==0">-MESSAGES</label>
     <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
     <label for="option2" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==1">-WORKS</label>
     <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
-    <label for="option3" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==2">-EVENTS</label>
-    <input type="radio" id="option4" :value="3" v-model="selectedMenu" class="d-none" />
-    <label for="option4" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==3">-SETTINGS</label>
+    <label for="option3" class="menulink px-2 pb-2 flex-xs-fill text-nowrap" :isChecked="selectedMenu==2">-SETTINGS</label>
+    <label class="menulink px-2 mt-4 pb-2 flex-xs-fill text-nowrap" @click="signout">-SIGN OUT</label>
   </div>
   <div class="col-lg-10">
     <transition name="fade" mode="out-in">
-      <div v-if="selectedMenu==1"><WorkCtrlVue :allWorks="allWorks" /></div>
-      <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div>
+      <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" /></div>
+      <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
       <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
       <!-- <div  v-else><PostList /></div> -->
     </transition>

@@ -4,12 +4,8 @@ import type { PropType } from "vue";
 import { Work } from "@/components/work/Work";
 import { EventData } from "./Events";
 import { projectFirestore } from '@/firebase/config'
-// import WorkPanelListVue from "../work/WorkPanelList.vue";
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
 import EventPanelVue from "./EventPanel.vue";
-// const props = defineProps({
-//   allEvents: { type: Array as PropType<EventData[]>, required: true },
-// });
 const props = defineProps({
   allWorks: {type: Array as PropType<Work[]> , required:true}
 });
@@ -26,9 +22,9 @@ const selectedEventURL = computed(() => {
 });
 const eventClicked = (event:EventData) => {
 	if( isDelMode.value){
-		if(confirm(`タグを削除しますか？：${event.name}`)){
-			event.deleteData();	
-		}
+		if(event.name != "ALL")
+			if(confirm(`タグを削除しますか？：${event.name}`))
+				event.deleteData();	
 	}else{
 		selectedEvent.value = event;
 	}
@@ -65,12 +61,11 @@ newEvent.name = "ALL";
 </script>
 
 <template>
-  <h2>EventList</h2>
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessURL : {{selectedEventURL}}</a></div>
 	<div class="row m-0">
-		<EventPanelVue :event="newEvent" :delmode="isDelMode" @eventClicked="eventClicked(newEvent)" />
+		<EventPanelVue :event="newEvent" @eventClicked="eventClicked(newEvent)" />
 		<EventPanelVue v-for="event in allEvents" :key="event.id"
 			:event="event" :delmode="isDelMode" @eventClicked="eventClicked(event)"/>
 	</div>
