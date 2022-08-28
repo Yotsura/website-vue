@@ -2,6 +2,8 @@
 import { ref , onMounted, computed, onUpdated } from "vue";
 import type { PropType } from 'vue'
 import { Work } from '@/components/work/Work';
+import { EventData } from '@/components/event/Events';
+import { projectFirestore } from '@/firebase/config';
 import WorkPanelListVue from "@/components/work/WorkPanelList.vue";
 import PostFormVue from '@/components/post/postForm.vue'
 // import WorkPanelListCtrlVue from "@/components/work/WorkPanelListCtrl.vue";
@@ -15,19 +17,26 @@ const indicateWorks = computed(() =>
 	props.allWorks.filter(work => param.value == "" ?
     true : (param.value == work.data.eventID)));
 
+const allEvents = ref([] as Array<EventData>);
+const eventInfo = ref<EventData>();
 onMounted(() => {
-	// console.log("■Event-onMounted");
   param.value = window.location.href.includes('?id:') ? window.location.href.split('?id:')[1] : "";
+  if(param.value != "")
+    projectFirestore.collection("events").onSnapshot(snap => {
+      let allEvents = snap.docs.map(doc => new EventData().newEvent(doc));
+      let hitevent = allEvents.find(e => e.id == param.value);
+      if(hitevent) eventInfo.value = hitevent;
+    })
 });
 
-onUpdated(() => {
-	console.log("■Event-onUpdated");
-  console.log(indicateWorks.value );
-})
+// onUpdated(() => {
+// 	 console.log("■Event-onUpdated");
+//   console.log(indicateWorks.value );
+// });
 </script>
 
 <template>
-  <!-- <h2>Eventid:{{param}}</h2> -->
+  <div class="text-wrap lead">{{eventInfo?.name??'イベントの登録がありません。'}}</div>
   <PostFormVue />
 	<WorkPanelListVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" />
 	<!-- <WorkPanelListCtrlVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" /> -->

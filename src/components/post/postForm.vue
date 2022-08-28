@@ -32,7 +32,7 @@ const onSubmit = () => {
 
 <template>
 	<form @submit.prevent class="col-lg-5 my-3">
-		<input class="form-control mb-2" type="text" readonly v-model="input.qr" v-if="input.qr" />	
+		<input class="form-control mb-2 d-none" type="text" readonly v-model="input.qr" v-if="input.qr" />	
 		<input class="form-control mb-2" type="text"
 		v-model="input.name"
 		placeholder="ハンドルネーム ※なくても大丈夫です" />
