@@ -27,7 +27,7 @@ onUpdated(() => {
 </script>
 
 <template>
-  <h2>Eventid:{{param}}</h2>
+  <!-- <h2>Eventid:{{param}}</h2> -->
   <PostFormVue />
 	<WorkPanelListVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" />
 	<!-- <WorkPanelListCtrlVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" /> -->

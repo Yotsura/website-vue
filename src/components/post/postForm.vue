@@ -32,15 +32,15 @@ const onSubmit = () => {
 
 <template>
 	<form @submit.prevent class="col-lg-5 my-3">
+		<input class="form-control mb-2" type="text" readonly v-model="input.qr" v-if="input.qr" />	
 		<input class="form-control mb-2" type="text"
 		v-model="input.name"
 		placeholder="ハンドルネーム ※なくても大丈夫です" />
 		<textarea
 		placeholder="感想/メッセージなど*"
 		v-model="input.message"
-		class="form-control mb-2" rows="10" type="text"></textarea>
-	<input class="form-control mb-2" type="text" readonly v-model="input.qr" v-if="input.qr" />
-	<button :disabled="!didInput" class="btn btn-primary btn-lg btn-block" type="button" @click="onSubmit">送信</button>
+		class="form-control mb-2" rows="6" type="text"></textarea>
+		<button :disabled="!didInput" class="btn btn-primary btn-lg btn-block" type="button" @click="onSubmit">送信</button>
 	</form>
 </template>
 
