@@ -73,10 +73,11 @@ onMounted(() => {
     <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>
   <transition name="fade" mode="out-in">
-    <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" :allEvents="allEvents" /></div>
+    <div v-if="selectedMenu==0"><postListVue :allEvents="allEvents" /></div>
+    <div v-else-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" :allEvents="allEvents" /></div>
     <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
     <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
-    <div  v-else><postListVue :allEvents="allEvents" /></div>
+    <!-- <div  v-else><postListVue :allEvents="allEvents" /></div> -->
   </transition>
 </template>
 
