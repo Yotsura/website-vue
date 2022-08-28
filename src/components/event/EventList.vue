@@ -6,8 +6,10 @@ import { EventData } from "./Events";
 import { projectFirestore } from '@/firebase/config'
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
 import EventPanelVue from "./EventPanel.vue";
+import EventTagAreaVue from "./EventTagArea.vue";
 const props = defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true}
+  allWorks: {type: Array as PropType<Work[]> , required:true},
+  allEvents: {type: Array as PropType<EventData[]> , required:true}
 });
 
 const indicateWorks = computed(() =>
@@ -30,30 +32,6 @@ const eventClicked = (event:EventData) => {
 	}
 }
 
-const allEvents = ref([] as Array<EventData>);
-onMounted(() => {
-	let error :any = ref(null);
-	let load = async () => {
-		try {
-		let collectionRef = projectFirestore.collection("events");
-		const unsub = collectionRef.onSnapshot(
-		snap => {
-			allEvents.value = snap.docs.map(doc => new EventData().newEvent(doc));
-			error.value = null;
-		},
-		err => {
-			console.log(err.message);
-			error.value = 'could not fetch data';
-		});
-		} catch (err: any) {
-      error.value = err.message;
-      console.log(error.value);
-      alert('取得失敗');
-		}
-	}
-	load();
-	return { error, load }
-});
 const isDelMode = ref(false);
 
 const newEvent = new EventData();
@@ -64,11 +42,12 @@ newEvent.name = "ALL";
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
-	<div class="row m-0">
+	<EventTagAreaVue :delmode="isDelMode" :allEvents="allEvents" @selectTag="eventClicked" />
+	<!-- <div class="row m-0">
 		<EventPanelVue :event="newEvent" @eventClicked="eventClicked(newEvent)" />
 		<EventPanelVue v-for="event in allEvents" :key="event.id"
 			:event="event" :delmode="isDelMode" @eventClicked="eventClicked(event)"/>
-	</div>
+	</div> -->
 	<WorkPanelListCtrlVue :delmode="isDelMode" :alldata="indicateWorks" />
 </template>
 

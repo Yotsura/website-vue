@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import useLogout from '../utils/useLogout';
-import { ref ,watch  } from 'vue'
+import { ref ,watch ,onMounted } from 'vue'
 import type { PropType } from 'vue'
 import getUser from '@/utils/getUser';
 import { Work } from '@/components/work/Work';
 import { EventData } from '@/components/event/Events';
+import { projectFirestore } from '@/firebase/config';
 
 import WorkCtrlVue from '@/components/work/WorkCtrl.vue';
 import EventCtrlVue from '@/components/event/EventCtrl.vue';
+import postListVue from '@/components/post/postList.vue';
 // import SettingsCtrl from '@/components/SettinsCtrl.vue';
 
 const { error, logout } = useLogout();
@@ -32,6 +34,31 @@ const props = defineProps({
 });
 
 const selectedMenu = ref<number>(0);
+
+const allEvents = ref([] as Array<EventData>);
+onMounted(() => {
+	let error :any = ref(null);
+	let load = async () => {
+		try {
+		let collectionRef = projectFirestore.collection("events");
+		const unsub = collectionRef.onSnapshot(
+		snap => {
+			allEvents.value = snap.docs.map(doc => new EventData().newEvent(doc));
+			error.value = null;
+		},
+		err => {
+			console.log(err.message);
+			error.value = 'could not fetch data';
+		});
+		} catch (err: any) {
+      error.value = err.message;
+      console.log(error.value);
+      alert('取得失敗');
+		}
+	}
+	load();
+	return { error, load }
+});
 </script>
 
 <template>
@@ -46,10 +73,10 @@ const selectedMenu = ref<number>(0);
     <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>
   <transition name="fade" mode="out-in">
-    <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" /></div>
+    <div v-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" :allEvents="allEvents" /></div>
     <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
     <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
-    <!-- <div  v-else><PostList /></div> -->
+    <div  v-else><postListVue :allEvents="allEvents" /></div>
   </transition>
 </template>
 

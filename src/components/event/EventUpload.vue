@@ -2,9 +2,6 @@
 import { ref ,computed } from "vue";
 // import type { PropType } from "vue";
 import { EventData } from "./Events";
-// defineProps({
-//   allEvents: { type: Array as PropType<EventData[]>, required: true },
-// });
 
 const input = ref(new EventData);
 const didInput = computed(() => (input.value.id == ""|| input.value.name == null)? false : true);

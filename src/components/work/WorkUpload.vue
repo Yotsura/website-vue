@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { uploadFile } from './fileCtrl'
+import { ref } from 'vue'
+import type { PropType } from "vue";
 import { WorkData } from './Work'
-import { projectFirestore } from '@/firebase/config'
 import { EventData } from '../event/Events';
 
 const props = defineProps({
 	needCaption:  {type: Boolean , required:true},
-	dirName: {type: String , required:true}
+	dirName: {type: String , required:true},
+  allEvents: {type: Array as PropType<EventData[]> , required:true}
 });
 
 const input = ref<WorkData>(new WorkData({}));
@@ -60,30 +60,6 @@ const onSubmit = () => {
 }
 
 const selectedEvent  = ref(new EventData);
-const allEvents = ref([] as Array<EventData>);
-onMounted(() => {
-	let error :any = ref(null);
-	let load = async () => {
-		try {
-		let collectionRef = projectFirestore.collection("events");
-		const unsub = collectionRef.onSnapshot(
-		snap => {
-			allEvents.value = snap.docs.map(doc => new EventData().newEvent(doc));
-			error.value = null;
-		},
-		err => {
-			console.log(err.message);
-			error.value = 'could not fetch data';
-		});
-		} catch (err: any) {
-      error.value = err.message;
-      console.log(error.value);
-      alert('取得失敗');
-		}
-	}
-	load();
-	return { error, load }
-});
 </script>
 
 <template>

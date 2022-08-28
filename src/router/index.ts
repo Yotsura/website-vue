@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import('../views/EventView.vue')
     },
     {
-      path: '/gallery', name: 'gallery', props: true,
+      path: '/gallery', name: 'gallery',
       component: () => import('../views/GalleryView.vue')
     },
     {

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import type { PropType } from "vue";
-import { projectFirestore } from "@/firebase/config";
 import { Work } from "@/components/work/Work";
 import { EventData } from "./Events";
 import EventUploadVue from "./EventUpload.vue";
@@ -9,7 +8,8 @@ import EventListVue from "./EventList.vue";
 import WorkUploadVue from "../work/WorkUpload.vue";
 
 const props = defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true}
+  allWorks: {type: Array as PropType<Work[]> , required:true},
+  allEvents: {type: Array as PropType<EventData[]> , required:true}
 });
 
 const selectedWorkMenu = ref(1);
@@ -30,13 +30,13 @@ const selectedWorkMenu = ref(1);
   <div class="col-lg-10">
     <transition name="fade" mode="out-in">
       <div v-if="selectedWorkMenu == 1">
-        <EventListVue :allWorks="allWorks" />
+        <EventListVue :allWorks="allWorks" :allEvents="allEvents" />
       </div>
       <div v-else-if="selectedWorkMenu == 2">
         <EventUploadVue />
       </div>
       <div v-else-if="selectedWorkMenu == 3">
-        <WorkUploadVue :needCaption="true" :dirName="'works'"/>
+        <WorkUploadVue :needCaption="true" :dirName="'works'" :allEvents="allEvents"/>
       </div>
       <div v-else>
       </div>
