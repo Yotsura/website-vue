@@ -15,9 +15,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "isolatedModules": false,
     "importsNotUsedAsValues": "preserve",
-    
+    "removeComments": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -25,7 +26,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
     "paths": {
       "*": ["./node_modules/*"],
       "@/*": ["./src/*"]

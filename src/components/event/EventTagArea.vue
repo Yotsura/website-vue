@@ -1,33 +1,48 @@
 <script lang="ts" setup>
 import type { PropType } from "vue";
+import { computed } from "vue";
 import { EventData } from "./Events";
 import EventPanelVue from "./EventPanel.vue";
 const props = defineProps({
 	delmode: Boolean,
   allEvents: {type: Array as PropType<EventData[]> , required:true}
 });
-const emit = defineEmits(['selectTag','delTag']);
+const emit = defineEmits(['selectTag']);
 
-const newEvent = new EventData();
-newEvent.name = "ALL";
-
-const eventClicked = (event:EventData) => {
-	emit('selectTag', event);
-}
+const displayEvents = computed(() => {
+  let newEvent = new EventData();
+  newEvent.name = "ALL";
+  let newList = Array<EventData>();
+  newList.push(newEvent);
+  return newList.concat(props.allEvents);
+})
 </script>
 
 <template>
-	<div class="row m-0">
-		<EventPanelVue :event="newEvent" @eventClicked="eventClicked(newEvent)" />
-    <transition-group name="list">
-			<EventPanelVue v-for="event in allEvents" :key="event.id"
-				:event="event" :delmode="delmode" @eventClicked="eventClicked(event)"/>
-		</transition-group>
+	<div class="row">
+    <div class="horizontal-list">
+      <transition-group name="list">
+        <EventPanelVue v-for="event in displayEvents" :key="event.id"
+          :event="event" :delmode="delmode" @eventClicked="$emit('selectTag', event)"/>
+      </transition-group>
+    </div>
 	</div>
 </template>
 
-<style scoped>
+<style>
+  .horizontal-list {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
 
+  .horizontal-list-item {
+    display: inline-block;
+    user-select: none;
+  }
+</style>
+
+<style scoped>
 .list-move,
 .fade-enter-active, .fade-leave-active,
 .list-enter-active, .list-leave-active {

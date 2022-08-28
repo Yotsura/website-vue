@@ -9,7 +9,7 @@ const props = defineProps({
   event: {type: Object as PropType<EventData>, required:true}
 });
 
-const styleTxt = computed(() => `col-auto m-1 panel ${props.delmode?"delmode":""}`);
+const styleTxt = computed(() => `col-auto horizontal-list-item m-1 panel ${props.delmode?"delmode":""}`);
 
 const emit = defineEmits(['eventClicked']);
 const eventClicked = () => {
@@ -19,7 +19,7 @@ const eventClicked = () => {
 
 <template>
   <div :class="styleTxt">
-    <div class="py-1">{{event.name}}</div>
+    <div class="p-1">{{event.name}}</div>
     <div class="panel-veil" @click="eventClicked"></div>
   </div>
 </template>
