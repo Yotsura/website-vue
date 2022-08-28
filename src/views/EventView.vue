@@ -3,6 +3,7 @@ import { ref , onMounted, computed, onUpdated } from "vue";
 import type { PropType } from 'vue'
 import { Work } from '@/components/work/Work';
 import WorkPanelListVue from "@/components/work/WorkPanelList.vue";
+import PostFormVue from '@/components/post/postForm.vue'
 // import WorkPanelListCtrlVue from "@/components/work/WorkPanelListCtrl.vue";
 
 let props = defineProps({
@@ -27,6 +28,7 @@ onUpdated(() => {
 
 <template>
   <h2>Eventid:{{param}}</h2>
+  <PostFormVue />
 	<WorkPanelListVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" />
 	<!-- <WorkPanelListCtrlVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" /> -->
 </template>

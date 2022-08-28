@@ -93,8 +93,8 @@ const HideModalImg = () => {
 		</div>
     </div>
 	<transition name="fade" mode="out-in" @after-enter="ShowModalImg">
-        <div class="overlay container-fluid" v-if="showContent" @click="HideModalImg">
-			<WorkModal @leaved="HideModal" :img="targetImg"/>
+		<div class="overlay container-fluid" v-if="showContent" @click="HideModalImg">
+		<WorkModal @leaved="HideModal" :img="targetImg"/>
 		</div>
 	</transition>
 </template>
@@ -114,13 +114,13 @@ const HideModalImg = () => {
     justify-content: center;
 }
 
-.fade-enter-active, .fade-leave-active,
+.fade-enter-active, .fade-leave-active ,
 .list-enter-active, .list-leave-active {
-    -webkit-transition: all 0.2s;
-    -moz-transition: all 0.2s;
-    -ms-transition: all 0.2s;
-    -o-transition: all 0.2s;
-	transition: all 0.2s;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+	transition: all 0.3s;
 }
 .list-enter-from, .list-leave-to  {
   transform: translateY(-10px);

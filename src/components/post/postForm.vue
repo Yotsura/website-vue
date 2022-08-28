@@ -1,26 +1,28 @@
 <script lang="ts" setup>
-import { ref, computed ,defineEmits } from 'vue'
+import { ref, computed ,defineEmits, onMounted } from 'vue'
 import { PostData } from './Post'
 
 const emit = defineEmits(['completed']);
 
-const param = window.location.href.includes('?id:')? window.location.href.split('?id:')[1]:"";
+const paramStr = window.location.href.includes('?id:')? window.location.href.split('?id:')[1]:"";
 const input = ref(new PostData);
 const didInput = computed(() => (input.value.message == ""|| input.value.message == null)? false : true);
+
+onMounted(() => {
+	input.value.qr = paramStr;
+});
 
 const onSubmit = () => {
 	let error = ref(null);
 	let post = async () => {
 		try {
-			console.log('送信開始');
 			input.value.upload();
 			input.value = new PostData;
-			emit("completed");
 			alert("送信完了しました。ありがとうございました！");
 		} catch (err: any) {
 			error.value = err.message;
 			console.log(error.value);
-			alert('送信失敗');
+			alert('送信失敗しました。');
 		}
 	}
 	post();
