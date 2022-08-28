@@ -6,7 +6,6 @@ import { EventData } from '@/components/event/Events';
 import { projectFirestore } from '@/firebase/config';
 import WorkPanelListVue from "@/components/work/WorkPanelList.vue";
 import PostFormVue from '@/components/post/postForm.vue'
-// import WorkPanelListCtrlVue from "@/components/work/WorkPanelListCtrl.vue";
 
 let props = defineProps({
   allWorks: {type: Array as PropType<Work[]> , required:true}
@@ -28,18 +27,11 @@ onMounted(() => {
       if(hitevent) eventInfo.value = hitevent;
     })
 });
-
-// onUpdated(() => {
-// 	 console.log("■Event-onUpdated");
-//   console.log(indicateWorks.value );
-// });
 </script>
 
 <template>
-  <div class="text-wrap lead">{{eventInfo?.name??'イベントの登録がありません。'}}</div>
-  <PostFormVue />
+  <PostFormVue :paramStr="param" :tagTitle="eventInfo?.name??'イベントの登録がありません。'" />
 	<WorkPanelListVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" />
-	<!-- <WorkPanelListCtrlVue v-if="indicateWorks" :delmode="false" :alldata="indicateWorks" /> -->
 </template>
 
 <style scoped>
