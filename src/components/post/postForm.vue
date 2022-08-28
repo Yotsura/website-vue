@@ -16,6 +16,7 @@ const onSubmit = () => {
 			input.value.upload();
 			input.value = new PostData;
 			emit("completed");
+			alert("送信完了しました。ありがとうございました！");
 		} catch (err: any) {
 			error.value = err.message;
 			console.log(error.value);

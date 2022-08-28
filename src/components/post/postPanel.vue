@@ -22,7 +22,9 @@ const delRecord = () => {
             <div class="text-break panel-txt m-1 p-1">{{post?.name==''? '名無しさん' : post?.name?? '名無しさん'}}</div>
             <div class="text-break panel-txt m-1 p-1" style="white-space: pre-wrap;" v-text="(post?.message??'').replace(/\\n/g,'\n')"></div>
             <div v-if="post?.qr" class="text-break panel-txt m-1 p-1">{{post?.qr}}</div>
-            <div class="btn btn-danger d-flex justify-content-center" v-if="delmode" @click="delRecord">DELETE</div>
+            <transition name="fade" mode="out-in">
+                <div class="btn btn-danger d-flex justify-content-center" v-if="delmode" @click="delRecord">DELETE</div>
+            </transition>
 		</div>
 	</div>
 </template>
@@ -37,5 +39,19 @@ const delRecord = () => {
     background-color: white;
     /* border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px; */
     border-radius: 7rem 0.5rem 5rem 0.5rem / 0.7rem 5rem 0.5rem 4rem;
+}
+</style>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.fade-enter-from, .fade-leave-to  {
+  opacity: 0;
 }
 </style>
