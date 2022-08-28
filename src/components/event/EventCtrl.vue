@@ -27,21 +27,19 @@ const selectedWorkMenu = ref(1);
     <label for="option2-3" class="menulink px-2 pb-2 flex-fill text-nowrap"
       :isChecked="selectedWorkMenu == 3" >-AddWork</label>
   </div>
-  <div class="col-lg-10">
-    <transition name="fade" mode="out-in">
-      <div v-if="selectedWorkMenu == 1">
-        <EventListVue :allWorks="allWorks" :allEvents="allEvents" />
-      </div>
-      <div v-else-if="selectedWorkMenu == 2">
-        <EventUploadVue />
-      </div>
-      <div v-else-if="selectedWorkMenu == 3">
-        <WorkUploadVue :needCaption="true" :dirName="'works'" :allEvents="allEvents"/>
-      </div>
-      <div v-else>
-      </div>
-    </transition>
-  </div>
+  <transition name="fade" mode="out-in">
+    <div v-if="selectedWorkMenu == 1">
+      <EventListVue :allWorks="allWorks" :allEvents="allEvents" />
+    </div>
+    <div v-else-if="selectedWorkMenu == 2">
+      <EventUploadVue />
+    </div>
+    <div v-else-if="selectedWorkMenu == 3">
+      <WorkUploadVue :needCaption="true" :dirName="'works'" :allEvents="allEvents"/>
+    </div>
+    <div v-else>
+    </div>
+  </transition>
 </template>
 
 <style scoped>
