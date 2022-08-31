@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-// import type { PropType } from "vue";
-// import { Work } from "@/components/work/Work";
 import EventUploadVue from "./EventUpload.vue";
 import EventListVue from "./EventList.vue";
 import WorkUploadVue from "../work/WorkUpload.vue";

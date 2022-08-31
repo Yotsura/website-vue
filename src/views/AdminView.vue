@@ -103,15 +103,4 @@ const selectedMenu = ref<number>(0);
         transform-origin: left top; /*左から右に向かう*/
     }
 }
-
-.fade-enter-active, .fade-leave-active {
-    -webkit-transition: opacity 0.3s;
-    -moz-transition: opacity 0.3s;
-    -ms-transition: opacity 0.3s;
-    -o-transition: opacity 0.3s;
-	transition: opacity 0.3s;
-}
-.fade-enter-from, .fade-leave-to  {
-  opacity: 0;
-}
 </style>

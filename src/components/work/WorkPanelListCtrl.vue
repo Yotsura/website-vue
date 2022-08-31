@@ -91,34 +91,4 @@ const HideModalImg = () => {
     align-items: center;
     justify-content: center;
   }
-
-.list-move, .list-enter-active, .list-leave-active {
-    -webkit-transition: all 0.8s;
-    -moz-transition: all 0.8s;
-    -ms-transition: all 0.8s;
-    -o-transition: all 0.8s;
-	transition: all 0.8s;
-}
-.list-enter-from, .list-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-.list-item {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.list-leave-active {
-  position: absolute;
-}
-.fade-enter-active, .fade-leave-active {
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
-	transition: all 0.3s;
-}
-.fade-enter-from, .fade-leave-to  {
-  opacity: 0;
-}
 </style>

@@ -2,16 +2,23 @@
 import { computed } from 'vue'
 import type{ PropType } from 'vue'
 import { EventData } from './Events';
+import { useTagStore } from '@/store/modules/events';
 
 const props = defineProps({
 	delmode: Boolean,
   event: {type: Object as PropType<EventData>, required:true}
 });
 
-const styleTxt = computed(() => `col-auto horizontal-list-item m-1 panel ${props.delmode?"delmode":""}`);
-
+const events = useTagStore();
+const styleTxt = computed(() => {
+  const base = "col-auto horizontal-list-item m-1 panel";
+  return base
+    + ( events.selectedEventTag.id == props.event.id ? " active" : "" )
+    + ( props.delmode ? " delmode" : "" ) ;
+});
 const emit = defineEmits(['eventClicked']);
 const eventClicked = () => {
+  events.setSelectedEventTag(props.event);
   emit('eventClicked');
 }
 </script>
@@ -27,10 +34,10 @@ const eventClicked = () => {
 .panel{
   position: relative;
   user-select: none;
-  background-color: rgb(255, 150, 150);
+  background-color: rgb(126, 200, 166);
   font-weight: 600;
   color: white;
-  border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px;
+  border-radius: 0.25rem;
   overflow: hidden;
   text-align: center;
   
@@ -40,8 +47,11 @@ const eventClicked = () => {
   -o-transition: all 0.2s;
 	transition: all 0.2s;
 }
+.active{
+  background-color: rgb(45, 175, 115) !important;
+}
 .delmode{
-  background-color: rgb(255, 30, 30);
+  background-color: rgb(255, 30, 30) !important;
 }
 
 .panel-veil{
@@ -57,12 +67,9 @@ const eventClicked = () => {
 	transition: all 0.3s;
 }
 @media (hover: hover) {
-    .panel:hover .panel-veil{
-        background-color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-    }
-    .panel-btn:hover{
-        background-color:  rgba(255, 0, 0, 0.8);
-    }
+  .panel:hover .panel-veil{
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+  }
 }
 </style>

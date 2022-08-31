@@ -41,17 +41,3 @@ const delRecord = () => {
     border-radius: 7rem 0.5rem 5rem 0.5rem / 0.7rem 5rem 0.5rem 4rem;
 }
 </style>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.fade-enter-from, .fade-leave-to  {
-  opacity: 0;
-}
-</style>

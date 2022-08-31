@@ -43,16 +43,4 @@ const AfterLeave = () => {
 .content-txt{
     color: white;
 }
-
-.fade-enter-active, .fade-leave-active {
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
-}
-
-.fade-enter-from, .fade-leave-to {
-    opacity: 0;
-}
 </style>

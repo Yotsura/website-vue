@@ -46,28 +46,3 @@ const displayEvents = computed(() => {
     user-select: none;
   }
 </style>
-
-<style scoped>
-.list-move,
-.fade-enter-active, .fade-leave-active,
-.list-enter-active, .list-leave-active {
-    -webkit-transition: all 0.8s;
-    -moz-transition: all 0.8s;
-    -ms-transition: all 0.8s;
-    -o-transition: all 0.8s;
-	transition: all 0.8s;
-}
-.list-enter-from, .list-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.list-item {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.list-leave-active {
-  position: absolute;
-}
-</style>
