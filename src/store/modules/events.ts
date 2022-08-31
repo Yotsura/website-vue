@@ -10,7 +10,7 @@ export const useTagStore = defineStore({
   id: 'event-tags',
   state: () : EventTagData => ({
     eventTagList: [],
-    selectedEventTag: new EventData()
+    selectedEventTag: new EventData().newAllEventTag()
   }),
   getters:{
     getEventTagList(): Array<EventData> {

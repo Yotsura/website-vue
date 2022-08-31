@@ -13,12 +13,10 @@ const displayEvents = computed(() => {
   const allEvents: Array<EventData> = useTagStore().getEventTagList;
   const filteredList = props.selectIDs?
     allEvents.filter(event => props.selectIDs?.some(x=> x == event.id))
-    :allEvents
+    :allEvents;
 
-  const newEvent = new EventData();
-  newEvent.name = "ALL";
   const newList = Array<EventData>();
-  newList.push(newEvent);
+  newList.push(new EventData().newAllEventTag());
   return newList.concat(filteredList);
 })
 </script>

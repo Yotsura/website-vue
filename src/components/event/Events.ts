@@ -29,6 +29,13 @@ export class EventData implements eventInfo{
     return this;
   }
 
+  newAllEventTag(){
+    this.id = '';
+    this.name = 'ALL';
+    this.date = new Date().getTime();
+    return this;
+  }
+
   getDataObj():eventInfo{
     return{
       id: this.id ?? '',
