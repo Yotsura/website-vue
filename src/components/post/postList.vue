@@ -1,20 +1,13 @@
 <script lang="ts" setup>
 import { ref,onMounted,computed } from 'vue'
-import type { PropType } from "vue";
 import { projectFirestore } from '@/firebase/config'
 import { PostData } from './Post'
 import { EventData } from "@/components/event/Events";
 import postPanelVue from './postPanel.vue';
 import EventTagAreaVue from "@/components/event/EventTagArea.vue";
-const props = defineProps({
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
-});
 
-const eventTags = computed(() => allposts.value.map(x=> x.qr));
-const IndicateEvents = computed(() => props.allEvents.filter(event =>{
-  const result = eventTags.value.find(x=> x == event.id);
-  return result;
-}));
+const eventTags = computed(() =>  Array.from(new Set( allposts.value.map(x=> x.qr)) ));
+
 const allposts = ref([] as Array<PostData>);
 const isDelMode = ref(false);
 onMounted(() => {
@@ -62,7 +55,7 @@ const eventClicked = (event:EventData) => {
 	<!-- <h2>メッセージ一覧</h2> -->
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode">
   <label for="checkbox">delMode</label>
-  <EventTagAreaVue :delmode="false" :allEvents="IndicateEvents" @selectTag="eventClicked"  />
+  <EventTagAreaVue :delmode="false" :selectIDs="eventTags" @selectTag="eventClicked"  />
 	<div class="row g-2">
     <transition-group name="list">
       <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />

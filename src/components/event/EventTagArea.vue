@@ -1,20 +1,24 @@
 <script lang="ts" setup>
-import type { PropType } from "vue";
 import { computed } from "vue";
 import { EventData } from "./Events";
 import EventPanelVue from "./EventPanel.vue";
+import { useTagStore } from '@/store/modules/events';
 const props = defineProps({
 	delmode: Boolean,
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
+  selectIDs: Array<string>
 });
-// const emit = defineEmits(['selectTag']);
 
 const displayEvents = computed(() => {
+  const allEvents = useTagStore().getEventTagList;
+  const filteredList = props.selectIDs?
+    allEvents.filter(event => props.selectIDs?.some(x=> x == event.id))
+    :allEvents
+
   const newEvent = new EventData();
   newEvent.name = "ALL";
   const newList = Array<EventData>();
   newList.push(newEvent);
-  return newList.concat(props.allEvents);
+  return newList.concat(filteredList);
 })
 </script>
 

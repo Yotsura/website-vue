@@ -3,12 +3,10 @@ import { ref } from 'vue'
 import type { PropType } from 'vue'
 import { projectFirestore } from '@/firebase/config'
 import { Work } from '@/components/work/Work';
-import { EventData } from '@/components/event/Events';
 import WorkUpload from './WorkUpload.vue';
 import WorkPanelList from './WorkPanelList.vue';
 const props = defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true},
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
+  allWorks: {type: Array as PropType<Work[]> , required:true}
 });
 
 const selectedWorkMenu = ref(0);
@@ -50,7 +48,7 @@ const delData = () => {
           </div>
           <WorkPanelList :delmode="isDelMode" :alldata="allWorks"/>
         </div>
-        <div v-else-if="selectedWorkMenu==2"><WorkUpload :needCaption="true" :dirName="'works'" :allEvents="allEvents"/></div>
+        <div v-else-if="selectedWorkMenu==2"><WorkUpload :needCaption="true" :dirName="'works'" /></div>
         <div v-else></div>
       </transition>
     </div>

@@ -6,8 +6,7 @@ import { EventData } from "./Events";
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
 import EventTagAreaVue from "./EventTagArea.vue";
 const props = defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true},
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
+  allWorks: {type: Array as PropType<Work[]> , required:true}
 });
 
 const indicateWorks = computed(() =>
@@ -40,7 +39,7 @@ newEvent.name = "ALL";
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
-	<EventTagAreaVue :delmode="isDelMode" :allEvents="allEvents" @selectTag="eventClicked" />
+	<EventTagAreaVue :delmode="isDelMode" @selectTag="eventClicked" />
 	<WorkPanelListCtrlVue :delmode="isDelMode" :alldata="indicateWorks" />
 </template>
 

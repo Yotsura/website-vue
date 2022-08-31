@@ -4,16 +4,30 @@ import { RouterLink, RouterView } from 'vue-router'
 import { projectFirestore } from '@/firebase/config'
 import EventViewVue from './views/EventView.vue';
 import { Work } from '@/components/work/Work';
+import { EventData } from '@/components/event/Events';
+import { useTagStore } from '@/store/modules/events';
 
 const param = window.location.href.includes('/?id:')? (`/?id:` + window.location.href.split('/?id:')[1]) : "";
 
+const events = useTagStore();
 const allWorks = ref([] as Array<Work>);
 onMounted(() => {
 	const error :any = ref(null);
 	const load = async () => {
 		try {
-			const collectionRef = projectFirestore.collection("works");
-			collectionRef.onSnapshot(
+			// projectFirestore.collection("events").onSnapshot(snap => {
+			// 	events.seEventTagList(snap.docs.map(doc => new EventData().newEvent(doc)));
+			// })
+			projectFirestore.collection("events").onSnapshot(
+			snap => {
+				events.seEventTagList(snap.docs.map(doc => new EventData().newEvent(doc)));
+				error.value = null;
+			},
+			err => {
+				console.log(err.message);
+				error.value = 'could not fetch data';
+			});
+			projectFirestore.collection("works").onSnapshot(
 			snap => {
 				allWorks.value = snap.docs.map(doc => new Work(doc));
 				allWorks.value.forEach(dat => dat.loadImg());

@@ -2,14 +2,12 @@
 import { ref } from "vue";
 import type { PropType } from "vue";
 import { Work } from "@/components/work/Work";
-import { EventData } from "./Events";
 import EventUploadVue from "./EventUpload.vue";
 import EventListVue from "./EventList.vue";
 import WorkUploadVue from "../work/WorkUpload.vue";
 
 defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true},
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
+  allWorks: {type: Array as PropType<Work[]> , required:true}
 });
 
 const selectedWorkMenu = ref(1);
@@ -29,13 +27,13 @@ const selectedWorkMenu = ref(1);
   </div>
   <transition name="fade" mode="out-in">
     <div v-if="selectedWorkMenu == 1">
-      <EventListVue :allWorks="allWorks" :allEvents="allEvents" />
+      <EventListVue :allWorks="allWorks"/>
     </div>
     <div v-else-if="selectedWorkMenu == 2">
       <EventUploadVue />
     </div>
     <div v-else-if="selectedWorkMenu == 3">
-      <WorkUploadVue :needCaption="true" :dirName="'works'" :allEvents="allEvents"/>
+      <WorkUploadVue :needCaption="true" :dirName="'works'"/>
     </div>
     <div v-else>
     </div>

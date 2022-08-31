@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { PropType } from "vue";
 import { WorkData } from './Work'
 import { EventData } from '../event/Events';
+import { useTagStore } from '@/store/modules/events';
+const allEvents = useTagStore().getEventTagList;
 
 const props = defineProps({
 	needCaption:  {type: Boolean , required:true},
-	dirName: {type: String , required:true},
-  allEvents: {type: Array as PropType<EventData[]> , required:true}
+	dirName: {type: String , required:true}
 });
 
 const input = ref<WorkData>(new WorkData({}));
