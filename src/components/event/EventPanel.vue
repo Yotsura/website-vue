@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const events = useTagStore();
-const styleTxt = computed(() => {
+const classTxt = computed(() => {
   const base = "col-auto horizontal-list-item m-1 panel";
   return base
     + ( events.selectedEventTag.id == props.event.id ? " active" : "" )
@@ -24,7 +24,7 @@ const eventClicked = () => {
 </script>
 
 <template>
-  <div :class="styleTxt">
+  <div :class="classTxt">
     <div class="p-1">{{event.name}}</div>
     <div class="panel-veil" @click="eventClicked"></div>
   </div>
