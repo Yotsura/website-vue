@@ -32,7 +32,7 @@ newEvent.name = "ALL";
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
 	<EventTagAreaVue :delmode="isDelMode" @selectTag="eventClicked" />
-	<WorkPanelListCtrlVue :delmode="isDelMode" :showButton="true" :alldata="indicateWorks" />
+	<WorkPanelListCtrlVue :adminmode="true" :delmode="isDelMode" :showButton="true" :alldata="indicateWorks" />
 </template>
 
 

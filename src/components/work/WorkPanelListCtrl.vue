@@ -7,6 +7,7 @@ import { Work } from './Work';
 import { backfaceFixed } from '@/utils/backforceFixed';
 import { useTagStore } from '@/store/modules/events';
 const props = defineProps({
+  adminmode: Boolean,
 	delmode: Boolean,
   showButton: Boolean,
 	alldata: {type: Array as PropType<Work[]> , required:true}
@@ -22,9 +23,10 @@ const delData = () => {
 const showContent = ref(false);
 const targetImg = ref<Work>();
 const ShowModal = (img :Work) => {
-  console.log("■showModal："+img.img_large);
+  if(props.adminmode) return;
 	if(props.delmode) return;
 	if(!img) return;
+  console.log("■showModal："+img.img_large);
 	const load = async () => {
 		if(!img.img_large){
 			await img.loadLargeImg().then(() => {
