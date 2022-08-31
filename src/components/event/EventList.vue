@@ -1,23 +1,15 @@
 <script lang="ts" setup>
 import { ref , computed } from "vue";
-import type { PropType } from "vue";
-import { Work } from "@/components/work/Work";
 import { EventData } from "./Events";
+import { useWorkStore } from "@/store/modules/works";
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
 import EventTagAreaVue from "./EventTagArea.vue";
-const props = defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true}
-});
 
-const indicateWorks = computed(() =>
-	props.allWorks.filter(work => selectedEvent.value.id == "" ? true :
-		(selectedEvent.value.id == work.data.eventID)));
-const selectedEvent = ref(new EventData);
+const indicateWorks = computed(() => useWorkStore().getFilteredWorks);
 const selectedEventURL = computed(() => {
 	const head = window.location.href.split('//')[0]
 	const base = window.location.href.split('//')[1].split('/')[0];
-	const para = selectedEvent.value.id == "" ? `` : `/?id:${selectedEvent.value.id}`;
-	return `${head}//${base}${para}`;
+	return `${head}//${base}${useWorkStore().getURLParam}`;
 });
 const eventClicked = (event:EventData) => {
 	if( isDelMode.value){
@@ -25,7 +17,7 @@ const eventClicked = (event:EventData) => {
 			if(confirm(`タグを削除しますか？：${event.name}`))
 				event.deleteData();	
 	}else{
-		selectedEvent.value = event;
+		useWorkStore().setEventTag(event);
 	}
 }
 
@@ -40,7 +32,7 @@ newEvent.name = "ALL";
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
 	<EventTagAreaVue :delmode="isDelMode" @selectTag="eventClicked" />
-	<WorkPanelListCtrlVue :delmode="isDelMode" :alldata="indicateWorks" />
+	<WorkPanelListCtrlVue :delmode="isDelMode" :showButton="true" :alldata="indicateWorks" />
 </template>
 
 

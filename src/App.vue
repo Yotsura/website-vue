@@ -6,18 +6,16 @@ import EventViewVue from './views/EventView.vue';
 import { Work } from '@/components/work/Work';
 import { EventData } from '@/components/event/Events';
 import { useTagStore } from '@/store/modules/events';
+import { useWorkStore } from '@/store/modules/works';
 
 const param = window.location.href.includes('/?id:')? (`/?id:` + window.location.href.split('/?id:')[1]) : "";
 
 const events = useTagStore();
-const allWorks = ref([] as Array<Work>);
+const works = useWorkStore();
 onMounted(() => {
 	const error :any = ref(null);
 	const load = async () => {
 		try {
-			// projectFirestore.collection("events").onSnapshot(snap => {
-			// 	events.seEventTagList(snap.docs.map(doc => new EventData().newEvent(doc)));
-			// })
 			projectFirestore.collection("events").onSnapshot(
 			snap => {
 				events.seEventTagList(snap.docs.map(doc => new EventData().newEvent(doc)));
@@ -29,8 +27,8 @@ onMounted(() => {
 			});
 			projectFirestore.collection("works").onSnapshot(
 			snap => {
-				allWorks.value = snap.docs.map(doc => new Work(doc));
-				allWorks.value.forEach(dat => dat.loadImg());
+				works.setWorks(snap.docs.map(doc => new Work(doc)));
+				works.loadThumbnails();
 				
 				error.value = null;
 			},
@@ -53,8 +51,8 @@ onMounted(() => {
 	<div id="wrapper" class="container" ontouchstart="">
     <div class="row">
       <h1>弓張月/<small>寄弦</small></h1>
-			<EventViewVue v-if="param" :allWorks="allWorks" />
-      <RouterView v-else :allWorks="allWorks"/>
+			<EventViewVue v-if="param" />
+      <RouterView v-else />
     </div>
   </div>
 </template>

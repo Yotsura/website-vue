@@ -2,9 +2,7 @@
 import { useRouter } from 'vue-router'
 import useLogout from '../utils/useLogout';
 import { ref ,watch } from 'vue'
-import type { PropType } from 'vue'
 import getUser from '@/utils/getUser';
-import { Work } from '@/components/work/Work';
 
 import EventCtrlVue from '@/components/event/EventCtrl.vue';
 import postListVue from '@/components/post/postList.vue';
@@ -26,9 +24,6 @@ const signout = async () => {
 const { user } = getUser();
 watch(user, () => { if (!user.value) router.push({ name: 'login' }); })
 
-defineProps({
-  allWorks: {type: Array as PropType<Work[]> , required:true}
-});
 const selectedMenu = ref<number>(0);
 </script>
 
@@ -45,7 +40,7 @@ const selectedMenu = ref<number>(0);
   </div>
   <transition name="fade" mode="out-in">
     <div v-if="selectedMenu==0"><postListVue /></div>
-    <div v-else-if="selectedMenu==1"><EventCtrlVue :allWorks="allWorks" /></div>
+    <div v-else-if="selectedMenu==1"><EventCtrlVue /></div>
     <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
     <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
   </transition>
