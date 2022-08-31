@@ -8,7 +8,7 @@ export interface postData  {
   name: string,
   message: string,
   qr: string,
-};
+}
 
 const defaultPostData = ():postData => ({
   id:'', date:new Date() ,name:'',message:'' ,qr:''
@@ -53,7 +53,7 @@ export class PostData implements postData{
   }
 
   doc () {
-    let id = `${this.date.getTime()}`;
+    const id = `${this.date.getTime()}`;
     return projectFirestore.collection("posts").doc(id);
   }
 

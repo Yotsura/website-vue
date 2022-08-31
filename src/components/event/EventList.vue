@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { ref , onMounted, computed } from "vue";
+import { ref , computed } from "vue";
 import type { PropType } from "vue";
 import { Work } from "@/components/work/Work";
 import { EventData } from "./Events";
-import { projectFirestore } from '@/firebase/config'
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
-import EventPanelVue from "./EventPanel.vue";
 import EventTagAreaVue from "./EventTagArea.vue";
 const props = defineProps({
   allWorks: {type: Array as PropType<Work[]> , required:true},
@@ -17,9 +15,9 @@ const indicateWorks = computed(() =>
 		(selectedEvent.value.id == work.data.eventID)));
 const selectedEvent = ref(new EventData);
 const selectedEventURL = computed(() => {
-	let head = window.location.href.split('//')[0]
-	let base = window.location.href.split('//')[1].split('/')[0];
-	let para = selectedEvent.value.id == "" ? `` : `/?id:${selectedEvent.value.id}`;
+	const head = window.location.href.split('//')[0]
+	const base = window.location.href.split('//')[1].split('/')[0];
+	const para = selectedEvent.value.id == "" ? `` : `/?id:${selectedEvent.value.id}`;
 	return `${head}//${base}${para}`;
 });
 const eventClicked = (event:EventData) => {
@@ -43,11 +41,6 @@ newEvent.name = "ALL";
   <label for="checkbox">delMode</label>
 	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
 	<EventTagAreaVue :delmode="isDelMode" :allEvents="allEvents" @selectTag="eventClicked" />
-	<!-- <div class="row m-0">
-		<EventPanelVue :event="newEvent" @eventClicked="eventClicked(newEvent)" />
-		<EventPanelVue v-for="event in allEvents" :key="event.id"
-			:event="event" :delmode="isDelMode" @eventClicked="eventClicked(event)"/>
-	</div> -->
 	<WorkPanelListCtrlVue :delmode="isDelMode" :alldata="indicateWorks" />
 </template>
 

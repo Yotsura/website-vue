@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from '@vue/runtime-core';
+import type { PropType } from 'vue';
 import { Work } from './Work';
 import { projectFirestore } from '@/firebase/config'
 const props = defineProps({
@@ -9,9 +9,6 @@ const props = defineProps({
 const emit = defineEmits(['imgClicked']);
 	
 const openRecord = () => {
-    // let temp = props.workDat;
-    // temp.data.countUp();
-    // projectFirestore.collection("works").doc(temp.id).update(temp.data.getDataObj());
     emit('imgClicked',props.workDat);
 }
 
@@ -19,7 +16,7 @@ const delRecord = () => {
     if(props.workDat?.id && confirm('削除しますか？')){
         props.workDat.delImg().then(()=>{
             console.log('workファイル削除完了');
-            let id = props.workDat?.id;
+            const id = props.workDat?.id;
             projectFirestore.collection("works").doc(id).delete().then(() =>{
                 console.log('storeレコード削除完了');
             });

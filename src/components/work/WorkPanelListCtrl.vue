@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref ,onMounted ,onUpdated ,computed } from 'vue'
+import { computed } from 'vue'
 import type{ PropType } from 'vue'
 import WorkPanel from './WorkPanel.vue';
 import { Work } from './Work';

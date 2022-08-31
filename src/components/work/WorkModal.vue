@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref , computed } from 'vue'
+import { ref } from 'vue'
 import type{ PropType } from 'vue'
 import { Work } from './Work';
-const props = defineProps({
+defineProps({
     img:  {type: Object as PropType<Work>},
 });
 const emit = defineEmits(['leaved']);

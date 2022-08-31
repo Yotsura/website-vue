@@ -7,12 +7,12 @@ const props = defineProps({
 	delmode: Boolean,
   allEvents: {type: Array as PropType<EventData[]> , required:true}
 });
-const emit = defineEmits(['selectTag']);
+// const emit = defineEmits(['selectTag']);
 
 const displayEvents = computed(() => {
-  let newEvent = new EventData();
+  const newEvent = new EventData();
   newEvent.name = "ALL";
-  let newList = Array<EventData>();
+  const newList = Array<EventData>();
   newList.push(newEvent);
   return newList.concat(props.allEvents);
 })

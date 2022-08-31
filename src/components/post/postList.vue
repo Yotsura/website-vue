@@ -12,21 +12,21 @@ const props = defineProps({
 
 const eventTags = computed(() => allposts.value.map(x=> x.qr));
 const IndicateEvents = computed(() => props.allEvents.filter(event =>{
-  let result = eventTags.value.find(x=> x == event.id);
+  const result = eventTags.value.find(x=> x == event.id);
   return result;
 }));
 const allposts = ref([] as Array<PostData>);
 const isDelMode = ref(false);
 onMounted(() => {
-  let error :any = ref(null);
-  let load = async () => {
+  const error :any = ref(null);
+  const load = async () => {
     try {
-      let collectionRef = projectFirestore.collection("posts");
-      const unsub = collectionRef.onSnapshot(
+      const collectionRef = projectFirestore.collection("posts");
+      collectionRef.onSnapshot(
       snap => {
         allposts.value = [];
         snap.docs.forEach(doc => {
-          let dat = new PostData().newPost(doc);
+          const dat = new PostData().newPost(doc);
           allposts.value.push(dat);
         })
         error.value = null;
@@ -65,7 +65,7 @@ const eventClicked = (event:EventData) => {
   <EventTagAreaVue :delmode="false" :allEvents="IndicateEvents" @selectTag="eventClicked"  />
 	<div class="row g-2">
     <transition-group name="list">
-		  <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />
+      <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />
     </transition-group>
 	</div>
 </template>

@@ -8,7 +8,6 @@ import { Work } from '@/components/work/Work';
 import { EventData } from '@/components/event/Events';
 import { projectFirestore } from '@/firebase/config';
 
-import WorkCtrlVue from '@/components/work/WorkCtrl.vue';
 import EventCtrlVue from '@/components/event/EventCtrl.vue';
 import postListVue from '@/components/post/postList.vue';
 // import SettingsCtrl from '@/components/SettinsCtrl.vue';
@@ -29,7 +28,7 @@ const signout = async () => {
 const { user } = getUser();
 watch(user, () => { if (!user.value) router.push({ name: 'login' }); })
 
-const props = defineProps({
+defineProps({
   allWorks: {type: Array as PropType<Work[]> , required:true}
 });
 
@@ -37,11 +36,11 @@ const selectedMenu = ref<number>(0);
 
 const allEvents = ref([] as Array<EventData>);
 onMounted(() => {
-	let error :any = ref(null);
-	let load = async () => {
+	const error :any = ref(null);
+	const load = async () => {
 		try {
-		let collectionRef = projectFirestore.collection("events");
-		const unsub = collectionRef.onSnapshot(
+		const collectionRef = projectFirestore.collection("events");
+		collectionRef.onSnapshot(
 		snap => {
 			allEvents.value = snap.docs.map(doc => new EventData().newEvent(doc));
 			error.value = null;

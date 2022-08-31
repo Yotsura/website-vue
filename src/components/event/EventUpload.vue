@@ -7,8 +7,8 @@ const input = ref(new EventData);
 const didInput = computed(() => (input.value.id == ""|| input.value.name == null)? false : true);
 
 const onSubmit = () => {
-  let error = ref(null);
-  let post = async () => {
+  const error = ref(null);
+  const post = async () => {
     try {
       console.log('送信開始');
       await input.value.setData();

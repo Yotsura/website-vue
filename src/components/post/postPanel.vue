@@ -9,7 +9,7 @@ const props = defineProps({
 
 const delRecord = () => {
 	if(confirm(props.post?.dateStr+'の投稿を削除しますか？')){
-		let id = props.post?.id;
+		const id = props.post?.id;
 		projectFirestore.collection("posts").doc(id).delete();
 	}
 }

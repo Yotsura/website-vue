@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { ref, computed ,defineEmits, onMounted, onUpdated } from 'vue'
+import { ref, computed , onMounted, onUpdated } from 'vue'
 import { PostData } from './Post'
 
-let props = defineProps({
+const props = defineProps({
   paramStr: String,
 	tagTitle: String
 });
-const emit = defineEmits(['completed']);
+// const emit = defineEmits(['completed']);
 
 const input = ref(new PostData);
+const displayTagName = computed(() => props.tagTitle);
 const didInput = computed(() => (input.value.message == ""|| input.value.message == null)? false : true);
 onMounted(() => {
 	input.value.qr = props?.paramStr??'';
@@ -20,8 +21,8 @@ onUpdated(() =>{
 })
 
 const onSubmit = () => {
-	let error = ref(null);
-	let post = async () => {
+	const error = ref(null);
+	const post = async () => {
 		try {
 			input.value.upload();
 			input.value = new PostData;
@@ -39,7 +40,7 @@ const onSubmit = () => {
 
 <template>
 	<form @submit.prevent class="col-lg-5 my-3">
-		<input class="form-control mb-2" type="text" readonly v-model="tagTitle" v-if="tagTitle" />
+		<input class="form-control mb-2" type="text" readonly v-model="displayTagName" v-if="displayTagName" />
 		<input class="form-control mb-2 d-none" type="text" readonly v-model="input.qr" />
 		<input class="form-control mb-2" type="text"
 		v-model="input.name"

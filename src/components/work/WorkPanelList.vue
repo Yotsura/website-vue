@@ -44,7 +44,7 @@ const targetImg = ref<Work>();
 const ShowModal = (img :Work) => {
 	if(props.delmode) return;
 	if(!img) return;
-	let load = async () => {
+	const load = async () => {
 		if(!img.img_large){
 			await img.loadLargeImg().then(() => {
 				console.log('ダウンロード完了');

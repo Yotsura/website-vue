@@ -26,7 +26,7 @@ const deletePreview = () => {
 	fileData.value = '';
 	imgurl.value = '';
 	
-	let target = document.getElementById("fileUp") as HTMLInputElement;
+	const target = document.getElementById("fileUp") as HTMLInputElement;
 	if(target){
 		target.value = "";
 	}
@@ -35,11 +35,11 @@ const deletePreview = () => {
 const submitting = ref(false);
 const onSubmit = () => {
 	submitting.value = true;
-	let error = ref(null);
-	let load = async () => {
+	const error = ref(null);
+	const load = async () => {
 		try {
 			console.log('送信開始');
-			let id = new Date().getTime().toString();
+			const id = new Date().getTime().toString();
 			console.log(`パス：img\\${props.dirName}\\${id}`);
 			await input.value.upload(fileData.value ,props.dirName ,id).then(() => {
 				deletePreview();

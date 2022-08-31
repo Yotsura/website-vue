@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref ,onMounted ,onUpdated ,computed } from 'vue'
+import { computed } from 'vue'
 import type{ PropType } from 'vue'
-import { Work } from '@/components/work/Work';
 import { EventData } from './Events';
 
 const props = defineProps({

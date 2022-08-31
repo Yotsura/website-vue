@@ -1,12 +1,10 @@
 import type { DocumentData } from '@firebase/firestore-types'
-import { Work } from '@/components/work/Work';
 import { projectFirestore } from '@/firebase/config'
-import { ref } from 'vue'
 
 interface eventInfo {
   id: string,
   name: string,
-  date: Number,
+  date: number,
 }
 
 const defaultEventData = ():eventInfo => ({
@@ -16,7 +14,7 @@ const defaultEventData = ():eventInfo => ({
 export class EventData implements eventInfo{
   id: string;
   name: string;
-  date: Number;
+  date: number;
   
   constructor(init:Partial<eventInfo> = defaultEventData()){
     this.id = init.id ?? '';
@@ -40,7 +38,7 @@ export class EventData implements eventInfo{
   }
 
   doc () {
-    let docid = `${this.id}-${this.date}`;
+    const docid = `${this.id}-${this.date}`;
     return projectFirestore.collection("events").doc(docid);
   }
 

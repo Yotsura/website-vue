@@ -7,7 +7,7 @@ import EventUploadVue from "./EventUpload.vue";
 import EventListVue from "./EventList.vue";
 import WorkUploadVue from "../work/WorkUpload.vue";
 
-const props = defineProps({
+defineProps({
   allWorks: {type: Array as PropType<Work[]> , required:true},
   allEvents: {type: Array as PropType<EventData[]> , required:true}
 });

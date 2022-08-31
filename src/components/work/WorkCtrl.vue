@@ -19,7 +19,7 @@ const delData = () => {
     props.allWorks.forEach(dat => {
       dat.delImg().then(()=>{
         console.log('workファイル削除完了');
-        let id = dat.id;
+        const id = dat.id;
         projectFirestore.collection("works").doc(id).delete().then(() =>{
           console.log('storeレコード削除完了');
         });
