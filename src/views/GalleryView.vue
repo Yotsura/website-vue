@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { EventData } from '@/components/event/Events';
+import { CategoryData } from '@/components/category/Category';
 import { useWorkStore } from '@/store/modules/works';
 import WorkPanelListCtrlVue from '@/components/work/WorkPanelListCtrl.vue';
 import NavBarVue from '@/components/NavBar.vue';
-import EventTagAreaVue from "@/components/event/EventTagArea.vue";
+import CategoryTagAreaVue from "@/components/category/CategoryTagArea.vue";
 
 const works = useWorkStore()
 const allWorks = computed(() => works.getFilteredWorks)
-const eventClicked = (event:EventData) => {
-  works.setEventTag(event);
+const categoryClicked = (category:CategoryData) => {
+  works.setCategoryTag(category);
 }
-const workTagList = computed(() => works.getEventIDs);
+const workTagList = computed(() => works.getCategoryIDs);
 </script>
 
 <template>
   <NavBarVue />
-	<EventTagAreaVue :delmode="false" :selectIDs="workTagList" @selectTag="eventClicked" />
+	<CategoryTagAreaVue :delmode="false" :selectIDs="workTagList" @selectTag="categoryClicked" />
   <WorkPanelListCtrlVue v-if="allWorks" :delmode="false" :alldata="allWorks" />
 </template>
 

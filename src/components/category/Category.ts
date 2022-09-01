@@ -1,42 +1,42 @@
 import type { DocumentData } from '@firebase/firestore-types'
 import { projectFirestore } from '@/firebase/config'
 
-interface eventInfo {
+interface categoryInfo {
   id: string,
   name: string,
   date: number,
 }
 
-const defaultEventData = ():eventInfo => ({
+const defaultCategoryData = ():categoryInfo => ({
   id: '' , name: '' , date: new Date().getTime() 
 });
 
-export class EventData implements eventInfo{
+export class CategoryData implements categoryInfo{
   id: string;
   name: string;
   date: number;
   
-  constructor(init:Partial<eventInfo> = defaultEventData()){
+  constructor(init:Partial<categoryInfo> = defaultCategoryData()){
     this.id = init.id ?? '';
     this.name = init.name ?? '';
     this.date = init.date ?? new Date().getTime();
   }
 
-  newEvent(doc:DocumentData){
+  newCategory(doc:DocumentData){
     this.id = doc.data()?.id ?? '';
     this.name = doc.data()?.name ?? '';
     this.date = doc.data()?.date ?? new Date().getTime();
     return this;
   }
 
-  newAllEventTag(){
+  newAllCategoryTag(){
     this.id = '';
     this.name = 'ALL';
     this.date = new Date().getTime();
     return this;
   }
 
-  getDataObj():eventInfo{
+  getDataObj():categoryInfo{
     return{
       id: this.id ?? '',
       name: this.name ?? '',
@@ -46,7 +46,7 @@ export class EventData implements eventInfo{
 
   doc () {
     const docid = `${this.id}-${this.date}`;
-    return projectFirestore.collection("events").doc(docid);
+    return projectFirestore.collection("categories").doc(docid);
   }
 
   async setData() {

@@ -3,22 +3,22 @@ import { ref ,onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { projectFirestore } from '@/firebase/config'
 import { Work } from '@/components/work/Work';
-import { EventData } from '@/components/event/Events';
-import { useTagStore } from '@/store/modules/events';
+import { CategoryData } from '@/components/category/Category';
+import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from '@/store/modules/works';
-import EventViewVue from './views/EventView.vue';
+import CategoryViewVue from './views/CategoryView.vue';
 
 const param = window.location.href.includes('/?id:')? (`/?id:` + window.location.href.split('/?id:')[1]) : "";
 
-const events = useTagStore();
+const categories = useTagStore();
 const works = useWorkStore();
 onMounted(() => {
 	const error :any = ref(null);
 	const load = async () => {
 		try {
-			projectFirestore.collection("events").onSnapshot(
+			projectFirestore.collection("categories").onSnapshot(
 			snap => {
-				events.seEventTagList(snap.docs.map(doc => new EventData().newEvent(doc)));
+				categories.setCategoryTagList(snap.docs.map(doc => new CategoryData().newCategory(doc)));
 				error.value = null;
 			},
 			err => {
@@ -51,7 +51,7 @@ onMounted(() => {
 	<div id="wrapper" class="container" ontouchstart="">
     <div class="row">
       <h1>弓張月/<small>寄弦</small></h1>
-			<EventViewVue v-if="param" />
+			<CategoryViewVue v-if="param" />
       <RouterView v-else />
 			<!-- <transition v-else name="fade" mode="out-in">
         <RouterView />

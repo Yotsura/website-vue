@@ -5,7 +5,7 @@ import WorkPanel from './WorkPanel.vue';
 import WorkModal from './WorkModal.vue';
 import { Work } from './Work';
 import { backfaceFixed } from '@/utils/backforceFixed';
-import { useTagStore } from '@/store/modules/events';
+import { useTagStore } from '@/store/modules/category';
 const props = defineProps({
   adminmode: Boolean,
 	delmode: Boolean,
@@ -15,7 +15,7 @@ const props = defineProps({
 
 const sortedWorks = computed(() => props.alldata.slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 ));
 const delData = () => {
-  if(confirm(`【${useTagStore().selectedEventTag?.name??""}】表示中の作品を削除しますか？`)){
+  if(confirm(`【${useTagStore().selectedCategoryTag?.name??""}】表示中の作品を削除しますか？`)){
     props.alldata.forEach(dat => dat.delImg());
   }
 }

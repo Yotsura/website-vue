@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref ,computed } from "vue";
 // import type { PropType } from "vue";
-import { EventData } from "./Events";
+import { CategoryData } from "./Category";
 
-const input = ref(new EventData);
+const input = ref(new CategoryData);
 const didInput = computed(() => (input.value.id == ""|| input.value.name == null)? false : true);
 
 const onSubmit = () => {
@@ -13,7 +13,7 @@ const onSubmit = () => {
       console.log('送信開始');
       await input.value.setData();
       alert('送信成功');
-      input.value = new EventData;
+      input.value = new CategoryData;
     } catch (err: any) {
       error.value = err.message;
       console.log(error.value);
@@ -30,10 +30,10 @@ const onSubmit = () => {
   <form @submit.prevent class="col-lg-5 my-3">
     <input class="form-control mb-2" type="text"
       v-model="input.name"
-      placeholder="タグ名" />
+      placeholder="カテゴリー名" />
     <input class="form-control mb-2" type="text"
       v-model="input.id"
-      placeholder="タグID ※urlに使用" />
+      placeholder="カテゴリーID ※urlに使用" />
     <button :disabled="!didInput" class="btn btn-primary btn-lg btn-block" type="button" @click="onSubmit">送信</button>
   </form>
 </template>

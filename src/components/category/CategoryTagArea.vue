@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { PropType } from "vue";
-import { EventData } from "./Events";
-import { useTagStore } from '@/store/modules/events';
-import EventPanelVue from "./EventPanel.vue";
+import { CategoryData } from "./Category";
+import { useTagStore } from '@/store/modules/category';
+import CategoryPanelVue from "./CategoryPanel.vue";
 const props = defineProps({
 	delmode: Boolean,
   selectIDs: Array as PropType<string[]>,
 });
 
-const displayEvents = computed(() => {
-  const allEvents: Array<EventData> = useTagStore().getEventTagList;
+const displayCategory = computed(() => {
+  const allCategory: Array<CategoryData> = useTagStore().getCategoryTagList;
   const filteredList = props.selectIDs?
-    allEvents.filter(event => props.selectIDs?.some(x=> x == event.id))
-    :allEvents;
+    allCategory.filter(category => props.selectIDs?.some(x=> x == category.id))
+    :allCategory;
 
-  const newList = Array<EventData>();
-  newList.push(new EventData().newAllEventTag());
+  const newList = Array<CategoryData>();
+  newList.push(new CategoryData().newAllCategoryTag());
   return newList.concat(filteredList);
 })
 </script>
@@ -25,8 +25,8 @@ const displayEvents = computed(() => {
 	<div class="row">
     <div class="horizontal-list">
       <transition-group name="list">
-        <EventPanelVue v-for="event in displayEvents" :key="event.id"
-          :event="event" :delmode="delmode" @eventClicked="$emit('selectTag', event)"/>
+        <CategoryPanelVue v-for="category in displayCategory" :key="category.id"
+          :category="category" :delmode="delmode" @categoryClicked="$emit('selectTag', category)"/>
       </transition-group>
     </div>
 	</div>

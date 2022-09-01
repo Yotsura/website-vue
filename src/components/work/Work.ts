@@ -3,29 +3,29 @@ import { uploadFile ,downloadFile, deleteFile } from './fileCtrl'
 import { projectFirestore } from '@/firebase/config'
 
 interface workData {
-    eventID: string,
+    categoryID: string,
     caption: string,
     viewCnt: number
 }
 
 const defaultWorkData = ():workData => ({
-    eventID: '',caption:'',viewCnt: 0
+    categoryID: '',caption:'',viewCnt: 0
 });
 
 export class WorkData implements workData{
-    eventID: string;
+    categoryID: string;
     caption: string;
     viewCnt: number;
     
     constructor(init:Partial<workData> = defaultWorkData()){
-        this.eventID = init.eventID ?? '';
+        this.categoryID = init.categoryID ?? '';
         this.caption = init.caption ?? '';
         this.viewCnt = init.viewCnt ?? 0;
     }
 
     getDataObj():workData{
         return{
-            eventID: this.eventID ?? '',
+            categoryID: this.categoryID ?? '',
             caption: this.caption ?? '',
             viewCnt: this.viewCnt ?? 0
         }

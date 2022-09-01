@@ -2,11 +2,11 @@
 import { ref,onMounted,computed } from 'vue'
 import { projectFirestore } from '@/firebase/config'
 import { PostData } from './Post'
-import { EventData } from "@/components/event/Events";
+import { CategoryData } from "@/components/category/Category";
 import postPanelVue from './postPanel.vue';
-import EventTagAreaVue from "@/components/event/EventTagArea.vue";
+import CategoryTagAreaVue from "@/components/category/CategoryTagArea.vue";
 
-const eventTags = computed(() =>  Array.from(new Set( allposts.value.map(x=> x.qr)) ));
+const categoryTags = computed(() =>  Array.from(new Set( allposts.value.map(x=> x.qr)) ));
 
 const allposts = ref([] as Array<PostData>);
 const isDelMode = ref(false);
@@ -40,14 +40,14 @@ onMounted(() => {
 });
 
 const indicatePosts = computed(() =>
-	allposts.value.filter(post => selectedEvent.value.id == "" ? true :
-		(selectedEvent.value.id == post.qr)));
+	allposts.value.filter(post => selectedCategory.value.id == "" ? true :
+		(selectedCategory.value.id == post.qr)));
 const sortedAllposts = computed(() => indicatePosts.value.slice().sort((a: any, b: any) => a.date < b.date? 1 : -1 ));
-const selectedEvent = ref(new EventData);
+const selectedCategory = ref(new CategoryData);
 
-const eventClicked = (event:EventData) => {
-  // console.log(`${event.name}(${event.id})` );
-	selectedEvent.value = event;
+const categoryClicked = (category:CategoryData) => {
+  // console.log(`${category.name}(${category.id})` );
+	selectedCategory.value = category;
 }
 </script>
 
@@ -55,7 +55,7 @@ const eventClicked = (event:EventData) => {
 	<!-- <h2>メッセージ一覧</h2> -->
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode">
   <label for="checkbox">delMode</label>
-  <EventTagAreaVue :delmode="false" :selectIDs="eventTags" @selectTag="eventClicked"  />
+  <CategoryTagAreaVue :delmode="false" :selectIDs="categoryTags" @selectTag="categoryClicked"  />
 	<div class="row g-2">
     <transition-group name="list">
       <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />

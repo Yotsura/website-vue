@@ -4,7 +4,7 @@ import useLogout from '../utils/useLogout';
 import { ref ,watch } from 'vue'
 import getUser from '@/utils/getUser';
 
-import EventCtrlVue from '@/components/event/EventCtrl.vue';
+import CategoryCtrlVue from '@/components/category/CategoryCtrl.vue';
 import postListVue from '@/components/post/postList.vue';
 // import SettingsCtrl from '@/components/SettinsCtrl.vue';
 
@@ -40,8 +40,8 @@ const selectedMenu = ref<number>(0);
   </div>
   <transition name="fade" mode="out-in">
     <div v-if="selectedMenu==0"><postListVue /></div>
-    <div v-else-if="selectedMenu==1"><EventCtrlVue /></div>
-    <!-- <div v-else-if="selectedMenu==2"><EventCtrlVue :allWorks="allWorks" /></div> -->
+    <div v-else-if="selectedMenu==1"><CategoryCtrlVue /></div>
+    <!-- <div v-else-if="selectedMenu==2"><CategoryCtrlVue :allWorks="allWorks" /></div> -->
     <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
   </transition>
 </template>

@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia';
 import { Work } from '@/components/work/Work';
-import { EventData } from '@/components/event/Events'
+import { CategoryData } from '@/components/category/Category'
 
 interface WorkDataList {
   works: Array<Work>,
-  eventTag: EventData
+  categoryTag: CategoryData
 }
 
 export const useWorkStore = defineStore({
   id: 'works',
   state: () : WorkDataList => ({
     works: [],
-    eventTag: new EventData()
+    categoryTag: new CategoryData()
   }),
   getters:{
     getWorks(): Array<Work> {
@@ -19,22 +19,22 @@ export const useWorkStore = defineStore({
     },
     getFilteredWorks(): Array<Work> {
       return this.works.filter(work =>
-        this.eventTag.id == "" ? true :
-        this.eventTag.id == work.data.eventID);
+        this.categoryTag.id == "" ? true :
+        this.categoryTag.id == work.data.categoryID);
     },
     getURLParam(): string {
-      return this.eventTag.id == "" ? `` : `/?id:${this.eventTag.id}`;
+      return this.categoryTag.id == "" ? `` : `/?id:${this.categoryTag.id}`;
     },
-    getEventIDs(): Array<string> {
-      return Array.from(new Set( this.works.map(x=> x.data.eventID)) );
+    getCategoryIDs(): Array<string> {
+      return Array.from(new Set( this.works.map(x=> x.data.categoryID)) );
     }
   },
   actions: {
     setWorks(works: Array<Work> ) {
       this.works = works;
     },
-    setEventTag(event: EventData | undefined ) {
-      this.eventTag = event ?? new EventData();
+    setCategoryTag(category: CategoryData | undefined ) {
+      this.categoryTag = category ?? new CategoryData();
     },
     getWork(id:string): Work | undefined {
       return this.works.find(e => e.id == id);

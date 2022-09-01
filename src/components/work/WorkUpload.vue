@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { WorkData } from './Work'
-import { EventData } from '../event/Events';
-import { useTagStore } from '@/store/modules/events';
-const allEvents = useTagStore().getEventTagList;
+import { CategoryData } from '../category/Category';
+import { useTagStore } from '@/store/modules/category';
+const allCategory = useTagStore().getCategoryTagList;
 
 const props = defineProps({
 	needCaption:  {type: Boolean , required:true},
@@ -59,7 +59,7 @@ const onSubmit = () => {
 	return { error, load }
 }
 
-const selectedEvent  = ref(new EventData);
+const selectedCategory  = ref(new CategoryData);
 </script>
 
 <template>
@@ -75,24 +75,24 @@ const selectedEvent  = ref(new EventData);
 		<img v-if="imgurl" class="img-fluid" :src="imgurl">
 	</div>
 	<div v-if="imgurl" class="p-3 col-md-8 col-12">
-		<select v-model="selectedEvent" @change="input.eventID = selectedEvent.id" class="btn btn-outline-secondary dropdown-toggle mb-2">
-			<option v-for="event in allEvents" :key="event.id"
-				v-bind:value="event">
-				{{ event.name }}
+		<select v-model="selectedCategory" @change="input.categoryID = selectedCategory.id" class="btn btn-outline-secondary dropdown-toggle mb-2">
+			<option v-for="category in allCategory" :key="category.id"
+				v-bind:value="category">
+				{{ category.name }}
 			</option>
 		</select>
 
-		<span>Selected: {{ selectedEvent.id }}</span>
+		<span>Selected: {{ selectedCategory.id }}</span>
 
     <input class="form-control mb-2" disabled type="text"
-      v-model="input.eventID"
+      v-model="input.categoryID"
       placeholder="イベントID ※urlに使用" />
 		<textarea v-if="props.needCaption" class="form-control mb-2" type="text"
 		v-model="input.caption"  rows="10"
 		placeholder="作品のキャプション" />
 		<div class=" btn-group d-flex my-2" role="group">
 			<button class="btn btn-primary flex-fill" :disabled="submitting" @click="deletePreview">CANCEL</button>
-			<button class="btn btn-danger flex-fill" :disabled="submitting || input.eventID==''" @click="onSubmit">UPLOAD</button>
+			<button class="btn btn-danger flex-fill" :disabled="submitting || input.categoryID==''" @click="onSubmit">UPLOAD</button>
 		</div>
 	</div>
 </div>

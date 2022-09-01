@@ -1,32 +1,32 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type{ PropType } from 'vue'
-import { EventData } from './Events';
-import { useTagStore } from '@/store/modules/events';
+import { CategoryData } from './Category';
+import { useTagStore } from '@/store/modules/category';
 
 const props = defineProps({
 	delmode: Boolean,
-  event: {type: Object as PropType<EventData>, required:true}
+  category: {type: Object as PropType<CategoryData>, required:true}
 });
 
-const events = useTagStore();
+const categories = useTagStore();
 const classTxt = computed(() => {
   const base = "col-auto horizontal-list-item m-1 panel";
   return base
-    + ( events.selectedEventTag.id == props.event.id ? " active" : "" )
+    + ( categories.selectedCategoryTag.id == props.category.id ? " active" : "" )
     + ( props.delmode ? " delmode" : "" ) ;
 });
-const emit = defineEmits(['eventClicked']);
-const eventClicked = () => {
-  events.setSelectedEventTag(props.event);
-  emit('eventClicked');
+const emit = defineEmits(['categoryClicked']);
+const categoryClicked = () => {
+  categories.setSelectedCategoryTag(props.category);
+  emit('categoryClicked');
 }
 </script>
 
 <template>
   <div :class="classTxt">
-    <div class="p-1">{{event.name}}</div>
-    <div class="panel-veil" @click="eventClicked"></div>
+    <div class="p-1">{{category.name}}</div>
+    <div class="panel-veil" @click="categoryClicked"></div>
   </div>
 </template>
 

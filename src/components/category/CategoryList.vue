@@ -1,37 +1,37 @@
 <script lang="ts" setup>
 import { ref , computed } from "vue";
-import { EventData } from "./Events";
+import { CategoryData } from "./Category";
 import { useWorkStore } from "@/store/modules/works";
 import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
-import EventTagAreaVue from "./EventTagArea.vue";
+import CategoryTagAreaVue from "./CategoryTagArea.vue";
 
 const indicateWorks = computed(() => useWorkStore().getFilteredWorks);
-const selectedEventURL = computed(() => {
+const selectedCategoryURL = computed(() => {
 	const head = window.location.href.split('//')[0]
 	const base = window.location.href.split('//')[1].split('/')[0];
 	return `${head}//${base}${useWorkStore().getURLParam}`;
 });
-const eventClicked = (event:EventData) => {
+const categoryClicked = (category:CategoryData) => {
 	if( isDelMode.value){
-		if(event.name != "ALL")
-			if(confirm(`タグを削除しますか？：${event.name}`))
-				event.deleteData();	
+		if(category.name != "ALL")
+			if(confirm(`タグを削除しますか？：${category.name}`))
+				category.deleteData();	
 	}else{
-		useWorkStore().setEventTag(event);
+		useWorkStore().setCategoryTag(category);
 	}
 }
 
 const isDelMode = ref(false);
 
-const newEvent = new EventData();
-newEvent.name = "ALL";
+const newCategory = new CategoryData();
+newCategory.name = "ALL";
 </script>
 
 <template>
   <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
   <label for="checkbox">delMode</label>
-	<div><a :href="selectedEventURL" target="_blank">AccessLink</a></div>
-	<EventTagAreaVue :delmode="isDelMode" @selectTag="eventClicked" />
+	<div><a :href="selectedCategoryURL" target="_blank">AccessLink</a></div>
+	<CategoryTagAreaVue :delmode="isDelMode" @selectTag="categoryClicked" />
 	<WorkPanelListCtrlVue :adminmode="true" :delmode="isDelMode" :showButton="true" :alldata="indicateWorks" />
 </template>
 
