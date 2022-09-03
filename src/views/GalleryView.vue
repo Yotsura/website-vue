@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { CategoryData } from '@/components/category/Category';
 import { useWorkStore } from '@/store/modules/works';
-import WorkPanelListCtrlVue from '@/components/work/WorkPanelListCtrl.vue';
+import WorkPanelListVue from '@/components/work/WorkPanelList.vue';
 import NavBarVue from '@/components/NavBar.vue';
 import CategoryTagAreaVue from "@/components/category/CategoryTagArea.vue";
 
@@ -17,7 +17,7 @@ const workTagList = computed(() => works.getCategoryIDs);
 <template>
   <NavBarVue />
 	<CategoryTagAreaVue :delmode="false" :selectIDs="workTagList" @selectTag="categoryClicked" />
-  <WorkPanelListCtrlVue v-if="allWorks" :delmode="false" :alldata="allWorks" />
+  <WorkPanelListVue v-if="allWorks" :delmode="false" :adminmode="false" :editCategory="false" />
 </template>
 
 <style scoped>

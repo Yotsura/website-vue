@@ -45,7 +45,22 @@ export class WorkData implements workData{
             });
         });
         console.log("work-upload-complete")
-   }
+    }
+
+    updateCategory ( docID: string ,categoryID: string ){
+      const load = async () => {
+        try {
+          const obj = this.getDataObj();
+          obj.categoryID = this.categoryID == categoryID ? '' : categoryID;
+          projectFirestore.collection("works").doc(docID).update(obj);
+        } catch ( err: unknown ) {
+          if ( err instanceof Error ) {
+            alert('送信失敗');
+          }
+        }
+      }
+      load();
+    }
 }
 
 interface work {
@@ -57,53 +72,57 @@ interface work {
 }
 
 export class Work implements work {
-    id: string;
-    data: WorkData;
-    img?: string | undefined;
-    img_large?: string | undefined;
-    show: boolean;
+  id: string;
+  data: WorkData;
+  img?: string | undefined;
+  img_large?: string | undefined;
+  show: boolean;
 
-    constructor(data:DocumentData){
-        this.id = data.id ?? '';
-        this.data = new WorkData (data.data());
-        this.show = false;
-    }
+  constructor(data:DocumentData){
+    this.id = data.id ?? '';
+    this.data = new WorkData (data.data());
+    this.show = false;
+  }
 
-    getDataObj():work {
-        return {
-            id: this.id?? '',
-            data: this.data ?? new WorkData(),
-            show:false
-        }
+  getDataObj():work {
+    return {
+      id: this.id?? '',
+      data: this.data ?? new WorkData(),
+      show:false
     }
-    
-    async loadImg(){
-        if(this.img) return;
-        // console.log(`Dowloading:${this.id}`)
-        await downloadFile(this.id , 'works').then((imgUrl) => {
-            this.img = imgUrl??'';
-        });
-    }
-    
-    async loadLargeImg(){
-        if(this.img_large) return;
-        // console.log(`Dowloading:${this.id}`)
-        await downloadFile((this.id+'_large'??'') ,'works').then((imgUrl) => {
-            this.img_large = imgUrl??'';
-        });
-    }
+  }
+  
+  async loadImg(){
+    if(this.img) return;
+    // console.log(`Dowloading:${this.id}`)
+    await downloadFile(this.id , 'works').then((imgUrl) => {
+      this.img = imgUrl??'';
+    });
+  }
+  
+  async loadLargeImg(){
+    if(this.img_large) return;
+    // console.log(`Dowloading:${this.id}`)
+    await downloadFile((this.id+'_large'??'') ,'works').then((imgUrl) => {
+      this.img_large = imgUrl??'';
+    });
+  }
 
-    async delImg(){
-        deleteFile((this.id ?? '') , 'works');
-        deleteFile((this.id + '_large' ?? '') ,'works');
-        projectFirestore.collection("works").doc(this.id).delete();
-    }
+  async delImg(){
+    deleteFile((this.id ?? '') , 'works');
+    deleteFile((this.id + '_large' ?? '') ,'works');
+    projectFirestore.collection("works").doc(this.id).delete();
+  }
 
-    async hideImg(){
-        this.show = false;
-    }
+  async hideImg(){
+    this.show = false;
+  }
 
-    async showImg(){
-        this.show = true;
-    }
+  async showImg(){
+    this.show = true;
+  }
+
+  updateCategory ( categoryID: string ){
+    this.data.updateCategory(this.id, categoryID);
+  }
 }

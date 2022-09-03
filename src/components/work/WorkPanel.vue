@@ -1,16 +1,26 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { PropType } from 'vue';
 import { Work } from './Work';
+import { useWorkStore } from '@/store/modules/works';
 import { projectFirestore } from '@/firebase/config'
 const props = defineProps({
 	delmode: Boolean,
     workDat:{type: Object as PropType<Work>, required:true}
 });
 const emit = defineEmits(['imgClicked']);
-	
-const openRecord = () => {
-    emit('imgClicked',props.workDat);
+
+const works = useWorkStore();
+const imgClicked = () => {
+    console.log("■workpanelClicked");
+    if ( works.getEditCategory ){
+        props.workDat.updateCategory( works.getSelectedCategoryID );
+    } else {
+        emit('imgClicked',props.workDat);
+    }
 }
+
+const enableCategoryVeil = computed (() => works.getSelectedCategoryID == props.workDat.data.categoryID )
 
 const delRecord = () => {
     if(props.workDat?.id && confirm('削除しますか？')){
@@ -35,7 +45,10 @@ const delRecord = () => {
             <div v-if="workDat.data.caption"
                 v-text="workDat.data.caption"
                 class="d-flex panel-txt m-2 p-1"></div>
-            <div class="panel-veil" @click="openRecord"></div>
+            <transition name="fade" mode="out-in">
+                <div v-if="enableCategoryVeil && works.getEditCategory" class="panel-veil-category" @click="imgClicked" ></div>
+                <div v-else class="panel-veil" @click="imgClicked"></div>
+            </transition>
         </div>
     </div>
 </template>
@@ -113,9 +126,27 @@ img {
 	-o-transition: all 0.3s;
 	transition: all 0.3s;
 }
+
+.panel-veil-category{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba(45, 175, 115, 0.5);
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	-ms-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	transition: all 0.3s;
+}
 @media (hover: hover) {
     .panel:hover .panel-veil{
         background-color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+    }
+    .panel:hover .panel-veil-category{
+        background-color: rgba(45, 175, 115, 0.8);
         cursor: pointer;
     }
     .panel-btn:hover{

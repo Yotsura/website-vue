@@ -2,37 +2,58 @@
 import { ref , computed } from "vue";
 import { CategoryData } from "./Category";
 import { useWorkStore } from "@/store/modules/works";
-import WorkPanelListCtrlVue from "../work/WorkPanelListCtrl.vue";
+import WorkPanelListVue from "../work/WorkPanelList.vue";
 import CategoryTagAreaVue from "./CategoryTagArea.vue";
 
-const indicateWorks = computed(() => useWorkStore().getFilteredWorks);
+const works = useWorkStore()
 const selectedCategoryURL = computed(() => {
 	const head = window.location.href.split('//')[0]
 	const base = window.location.href.split('//')[1].split('/')[0];
-	return `${head}//${base}${useWorkStore().getURLParam}`;
+	return `${head}//${base}${works.getURLParam}`;
 });
 const categoryClicked = (category:CategoryData) => {
-	if( isDelMode.value){
+	if ( isDelMode.value){
 		if(category.name != "ALL")
-			if(confirm(`タグを削除しますか？：${category.name}`))
+			if(confirm(`カテゴリーを削除しますか？：${category.name}`))
 				category.deleteData();	
-	}else{
-		useWorkStore().setCategoryTag(category);
+	} else if ( isEditEditCategory.value ){
+		works.setCategoryTag(category);
+		
+
+	} else {
+		works.setCategoryTag(category);
+
 	}
 }
 
 const isDelMode = ref(false);
-
-const newCategory = new CategoryData();
-newCategory.name = "ALL";
+const isEditEditCategory = computed(() => works.getEditCategory);
+const EnableEditEditCategory = () => {
+	works.enableEditCategory();
+}
+const DisableEditCategory = () => {
+	works.disableEditCategory();
+}
 </script>
 
 <template>
-  <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode" />
-  <label for="checkbox">delMode</label>
-	<div><a :href="selectedCategoryURL" target="_blank">AccessLink</a></div>
+	<div class="row my-3">
+    <div v-if="isEditEditCategory" class="col-auto">
+      <button @click="DisableEditCategory" type="button" class="btn btn-danger">editEditCategory:on</button>
+    </div>
+    <div v-else class="col-auto">
+      <button @click="EnableEditEditCategory" type="button" class="btn btn-outline-danger">editEditCategory:off</button>
+    </div>
+    <div v-if="isDelMode" class="col-auto">
+      <button @click="isDelMode=false" type="button" class="btn btn-danger">delmode:on</button>
+    </div>
+    <div v-else class="col-auto">
+      <button @click="isDelMode=true" type="button" class="btn btn-outline-danger">delmode:off</button>
+    </div>
+	</div>
+	<div class="mb-3"><a :href="selectedCategoryURL" target="_blank">AccessLink</a></div>
 	<CategoryTagAreaVue :delmode="isDelMode" @selectTag="categoryClicked" />
-	<WorkPanelListCtrlVue :adminmode="true" :delmode="isDelMode" :showButton="true" :alldata="indicateWorks" />
+	<WorkPanelListVue :adminmode="true" :delmode="isDelMode" :showButton="true" />
 </template>
 
 
