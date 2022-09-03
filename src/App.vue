@@ -93,4 +93,8 @@ onMounted(() => {
 .fade-enter-from, .fade-leave-to  {
   opacity: 0;
 }
+
+.btn-outline-danger:hover{
+  background-color: #e78f91;
+}
 </style>
