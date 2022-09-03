@@ -114,7 +114,6 @@ export class Work implements work {
     deleteFile((this.id ?? '') , 'works');
     deleteFile((this.id + '_large' ?? '') ,'works');
     projectFirestore.collection("works").doc(this.id).delete();
-    this.delFlg = true;
   }
 
   async hideImg(){

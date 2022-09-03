@@ -39,25 +39,21 @@ export const useWorkStore = defineStore({
     }
   },
   actions: {
-    setWorks(works: Array<Work> ) {
-      if (works.length < this.works.length){
-        console.log("works削除されたよ");
-        // this.works = works;
-        return;
-      }
+    setWorks(newworks: Array<Work> ) {
       this.works.forEach(work => {
-        const newObj = works.find(x => x.id == work.id);
-        if( newObj?.data.categoryID != work.data.categoryID ){
-          //category変更を反映する
-          console.log("category変更:" + newObj?.id);
-          work.data.categoryID = newObj?.data.categoryID??'';
-        } else if ( !newObj) {
+        const newObj = newworks.find(x => x.id == work.id);
+        if ( !newObj ) {
           //作品削除でフラグオン？
+          console.log("work削除:" + work.id);
           work.delFlg = true;
+        } else if( newObj.data.categoryID != work.data.categoryID ){
+          //category変更を反映する
+          console.log("category変更:" + newObj.id);
+          work.data.categoryID = newObj.data.categoryID??'';
         }
       });
 
-      works.filter(work => this.getWorks.every(x => x.id != work.id)).forEach(work => {
+      newworks.filter(work => this.getWorks.every(x => x.id != work.id)).forEach(work => {
         console.log("works追加:" + work.id);
         this.works.push(work)
       });

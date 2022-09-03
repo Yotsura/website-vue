@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref , computed } from "vue";
-import { CategoryData } from "./Category";
 import { useWorkStore } from "@/store/modules/works";
 import WorkPanelListVue from "../work/WorkPanelList.vue";
 import CategoryTagAreaVue from "./CategoryTagArea.vue";
