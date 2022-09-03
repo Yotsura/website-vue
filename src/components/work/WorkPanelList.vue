@@ -60,7 +60,7 @@ const HideModalImg = () => {
 
 <template>
   <div v-if="showButton">
-    <div v-if="delmode" class="mb-3">
+    <div v-if="delmode && !useWorkStore().getEditCategory" class="mb-3">
       <button @click="delData" type="button" class="btn btn-danger">DELETE ALL</button>
     </div>
     <div v-else class="mb-3">

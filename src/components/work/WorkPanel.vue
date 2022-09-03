@@ -12,50 +12,48 @@ const emit = defineEmits(['imgClicked']);
 
 const works = useWorkStore();
 const imgClicked = () => {
-    console.log("■workpanelClicked");
-    if ( works.getEditCategory ){
-        props.workDat.updateCategory( works.getSelectedCategoryID );
-    } else {
-        emit('imgClicked',props.workDat);
-    }
+  console.log("■workpanelClicked");
+  emit('imgClicked',props.workDat);
+}
+
+const editCategory = () => {
+  props.workDat.updateCategory( works.getSelectedCategoryID );
 }
 
 const enableCategoryVeil = computed (() => works.getSelectedCategoryID == props.workDat.data.categoryID )
 
 const delRecord = () => {
-    if(props.workDat?.id && confirm('削除しますか？')){
-        props.workDat.delImg().then(()=>{
-            console.log('workファイル削除完了');
-            const id = props.workDat?.id;
-            projectFirestore.collection("works").doc(id).delete().then(() =>{
-                console.log('storeレコード削除完了');
-            });
-        });
-    }
+  if(props.workDat?.id && confirm('削除しますか？')){
+    props.workDat.delImg().then(()=>{
+      console.log('workファイル削除完了');
+      const id = props.workDat?.id;
+      projectFirestore.collection("works").doc(id).delete().then(() =>{
+        console.log('storeレコード削除完了');
+      });
+    });
+  }
 }
 </script>
 
 <template>
-    <div class="col-md-2 col-3">
-        <div class="border panel"
-             :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
-            <transition name="fade" mode="out-in">
-                <div class="btn d-flex m-1 panel-btn text-center" v-if="delmode" @click="delRecord">DELETE</div>
-            </transition>
-            <div v-if="workDat.data.caption"
-                v-text="workDat.data.caption"
-                class="d-flex panel-txt m-2 p-1"></div>
-            <transition name="fade" mode="out-in">
-                <div v-if="enableCategoryVeil && works.getEditCategory" class="panel-veil-category" @click="imgClicked" ></div>
-                <div v-else class="panel-veil" @click="imgClicked"></div>
-            </transition>
-        </div>
+  <div class="col-md-2 col-3">
+    <div class="border panel" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
+      <div v-if="workDat.data.caption"
+        v-text="workDat.data.caption"
+        class="d-flex panel-txt m-2 p-1"></div>
+      <transition name="fade" mode="out-in">
+        <div v-if="works.getEditCategory && !delmode && enableCategoryVeil" class="p-veil p-veil-category" @click="editCategory" ></div>
+        <div v-else-if="works.getEditCategory && !delmode && !enableCategoryVeil" class="p-veil" @click="editCategory" ></div>
+        <div v-else-if="delmode && !works.getEditCategory" class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
+        <div v-else class="p-veil" @click="imgClicked"></div>
+      </transition>
     </div>
+  </div>
 </template>
 
 <style scoped>
 img {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 @media screen and (min-width: 576px) {
@@ -83,43 +81,44 @@ img {
   }
 }
 .panel{
-    position: relative;
-    height:13rem;
-    user-select: none;
-    border-radius: 0.5rem;
-    background-color: white;
+  position: relative;
+  height:13rem;
+  user-select: none;
+  border-radius: 0.5rem;
+  background-color: white;
 }
 .panel-txt{
-    position: absolute;
-    bottom: 0;
-    font-weight: 600;
-    max-height: 50%;
-    color: #333;
-    border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px;
-    background-color: rgba(255, 255, 255);
-    overflow: hidden;
-    /* border: 2px solid #333; */
-    opacity: 0.7;
+  position: absolute;
+  bottom: 0;
+  font-weight: 600;
+  max-height: 50%;
+  color: #333;
+  border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px;
+  background-color: rgba(255, 255, 255);
+  overflow: hidden;
+  /* border: 2px solid #333; */
+  opacity: 0.7;
 }
 .panel-btn{
-    position: absolute;
-    text-align: center;
-    left: 0;
-    right: 0;
-    z-index: 5;
+  position: absolute;
+  text-align: center;
+  /* left: 0;
+  right: 0;
+  z-index: 5; */
 	font-weight: 400;
-	color: white;
-	background-color: transparent;
+    font-size: 3rem;
+	color: rgba(255, 255, 255, 0.8);
+	/* background-color: transparent;
 	border: 1px solid white;
 	padding: 0.375rem 0.5rem;
-	border-radius: 0.25rem;
+	border-radius: 0.25rem; */
 }
-.panel-veil{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
+.p-veil{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	-ms-transition: all 0.3s;
@@ -127,30 +126,22 @@ img {
 	transition: all 0.3s;
 }
 
-.panel-veil-category{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-    background-color: rgba(45, 175, 115, 0.5);
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	-ms-transition: all 0.3s;
-	-o-transition: all 0.3s;
-	transition: all 0.3s;
+.p-veil-category{
+  background-color: rgba(45, 175, 115, 0.5) !important;
 }
+
 @media (hover: hover) {
-    .panel:hover .panel-veil{
-        background-color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-    }
-    .panel:hover .panel-veil-category{
-        background-color: rgba(45, 175, 115, 0.8);
-        cursor: pointer;
-    }
-    .panel-btn:hover{
-        background-color:  rgba(255, 0, 0, 0.8);
-    }
+  .panel:hover .p-veil{
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .panel:hover .p-veil-category{
+    background-color: rgba(45, 175, 115, 0.8) !important;
+  }
+  .panel:hover .p-veil-danger{
+    background-color: rgba(175, 45, 45, 0.8) !important;
+  }
+  .panel-btn:hover{
+    background-color:  rgba(255, 0, 0, 0.8);
+  }
 }
 </style>

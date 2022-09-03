@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type{ PropType } from 'vue'
 import { CategoryData } from './Category';
 import { useTagStore } from '@/store/modules/category';
+import { useWorkStore } from "@/store/modules/works";
 
 const props = defineProps({
 	delmode: Boolean,
@@ -14,12 +15,19 @@ const classTxt = computed(() => {
   const base = "col-auto horizontal-list-item m-1 panel";
   return base
     + ( categories.selectedCategoryTag.id == props.category.id ? " active" : "" )
-    + ( props.delmode ? " delmode" : "" ) ;
+    + ( props.delmode && works.getEditCategory ? " delmode" : "" ) ;
 });
-const emit = defineEmits(['categoryClicked']);
+
+const works = useWorkStore()
 const categoryClicked = () => {
   categories.setSelectedCategoryTag(props.category);
-  emit('categoryClicked');
+	if ( props.delmode && works.getEditCategory ){
+		if(props.category.name != "ALL")
+			if(confirm(`カテゴリーを削除しますか？：${props.category.name}`))
+        props.category.deleteData();
+	} else {
+		works.setCategoryTag(props.category);
+	}
 }
 </script>
 

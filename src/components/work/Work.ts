@@ -69,6 +69,7 @@ interface work {
     url1?: string;
     img_large?: string;
     show: boolean;
+    delFlg?: boolean;
 }
 
 export class Work implements work {
@@ -77,6 +78,7 @@ export class Work implements work {
   img?: string | undefined;
   img_large?: string | undefined;
   show: boolean;
+  delFlg?: boolean;
 
   constructor(data:DocumentData){
     this.id = data.id ?? '';
@@ -112,6 +114,7 @@ export class Work implements work {
     deleteFile((this.id ?? '') , 'works');
     deleteFile((this.id + '_large' ?? '') ,'works');
     projectFirestore.collection("works").doc(this.id).delete();
+    this.delFlg = true;
   }
 
   async hideImg(){

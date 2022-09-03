@@ -11,20 +11,6 @@ const selectedCategoryURL = computed(() => {
 	const base = window.location.href.split('//')[1].split('/')[0];
 	return `${head}//${base}${works.getURLParam}`;
 });
-const categoryClicked = (category:CategoryData) => {
-	if ( isDelMode.value){
-		if(category.name != "ALL")
-			if(confirm(`カテゴリーを削除しますか？：${category.name}`))
-				category.deleteData();	
-	} else if ( isEditEditCategory.value ){
-		works.setCategoryTag(category);
-		
-
-	} else {
-		works.setCategoryTag(category);
-
-	}
-}
 
 const isDelMode = ref(false);
 const isEditEditCategory = computed(() => works.getEditCategory);
@@ -52,7 +38,7 @@ const DisableEditCategory = () => {
     </div>
 	</div>
 	<div class="mb-3"><a :href="selectedCategoryURL" target="_blank">AccessLink</a></div>
-	<CategoryTagAreaVue :delmode="isDelMode" @selectTag="categoryClicked" />
+	<CategoryTagAreaVue :delmode="isDelMode" />
 	<WorkPanelListVue :adminmode="true" :delmode="isDelMode" :showButton="true" />
 </template>
 

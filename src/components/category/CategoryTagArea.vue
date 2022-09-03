@@ -26,7 +26,7 @@ const displayCategory = computed(() => {
     <div class="horizontal-list">
       <transition-group name="list">
         <CategoryPanelVue v-for="category in displayCategory" :key="category.id"
-          :category="category" :delmode="delmode" @categoryClicked="$emit('selectTag', category)"/>
+          :category="category" :delmode="delmode" />
       </transition-group>
     </div>
 	</div>

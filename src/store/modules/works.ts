@@ -17,10 +17,10 @@ export const useWorkStore = defineStore({
   }),
   getters:{
     getWorks(): Array<Work> {
-      return this.works;
+      return this.works.filter(x => ! x.delFlg);
     },
     getFilteredWorks(): Array<Work> {
-      return this.works.filter(work =>
+      return this.getWorks.filter(work =>
         (!this.editCategory && this.categoryTag.id != "") ?
           (this.categoryTag.id == work.data.categoryID)
           : true);
@@ -29,7 +29,7 @@ export const useWorkStore = defineStore({
       return this.categoryTag.id == "" ? `` : `/?id:${this.categoryTag.id}`;
     },
     getCategoryIDs(): Array<string> {
-      return Array.from(new Set( this.works.map(x=> x.data.categoryID)) );
+      return Array.from(new Set( this.getWorks.map(x=> x.data.categoryID)) );
     },
     getEditCategory(): boolean {
       return this.editCategory;
@@ -41,21 +41,23 @@ export const useWorkStore = defineStore({
   actions: {
     setWorks(works: Array<Work> ) {
       if (works.length < this.works.length){
-        console.log("works削除のため再適用");
-        this.works = works;
+        console.log("works削除されたよ");
+        // this.works = works;
         return;
       }
-
       this.works.forEach(work => {
         const newObj = works.find(x => x.id == work.id);
         if( newObj?.data.categoryID != work.data.categoryID ){
           //category変更を反映する
           console.log("category変更:" + newObj?.id);
           work.data.categoryID = newObj?.data.categoryID??'';
+        } else if ( !newObj) {
+          //作品削除でフラグオン？
+          work.delFlg = true;
         }
       });
 
-      works.filter(work => this.works.every(x => x.id != work.id)).forEach(work => {
+      works.filter(work => this.getWorks.every(x => x.id != work.id)).forEach(work => {
         console.log("works追加:" + work.id);
         this.works.push(work)
       });
@@ -64,10 +66,10 @@ export const useWorkStore = defineStore({
       this.categoryTag = category ?? new CategoryData();
     },
     getWork(id:string): Work | undefined {
-      return this.works.find(e => e.id == id);
+      return this.getWorks.find(e => e.id == id);
     },
     loadThumbnails() {
-      this.works.forEach(dat => dat.loadImg());
+      this.getWorks.forEach(dat => dat.loadImg());
     },
     enableEditCategory() {
       this.editCategory = true;
