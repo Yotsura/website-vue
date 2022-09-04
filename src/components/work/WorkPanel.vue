@@ -122,6 +122,9 @@ img {
 .p-veil-category{
   background-color: rgba(0, 0, 0, 0.6) !important;
 }
+.p-veil-danger{
+  background-color: rgba(175, 45, 45, 0.4) !important;
+}
 
 @media (hover: hover) {
   .panel:hover .p-veil{
