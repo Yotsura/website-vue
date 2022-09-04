@@ -2,7 +2,6 @@
 import { ref,onMounted,computed } from 'vue'
 import { projectFirestore } from '@/firebase/config'
 import { PostData } from './Post'
-import { CategoryData } from "@/components/category/Category";
 import { useWorkStore } from '@/store/modules/works';
 import postPanelVue from './postPanel.vue';
 import CategoryTagAreaVue from "@/components/category/CategoryTagArea.vue";

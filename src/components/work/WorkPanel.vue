@@ -42,8 +42,8 @@ const delRecord = () => {
         v-text="workDat.data.caption"
         class="d-flex panel-txt m-2 p-1"></div>
       <transition name="fade" mode="out-in">
-        <div v-if="works.getEditCategory && !delmode && enableCategoryVeil" class="p-veil p-veil-category" @click="editCategory" ></div>
-        <div v-else-if="works.getEditCategory && !delmode && !enableCategoryVeil" class="p-veil" @click="editCategory" ></div>
+        <div v-if="works.getEditCategory && !delmode && enableCategoryVeil" class="p-veil" @click="editCategory" ></div>
+        <div v-else-if="works.getEditCategory && !delmode && !enableCategoryVeil" class="p-veil p-veil-category" @click="editCategory" ></div>
         <div v-else-if="delmode && !works.getEditCategory" class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
         <div v-else class="p-veil" @click="imgClicked"></div>
       </transition>
@@ -102,16 +102,9 @@ img {
 .panel-btn{
   position: absolute;
   text-align: center;
-  /* left: 0;
-  right: 0;
-  z-index: 5; */
 	font-weight: 400;
     font-size: 3rem;
 	color: rgba(255, 255, 255, 0.8);
-	/* background-color: transparent;
-	border: 1px solid white;
-	padding: 0.375rem 0.5rem;
-	border-radius: 0.25rem; */
 }
 .p-veil{
   position: absolute;
@@ -127,15 +120,15 @@ img {
 }
 
 .p-veil-category{
-  background-color: rgba(45, 175, 115, 0.5) !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
 }
 
 @media (hover: hover) {
   .panel:hover .p-veil{
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.5);
   }
   .panel:hover .p-veil-category{
-    background-color: rgba(45, 175, 115, 0.8) !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
   }
   .panel:hover .p-veil-danger{
     background-color: rgba(175, 45, 45, 0.8) !important;
