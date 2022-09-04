@@ -86,7 +86,7 @@ const afterFirstLoad = () => {
         v-for="( work , index ) in sortedWorks"
         :key="work.id" :workDat="work"
         :delmode="delmode" 
-        :style="{ 'transition-delay': `${works.isFirstLoaded? 0 : (0.3 + index * 0.3)}s` }"
+        :style="{ 'transition-delay': `${works.isFirstLoaded? 0 : (0.5 + index * 0.3)}s` }"
         @imgClicked="ShowModal" />
     </transition-group>
   </div>
