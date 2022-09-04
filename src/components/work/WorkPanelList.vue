@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-// import type{ PropType } from 'vue'
+import { ref, computed , onMounted } from 'vue'
 import WorkPanel from './WorkPanel.vue';
 import WorkModal from './WorkModal.vue';
 import { Work } from './Work';
@@ -14,8 +13,17 @@ const props = defineProps({
   showButton: Boolean
 });
 
-const alldata = computed(() => useWorkStore().getFilteredWorks);
-const sortedWorks = computed(() => alldata.value.slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 ));
+const mounted = ref(false);
+onMounted(() =>{
+  // console.log("■onMounted:workPanelList");
+  mounted.value = true;
+});
+
+const works = useWorkStore();
+const alldata = computed(() => works.getFilteredWorks);
+//mount時にアニメーションさせたいのでそこで切り替え
+const sortedWorks = computed(() => !mounted.value ? new Array<Work>()
+  : (alldata.value.slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 )));
 const delData = () => {
   if(confirm(`【${useTagStore().selectedCategoryTag?.name??""}】表示中の作品を削除しますか？`)){
     alldata.value.forEach(dat => dat.delImg());
@@ -29,7 +37,7 @@ const targetImg = ref<Work>();
 const ShowModal = (img :Work) => {
   if(disableModal.value) return;
 	if(!img) return;
-  console.log("■showModal："+img.img_large);
+  // console.log("■showModal："+img.img_large);
 	const load = async () => {
 		if(!img.img_large){
 			await img.loadLargeImg().then(() => {
@@ -43,18 +51,23 @@ const ShowModal = (img :Work) => {
 	load();
 }
 const HideModal = () => {
-  console.log("■hideModal");
+  // console.log("■hideModal");
 	showContent.value = false;
 	backfaceFixed(false);
 }
 
 const ShowModalImg = () => {
-  console.log("■showModalImg");
+  // console.log("■showModalImg");
 	targetImg.value?.showImg();
 }
 const HideModalImg = () => {
-  console.log("■hideModalImg");
+  // console.log("■hideModalImg");
 	targetImg.value?.hideImg();
+}
+
+const afterFirstLoad = () => {
+  // console.log ("afterAnimate");
+  works.completeFirstLoad();
 }
 </script>
 
@@ -68,11 +81,12 @@ const HideModalImg = () => {
     </div>
   </div>
   <div class="row g-lg-3 g-md-2 g-1">
-    <transition-group name="list">
+    <transition-group name="list" @after-enter="afterFirstLoad">
       <WorkPanel
-        v-for="work in sortedWorks"
+        v-for="( work , index ) in sortedWorks"
         :key="work.id" :workDat="work"
         :delmode="delmode" 
+        :style="{ 'transition-delay': `${works.isFirstLoaded? 0 : (0.3 + index * 0.3)}s` }"
         @imgClicked="ShowModal" />
     </transition-group>
   </div>

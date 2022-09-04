@@ -5,7 +5,8 @@ import { CategoryData } from '@/components/category/Category'
 interface WorkDataList {
   works: Array<Work>,
   categoryTag: CategoryData,
-  editCategory: boolean
+  editCategory: boolean,
+  firstLoaded: boolean
 }
 
 export const useWorkStore = defineStore({
@@ -13,7 +14,8 @@ export const useWorkStore = defineStore({
   state: () : WorkDataList => ({
     works: [],
     categoryTag: new CategoryData(),
-    editCategory: false
+    editCategory: false,
+    firstLoaded: false
   }),
   getters:{
     getWorks(): Array<Work> {
@@ -36,6 +38,9 @@ export const useWorkStore = defineStore({
     },
     getSelectedCategoryID(): string {
       return this.categoryTag.id;
+    },
+    isFirstLoaded(): boolean{
+      return this.firstLoaded;
     }
   },
   actions: {
@@ -44,17 +49,17 @@ export const useWorkStore = defineStore({
         const newObj = newworks.find(x => x.id == work.id);
         if ( !newObj ) {
           //作品削除でフラグオン？
-          console.log("work削除:" + work.id);
+          // console.log("work削除:" + work.id);
           work.delFlg = true;
         } else if( newObj.data.categoryID != work.data.categoryID ){
           //category変更を反映する
-          console.log("category変更:" + newObj.id);
+          // console.log("category変更:" + newObj.id);
           work.data.categoryID = newObj.data.categoryID??'';
         }
       });
 
       newworks.filter(work => this.getWorks.every(x => x.id != work.id)).forEach(work => {
-        console.log("works追加:" + work.id);
+        // console.log("works追加:" + work.id);
         this.works.push(work)
       });
     },
@@ -72,6 +77,11 @@ export const useWorkStore = defineStore({
     },
     disableEditCategory() {
       this.editCategory = false;
+    },
+    completeFirstLoad() {
+      if ( this.firstLoaded ) return;
+      this.firstLoaded = true;
+      console.log("firstloaded");
     }
   }
 });

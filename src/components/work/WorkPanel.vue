@@ -6,13 +6,13 @@ import { useWorkStore } from '@/store/modules/works';
 import { projectFirestore } from '@/firebase/config'
 const props = defineProps({
 	delmode: Boolean,
-    workDat:{type: Object as PropType<Work>, required:true}
+  workDat:{type: Object as PropType<Work>, required:true}
 });
 const emit = defineEmits(['imgClicked']);
 
 const works = useWorkStore();
 const imgClicked = () => {
-  console.log("■workpanelClicked");
+  // console.log("■workpanelClicked");
   emit('imgClicked',props.workDat);
 }
 
