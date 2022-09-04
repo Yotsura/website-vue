@@ -3,13 +3,13 @@ import { ref,onMounted,computed } from 'vue'
 import { projectFirestore } from '@/firebase/config'
 import { PostData } from './Post'
 import { CategoryData } from "@/components/category/Category";
+import { useWorkStore } from '@/store/modules/works';
 import postPanelVue from './postPanel.vue';
 import CategoryTagAreaVue from "@/components/category/CategoryTagArea.vue";
 
 const categoryTags = computed(() =>  Array.from(new Set( allposts.value.map(x=> x.qr)) ));
 
 const allposts = ref([] as Array<PostData>);
-const isDelMode = ref(false);
 onMounted(() => {
   const error :any = ref(null);
   const load = async () => {
@@ -35,27 +35,23 @@ onMounted(() => {
     }
   }
   load();
-
   return { error, load }
 });
 
+const isDelMode = ref(false);
+const selectedCategoryID = computed(() => useWorkStore().getSelectedCategoryID);
 const indicatePosts = computed(() =>
-	allposts.value.filter(post => selectedCategory.value.id == "" ? true :
-		(selectedCategory.value.id == post.qr)));
+	allposts.value.filter(post => selectedCategoryID.value == "" ? true :
+  (selectedCategoryID.value == post.qr)));
 const sortedAllposts = computed(() => indicatePosts.value.slice().sort((a: any, b: any) => a.date < b.date? 1 : -1 ));
-const selectedCategory = ref(new CategoryData);
-
-const categoryClicked = (category:CategoryData) => {
-  // console.log(`${category.name}(${category.id})` );
-	selectedCategory.value = category;
-}
 </script>
 
 <template>
-	<!-- <h2>メッセージ一覧</h2> -->
-  <input class="mb-3" type="checkbox" id="checkbox" v-model="isDelMode">
-  <label for="checkbox">delMode</label>
-  <CategoryTagAreaVue :delmode="false" :selectIDs="categoryTags" @selectTag="categoryClicked"  />
+  <div class="my-3">
+		<button v-if="isDelMode" @click="isDelMode=false" type="button" class="d-inline btn btn-danger ms-1">delmode:on</button>
+		<button v-else @click="isDelMode=true" type="button" class="d-inline btn btn-outline-danger ms-1">delmode:off</button>
+  </div>
+  <CategoryTagAreaVue :delmode="false" :selectIDs="categoryTags" />
 	<div class="row g-2">
     <transition-group name="list">
       <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />
