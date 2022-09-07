@@ -23,8 +23,8 @@ const DisableEditCategory = () => {
 
 <template>
 	<div class="my-3">
-		<button v-if="isEditEditCategory" @click="DisableEditCategory" type="button" class="d-inline btn btn-danger">editEditCategory:on</button>
-		<button v-else @click="EnableEditEditCategory" type="button" class="d-inline btn btn-outline-danger">editEditCategory:off</button>
+		<button v-if="isEditEditCategory" @click="DisableEditCategory" type="button" class="d-inline btn btn-danger">editCategory:on</button>
+		<button v-else @click="EnableEditEditCategory" type="button" class="d-inline btn btn-outline-danger">editCategory:off</button>
 		<button v-if="isDelMode" @click="isDelMode=false" type="button" class="d-inline btn btn-danger ms-1">delmode:on</button>
 		<button v-else @click="isDelMode=true" type="button" class="d-inline btn btn-outline-danger ms-1">delmode:off</button>
 	</div>
