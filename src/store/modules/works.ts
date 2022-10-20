@@ -5,7 +5,9 @@ import { CategoryData } from '@/components/category/Category'
 interface WorkDataList {
   works: Array<Work>,
   categoryTag: CategoryData,
+  isDelMode: boolean,
   editCategory: boolean,
+  editCaption: boolean,
   firstLoaded: boolean
 }
 
@@ -14,7 +16,9 @@ export const useWorkStore = defineStore({
   state: () : WorkDataList => ({
     works: [],
     categoryTag: new CategoryData(),
+    isDelMode: false,
     editCategory: false,
+    editCaption: false,
     firstLoaded: false
   }),
   getters:{
@@ -33,8 +37,14 @@ export const useWorkStore = defineStore({
     getCategoryIDs(): Array<string> {
       return Array.from(new Set( this.getWorks.map(x=> x.data.categoryID)) );
     },
-    getEditCategory(): boolean {
+    delModeIsEnabled(): boolean {
+      return this.isDelMode;
+    },
+    editCategoryIsEnabled(): boolean {
       return this.editCategory;
+    },
+    editCaptionIsEnabled(): boolean {
+      return this.editCaption;
     },
     getSelectedCategoryID(): string {
       return this.categoryTag.id;
@@ -48,18 +58,16 @@ export const useWorkStore = defineStore({
       this.works.forEach(work => {
         const newObj = newworks.find(x => x.id == work.id);
         if ( !newObj ) {
-          //作品削除でフラグオン？
-          // console.log("work削除:" + work.id);
+          //作品削除でフラグオン
           work.delFlg = true;
-        } else if( newObj.data.categoryID != work.data.categoryID ){
-          //category変更を反映する
-          // console.log("category変更:" + newObj.id);
+        } else if( newObj.data.categoryID != work.data.categoryID ||
+          newObj.data.caption !=work.data.caption ){
           work.data.categoryID = newObj.data.categoryID??'';
+          work.data.caption = newObj.data.caption??'';
         }
       });
 
       newworks.filter(work => this.getWorks.every(x => x.id != work.id)).forEach(work => {
-        // console.log("works追加:" + work.id);
         this.works.push(work)
       });
     },
@@ -72,16 +80,39 @@ export const useWorkStore = defineStore({
     loadThumbnails() {
       this.getWorks.forEach(dat => dat.loadImg());
     },
-    enableEditCategory() {
-      this.editCategory = true;
-    },
-    disableEditCategory() {
-      this.editCategory = false;
-    },
     completeFirstLoad() {
       if ( this.firstLoaded ) return;
       this.firstLoaded = true;
       console.log("firstloaded");
+    },
+    setDelModeEnabled(isEnabled:boolean) {
+      if(isEnabled && this.tryDisableEditCaption())
+        this.isDelMode = true;
+    },
+    setEditCategoryEnabled(isEnabled:boolean) {
+      if(isEnabled && this.tryDisableEditCaption())
+        this.editCategory = true;
+    },
+    setEditCaptionEnabled(isEnabled:boolean) {
+      if(isEnabled)
+      {
+        this.editCaption = true;
+        this.editCategory = false;
+        this.isDelMode = false;
+      } else {
+        this.tryDisableEditCaption();
+      }
+    },
+    tryDisableEditCaption(): boolean {
+      if(confirm('キャプションを更新しますか？')){
+        this.getFilteredWorks.forEach(work => {
+          console.log('push:'+work.data.caption);
+          work.pushDataObj();
+        });
+        this.editCaption = false;
+        return true;
+      }
+      return false;
     }
   }
 });

@@ -61,6 +61,20 @@ export class WorkData implements workData{
       }
       load();
     }
+
+    pushDataObj (docID: string){
+      const load = async () => {
+        try {
+          const obj = this.getDataObj();
+          projectFirestore.collection("works").doc(docID).update(obj);
+        } catch ( err: unknown ) {
+          if ( err instanceof Error ) {
+            alert('送信失敗');
+          }
+        }
+      }
+      load();
+    }
 }
 
 interface work {
@@ -126,5 +140,9 @@ export class Work implements work {
 
   updateCategory ( categoryID: string ){
     this.data.updateCategory(this.id, categoryID);
+  }
+
+  pushDataObj (){
+    this.data.pushDataObj(this.id);
   }
 }

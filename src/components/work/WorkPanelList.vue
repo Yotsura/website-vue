@@ -8,8 +8,6 @@ import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
 const props = defineProps({
   adminmode: Boolean,
-	delmode: Boolean,
-	editCategory: Boolean,
   showButton: Boolean
 });
 
@@ -30,7 +28,12 @@ const delData = () => {
   }
 }
 
-const disableModal = computed(() => props.adminmode || props.delmode || props.editCategory)
+const disableModal = computed(() =>
+  props.adminmode ||
+  works.delModeIsEnabled ||
+  works.editCategoryIsEnabled ||
+  works.editCaptionIsEnabled
+)
 
 const showContent = ref(false);
 const targetImg = ref<Work>();
@@ -73,7 +76,7 @@ const afterFirstLoad = () => {
 
 <template>
   <div v-if="showButton">
-    <div v-if="delmode && !useWorkStore().getEditCategory" class="mb-3">
+    <div v-if="works.delModeIsEnabled && !works.editCategoryIsEnabled" class="mb-3">
       <button @click="delData" type="button" class="btn btn-danger">DELETE ALL</button>
     </div>
     <div v-else class="mb-3">
@@ -85,7 +88,6 @@ const afterFirstLoad = () => {
       <WorkPanel
         v-for="( work , index ) in sortedWorks"
         :key="work.id" :workDat="work"
-        :delmode="delmode" 
         :style="{ 'transition-delay': `${works.isFirstLoaded? 0 : (0.5 + index * 0.3)}s` }"
         @imgClicked="ShowModal" />
     </transition-group>

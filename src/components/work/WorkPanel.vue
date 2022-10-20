@@ -5,7 +5,6 @@ import { Work } from './Work';
 import { useWorkStore } from '@/store/modules/works';
 import { projectFirestore } from '@/firebase/config'
 const props = defineProps({
-	delmode: Boolean,
   workDat:{type: Object as PropType<Work>, required:true}
 });
 const emit = defineEmits(['imgClicked']);
@@ -38,13 +37,20 @@ const delRecord = () => {
 <template>
   <div class="col-md-2 col-3">
     <div class="border panel" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
-      <div v-if="workDat.data.caption"
+      <div v-if="workDat.data.caption && !works.editCaptionIsEnabled"
         v-text="workDat.data.caption"
         class="d-flex panel-txt m-2 p-1"></div>
       <transition name="fade" mode="out-in">
-        <div v-if="works.getEditCategory && !delmode && enableCategoryVeil" class="p-veil" @click="editCategory" ></div>
-        <div v-else-if="works.getEditCategory && !delmode && !enableCategoryVeil" class="p-veil p-veil-category" @click="editCategory" ></div>
-        <div v-else-if="delmode && !works.getEditCategory" class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
+        <div v-if="works.editCategoryIsEnabled && !works.delModeIsEnabled && enableCategoryVeil"
+          class="p-veil" @click="editCategory" ></div>
+        <div v-else-if="works.editCategoryIsEnabled && !works.delModeIsEnabled && !enableCategoryVeil"
+          class="p-veil p-veil-category" @click="editCategory" ></div>
+        <div v-else-if="works.delModeIsEnabled && !works.editCategoryIsEnabled"
+          class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
+        <textarea v-else-if="works.editCaptionIsEnabled" 
+          placeholder="キャプション" v-model="workDat.data.caption"
+          style="background-color:rgba(255, 255, 255, 0.7); height: 100%;"
+          class="form-control mb-2" type="text"></textarea>
         <div v-else class="p-veil" @click="imgClicked"></div>
       </transition>
     </div>

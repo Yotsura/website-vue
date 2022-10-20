@@ -6,7 +6,6 @@ import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
 
 const props = defineProps({
-	delmode: Boolean,
   category: {type: Object as PropType<CategoryData>, required:true}
 });
 
@@ -15,13 +14,13 @@ const classTxt = computed(() => {
   const base = "col-auto horizontal-list-item m-1 panel";
   return base
     + ( categories.selectedCategoryTag.id == props.category.id ? " active" : "" )
-    + ( props.delmode && works.getEditCategory ? " delmode" : "" ) ;
+    + ( categories.delModeIsEnabled && works.editCategoryIsEnabled ? " delmode" : "" ) ;
 });
 
 const works = useWorkStore()
 const categoryClicked = () => {
   categories.setSelectedCategoryTag(props.category);
-	if ( props.delmode && works.getEditCategory ){
+	if ( categories.delModeIsEnabled && works.editCategoryIsEnabled ){
 		if(props.category.name != "ALL")
 			if(confirm(`カテゴリーを削除しますか？：${props.category.name}`))
         props.category.deleteData();
@@ -33,8 +32,8 @@ const categoryClicked = () => {
 
 <template>
   <div :class="classTxt">
-    <div class="p-1">{{category.name}}</div>
     <div class="panel-veil" @click="categoryClicked"></div>
+    <div class="p-1">{{category.name}}</div>
   </div>
 </template>
 

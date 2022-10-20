@@ -5,7 +5,6 @@ import { CategoryData } from "./Category";
 import { useTagStore } from '@/store/modules/category';
 import CategoryPanelVue from "./CategoryPanel.vue";
 const props = defineProps({
-	delmode: Boolean,
   selectIDs: Array as PropType<string[]>,
 });
 
@@ -26,7 +25,7 @@ const displayCategory = computed(() => {
     <div class="horizontal-list">
       <transition-group name="list">
         <CategoryPanelVue v-for="category in displayCategory" :key="category.id"
-          :category="category" :delmode="delmode" />
+          :category="category" />
       </transition-group>
     </div>
 	</div>
