@@ -12,12 +12,10 @@ const works = useWorkStore();
 const indicateWorks = computed(() => works.getFilteredWorks);
 
 onMounted(() => {
-  console.log('onmounted');
   if(categoryInfo.value)
     works.setCategoryTag(categoryInfo.value);
 })
 onUpdated(() => {
-  console.log('onupdated');
   if(categoryInfo.value)
     works.setCategoryTag(categoryInfo.value);
 })

@@ -44,7 +44,7 @@ const delRecord = () => {
     <div class="border panel" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
       <div v-if="workDat.data.caption && !works.editCaptionIsEnabled"
         v-text="workDat.data.caption"
-        class="d-flex panel-txt m-2 p-1"></div>
+        class="d-flex panel-txt"></div>
       <transition name="fade" mode="out-in">
         <div v-if="works.editCategoryIsEnabled && !works.delModeIsEnabled && enableCategoryVeil"
           class="p-veil" @click="editCategory" ></div>
@@ -101,15 +101,17 @@ img {
 }
 .panel-txt{
   position: absolute;
-  bottom: 0;
+  bottom: 0.1rem;
+  margin: 0.2rem;
+  padding: 0.2rem;
   font-weight: 600;
-  max-height: 50%;
+  max-height: 95%;
   color: #333;
   border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px;
   background-color: rgba(255, 255, 255);
   overflow: hidden;
   /* border: 2px solid #333; */
-  opacity: 0.7;
+  opacity: 0.6;
 }
 .panel-btn{
   position: absolute;
