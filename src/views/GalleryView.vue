@@ -17,7 +17,7 @@ const workTagList = computed(() => works.getCategoryIDs);
 <template>
   <NavBarVue />
 	<CategoryTagAreaVue :selectIDs="workTagList" @selectTag="categoryClicked" />
-  <WorkPanelListVue v-if="allWorks" :adminmode="false" :editCategory="false" />
+  <WorkPanelListVue v-if="allWorks" :adminmode="false"/>
 </template>
 
 <style scoped>

@@ -12,17 +12,21 @@ const works = useWorkStore();
 const indicateWorks = computed(() => works.getFilteredWorks);
 
 onMounted(() => {
-  works.setCategoryTag(categoryInfo.value);
+  console.log('onmounted');
+  if(categoryInfo.value)
+    works.setCategoryTag(categoryInfo.value);
 })
 onUpdated(() => {
-  works.setCategoryTag(categoryInfo.value);
+  console.log('onupdated');
+  if(categoryInfo.value)
+    works.setCategoryTag(categoryInfo.value);
 })
 
 </script>
 
 <template>
   <PostFormVue :paramStr="param" :tagTitle="categoryInfo?.name??'カテゴリーの登録がありません。'" />
-  <WorkPanelListVue v-if="indicateWorks" />
+  <WorkPanelListVue v-if="categoryInfo && indicateWorks" />
 </template>
 
 <style scoped>
