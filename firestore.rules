@@ -2,23 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postid} {
-      allow create: if true;
+      allow create;
       allow read, write: if request.auth!=null;
     }
     match /works/{workid} {
-      allow list: if true;
+      allow list;
       allow read, write: if request.auth!=null;
     }
     match /categories/{categoryid} {
-      allow list: if true;
+      allow list;
       allow read, write: if request.auth!=null;
     }
     match /thanksImg/{tyid} {
-      allow list: if true;
+      allow list;
       allow read, write: if request.auth!=null;
     }
     match /backImg/{bgid} {
-      allow list: if true;
+      allow list;
       allow read, write: if request.auth!=null;
     }
   }
