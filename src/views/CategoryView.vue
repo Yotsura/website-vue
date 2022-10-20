@@ -22,7 +22,7 @@ onUpdated(() => {
 
 <template>
   <PostFormVue :paramStr="param" :tagTitle="categoryInfo?.name??'カテゴリーの登録がありません。'" />
-  <WorkPanelListVue v-if="indicateWorks" :delmode="false" />
+  <WorkPanelListVue v-if="indicateWorks" />
 </template>
 
 <style scoped>

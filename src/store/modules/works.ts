@@ -60,10 +60,11 @@ export const useWorkStore = defineStore({
         if ( !newObj ) {
           //作品削除でフラグオン
           work.delFlg = true;
-        } else if( newObj.data.categoryID != work.data.categoryID ||
-          newObj.data.caption !=work.data.caption ){
-          work.data.categoryID = newObj.data.categoryID??'';
-          work.data.caption = newObj.data.caption??'';
+        } else{
+          if ( newObj.data.categoryID != work.data.categoryID )
+            work.data.categoryID = newObj.data.categoryID??'';
+          if ( newObj.data.caption != work.data.caption )
+            work.data.caption = newObj.data.caption??'';
         }
       });
 
@@ -86,33 +87,23 @@ export const useWorkStore = defineStore({
       console.log("firstloaded");
     },
     setDelModeEnabled(isEnabled:boolean) {
-      if(isEnabled && this.tryDisableEditCaption())
-        this.isDelMode = true;
+      this.isDelMode = isEnabled;
+      if(isEnabled)
+        this.editCaption = false;
+        
     },
     setEditCategoryEnabled(isEnabled:boolean) {
-      if(isEnabled && this.tryDisableEditCaption())
-        this.editCategory = true;
+      this.editCategory = isEnabled;
+      if(isEnabled)
+        this.editCaption = false;
     },
     setEditCaptionEnabled(isEnabled:boolean) {
+      this.editCaption = isEnabled;
       if(isEnabled)
       {
-        this.editCaption = true;
         this.editCategory = false;
         this.isDelMode = false;
-      } else {
-        this.tryDisableEditCaption();
       }
     },
-    tryDisableEditCaption(): boolean {
-      if(confirm('キャプションを更新しますか？')){
-        this.getFilteredWorks.forEach(work => {
-          console.log('push:'+work.data.caption);
-          work.pushDataObj();
-        });
-        this.editCaption = false;
-        return true;
-      }
-      return false;
-    }
   }
 });

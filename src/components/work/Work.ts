@@ -62,10 +62,11 @@ export class WorkData implements workData{
       load();
     }
 
-    pushDataObj (docID: string){
+    updateCaption ( docID: string ,caption: string ){
       const load = async () => {
         try {
           const obj = this.getDataObj();
+          obj.caption = caption;
           projectFirestore.collection("works").doc(docID).update(obj);
         } catch ( err: unknown ) {
           if ( err instanceof Error ) {
@@ -142,7 +143,7 @@ export class Work implements work {
     this.data.updateCategory(this.id, categoryID);
   }
 
-  pushDataObj (){
-    this.data.pushDataObj(this.id);
+  updateCaption ( caption: string ){
+    this.data.updateCaption(this.id, caption);
   }
 }

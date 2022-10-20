@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
-import { Work } from './Work';
+import { Work, WorkData } from './Work';
 import { useWorkStore } from '@/store/modules/works';
 import { projectFirestore } from '@/firebase/config'
 const props = defineProps({
@@ -11,12 +11,17 @@ const emit = defineEmits(['imgClicked']);
 
 const works = useWorkStore();
 const imgClicked = () => {
-  // console.log("■workpanelClicked");
   emit('imgClicked',props.workDat);
 }
 
 const editCategory = () => {
   props.workDat.updateCategory( works.getSelectedCategoryID );
+}
+
+const workCaption = ref(props.workDat.data.caption);
+const UpdWorkCaption = () => {
+  if ( props.workDat.data.caption != workCaption.value )
+    props.workDat.updateCaption(workCaption.value);
 }
 
 const enableCategoryVeil = computed (() => works.getSelectedCategoryID == props.workDat.data.categoryID )
@@ -48,7 +53,8 @@ const delRecord = () => {
         <div v-else-if="works.delModeIsEnabled && !works.editCategoryIsEnabled"
           class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
         <textarea v-else-if="works.editCaptionIsEnabled" 
-          placeholder="キャプション" v-model="workDat.data.caption"
+          placeholder="キャプション" v-model="workCaption"
+          @blur="UpdWorkCaption"
           style="background-color:rgba(255, 255, 255, 0.7); height: 100%;"
           class="form-control mb-2" type="text"></textarea>
         <div v-else class="p-veil" @click="imgClicked"></div>

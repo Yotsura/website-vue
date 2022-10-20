@@ -50,7 +50,7 @@ const sortedAllposts = computed(() => indicatePosts.value.slice().sort((a: any, 
 		<button v-if="isDelMode" @click="isDelMode=false" type="button" class="d-inline btn btn-danger ms-1">delmode:on</button>
 		<button v-else @click="isDelMode=true" type="button" class="d-inline btn btn-outline-danger ms-1">delmode:off</button>
   </div>
-  <CategoryTagAreaVue :delmode="false" :selectIDs="categoryTags" />
+  <CategoryTagAreaVue :selectIDs="categoryTags" />
 	<div class="row g-2">
     <transition-group name="list">
       <postPanelVue v-for="post in sortedAllposts" :key="post.date?.toString()" :delmode="isDelMode" :post="post" />
