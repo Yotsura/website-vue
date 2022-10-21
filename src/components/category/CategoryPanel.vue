@@ -4,23 +4,26 @@ import type{ PropType } from 'vue'
 import { CategoryData } from './Category';
 import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
+import { useEnabledModesStore } from "@/store/modules/mode";
 
 const props = defineProps({
   category: {type: Object as PropType<CategoryData>, required:true}
 });
+
+const mode = useEnabledModesStore();
 
 const categories = useTagStore();
 const classTxt = computed(() => {
   const base = "col-auto horizontal-list-item m-1 panel";
   return base
     + ( categories.selectedCategoryTag.id == props.category.id ? " active" : "" )
-    + ( categories.delModeIsEnabled && works.editCategoryIsEnabled ? " delmode" : "" ) ;
+    + ( mode.deleteModeIsEnabled && mode.editCategoryIsEnabled ? " delmode" : "" ) ;
 });
 
 const works = useWorkStore()
 const categoryClicked = () => {
   categories.setSelectedCategoryTag(props.category);
-	if ( categories.delModeIsEnabled && works.editCategoryIsEnabled ){
+	if ( mode.deleteModeIsEnabled && mode.editCategoryIsEnabled ){
 		if(props.category.name != "ALL")
 			if(confirm(`カテゴリーを削除しますか？：${props.category.name}`))
         props.category.deleteData();

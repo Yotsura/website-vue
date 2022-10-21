@@ -3,12 +3,14 @@ import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
 import { Work, WorkData } from './Work';
 import { useWorkStore } from '@/store/modules/works';
-import { projectFirestore } from '@/firebase/config'
+import { useEnabledModesStore } from '@/store/modules/mode';
+import { projectFirestore } from '@/firebase/config';
 const props = defineProps({
   workDat:{type: Object as PropType<Work>, required:true}
 });
 const emit = defineEmits(['imgClicked']);
 
+const modes = useEnabledModesStore();
 const works = useWorkStore();
 const imgClicked = () => {
   emit('imgClicked',props.workDat);
@@ -42,17 +44,17 @@ const delRecord = () => {
 <template>
   <div class="col-md-2 col-3">
     <div class="border panel" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
-      <div v-if="workDat.data.caption && !works.editCaptionIsEnabled"
+      <div v-if="workDat.data.caption && !modes.editCaptionIsEnabled"
         v-text="workDat.data.caption"
         class="d-flex panel-txt"></div>
       <transition name="fade" mode="out-in">
-        <div v-if="works.editCategoryIsEnabled && !works.delModeIsEnabled && enableCategoryVeil"
+        <div v-if="modes.editCategoryIsEnabled && !modes.deleteModeIsEnabled && enableCategoryVeil"
           class="p-veil" @click="editCategory" ></div>
-        <div v-else-if="works.editCategoryIsEnabled && !works.delModeIsEnabled && !enableCategoryVeil"
+        <div v-else-if="modes.editCategoryIsEnabled && !modes.deleteModeIsEnabled && !enableCategoryVeil"
           class="p-veil p-veil-category" @click="editCategory" ></div>
-        <div v-else-if="works.delModeIsEnabled && !works.editCategoryIsEnabled"
+        <div v-else-if="modes.deleteModeIsEnabled && !modes.editCategoryIsEnabled"
           class="p-veil p-veil-danger d-flex panel-btn" @click="delRecord" >DELETE</div>
-        <textarea v-else-if="works.editCaptionIsEnabled" 
+        <textarea v-else-if="modes.editCaptionIsEnabled" 
           placeholder="キャプション" v-model="workCaption"
           @blur="UpdWorkCaption"
           style="background-color:rgba(255, 255, 255, 0.7); height: 100%;"

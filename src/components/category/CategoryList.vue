@@ -1,52 +1,37 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useWorkStore } from "@/store/modules/works";
-import { useTagStore } from "@/store/modules/category"
+import { useEnabledModesStore } from "@/store/modules/mode";
 import WorkPanelListVue from "../work/WorkPanelList.vue";
 import CategoryTagAreaVue from "./CategoryTagArea.vue";
 
-const works = useWorkStore()
-const tags = useTagStore();
+const works = useWorkStore();
+const modes = useEnabledModesStore();
 const selectedCategoryURL = computed(() => {
 	const head = window.location.href.split('//')[0]
 	const base = window.location.href.split('//')[1].split('/')[0];
 	return `${head}//${base}${works.getURLParam}`;
 });
 
-const isDelMode =  computed(() => works.delModeIsEnabled);
-const isEditCaption = computed(() => works.editCaptionIsEnabled);
-const isEditCategory = computed(() => works.editCategoryIsEnabled);
-
-const setDelMode = (isEnabled: boolean) => {
-	works.setDelModeEnabled(isEnabled);
-	tags.setDelModeEnabled(isEnabled);
-}
-const setEditCategoryMode = (isEnabled: boolean) => {
-	works.setEditCategoryEnabled(isEnabled);
-	if(isEnabled)
-		tags.setDelModeEnabled(!isEnabled);
-}
-const setEditCaptionMode = (isEnabled: boolean) => {
-	works.setEditCaptionEnabled(isEnabled);
-	if(isEnabled)
-		tags.setDelModeEnabled(!isEnabled);
-}
+const isDelMode =  computed(() => modes.deleteModeIsEnabled);
+const isEditCaption = computed(() => modes.editCaptionIsEnabled);
+const isEditCategory = computed(() => modes.editCategoryIsEnabled);
 </script>
 
 <template>
 	<div class="my-3">
 		<button v-if="isEditCategory" type="button" class="d-inline btn btn-danger"
-			@click="setEditCategoryMode(false)">Tag:edit</button>
+			@click="modes.setEditCategoryFlg(false)">Tag:edit</button>
 		<button v-else type="button" class="d-inline btn btn-outline-danger"
-			@click="setEditCategoryMode(true)">Tag:disp</button>
+			@click="modes.setEditCategoryFlg(true)">Tag:disp</button>
 		<button v-if="isEditCaption" type="button" class="d-inline btn btn-danger ms-1"
-			@click="setEditCaptionMode(false)">Cap:edit</button>
+			@click="modes.setEditCaptionFlg(false)">Cap:edit</button>
 		<button v-else type="button" class="d-inline btn btn-outline-danger ms-1"
-			@click="setEditCaptionMode(true)">Cap:disp</button>
+			@click="modes.setEditCaptionFlg(true)">Cap:disp</button>
 		<button v-if="isDelMode" type="button" class="d-inline btn btn-danger ms-3"
-			@click="setDelMode(false)">Mode:del</button>
+			@click="modes.setDeleteModeFlg(false)">Mode:del</button>
 		<button v-else type="button" class="d-inline btn btn-outline-danger ms-3"
-			@click="setDelMode(true)">Mode:disp</button>
+			@click="modes.setDeleteModeFlg(true)">Mode:disp</button>
 	</div>
 	<div class="mb-3"><a :href="selectedCategoryURL" target="_blank">AccessLink</a></div>
 	<CategoryTagAreaVue />

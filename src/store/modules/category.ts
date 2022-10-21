@@ -4,7 +4,6 @@ import { CategoryData } from '@/components/category/Category';
 interface CategoryTagData {
   categoryTagList: Array<CategoryData>,
   selectedCategoryTag : CategoryData,
-  isDelMode: boolean,
 }
 
 export const useTagStore = defineStore({
@@ -12,14 +11,10 @@ export const useTagStore = defineStore({
   state: () : CategoryTagData => ({
     categoryTagList: [],
     selectedCategoryTag: new CategoryData().newAllCategoryTag(),
-    isDelMode: false,
   }),
   getters:{
     getCategoryTagList(): Array<CategoryData> {
       return this.categoryTagList;
-    },
-    delModeIsEnabled(): boolean {
-      return this.isDelMode;
     },
   },
   actions: {
@@ -35,9 +30,6 @@ export const useTagStore = defineStore({
     getCategoryName(id:string): string {
       const hit = this.categoryTagList.find(e => e.id == id);
       return hit?.name?? '';
-    },
-    setDelModeEnabled(isEnabled:boolean) {
-      this.isDelMode = isEnabled;
     },
   }
 });

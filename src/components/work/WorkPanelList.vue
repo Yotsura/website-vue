@@ -6,6 +6,8 @@ import { Work } from './Work';
 import { backfaceFixed } from '@/utils/backforceFixed';
 import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
+import { useEnabledModesStore } from '@/store/modules/mode';
+
 const props = defineProps({
   adminmode: Boolean,
   showButton: Boolean
@@ -17,6 +19,7 @@ onMounted(() =>{
   mounted.value = true;
 });
 
+const mode = useEnabledModesStore();
 const works = useWorkStore();
 const alldata = computed(() => works.getFilteredWorks);
 //mount時にアニメーションさせたいのでそこで切り替え
@@ -30,9 +33,9 @@ const delData = () => {
 
 const disableModal = computed(() =>
   props.adminmode ||
-  works.delModeIsEnabled ||
-  works.editCategoryIsEnabled ||
-  works.editCaptionIsEnabled
+  mode.deleteModeIsEnabled ||
+  mode.editCategoryIsEnabled ||
+  mode.editCaptionIsEnabled
 )
 
 const showContent = ref(false);
@@ -76,7 +79,7 @@ const afterFirstLoad = () => {
 
 <template>
   <div v-if="showButton">
-    <div v-if="works.delModeIsEnabled && !works.editCategoryIsEnabled" class="mb-3">
+    <div v-if="mode.deleteModeIsEnabled && !mode.editCategoryIsEnabled" class="mb-3">
       <button @click="delData" type="button" class="btn btn-danger">DELETE ALL</button>
     </div>
     <div v-else class="mb-3">

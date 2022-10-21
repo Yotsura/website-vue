@@ -1,13 +1,11 @@
-import { defineStore } from 'pinia';
+import { defineStore  } from 'pinia';
 import { Work } from '@/components/work/Work';
-import { CategoryData } from '@/components/category/Category'
+import { CategoryData } from '@/components/category/Category';
+import { useEnabledModesStore } from './mode';
 
 interface WorkDataList {
   works: Array<Work>,
   categoryTag: CategoryData,
-  isDelMode: boolean,
-  editCategory: boolean,
-  editCaption: boolean,
   firstLoaded: boolean
 }
 
@@ -16,9 +14,6 @@ export const useWorkStore = defineStore({
   state: () : WorkDataList => ({
     works: [],
     categoryTag: new CategoryData(),
-    isDelMode: false,
-    editCategory: false,
-    editCaption: false,
     firstLoaded: false
   }),
   getters:{
@@ -26,8 +21,9 @@ export const useWorkStore = defineStore({
       return this.works.filter(x => ! x.delFlg);
     },
     getFilteredWorks(): Array<Work> {
+      const modes = useEnabledModesStore();
       return this.getWorks.filter(work =>
-        (!this.editCategory && this.categoryTag.id != "") ?
+        (!modes.editCategoryIsEnabled && this.categoryTag.id != "") ?
           (this.categoryTag.id == work.data.categoryID)
           : true);
     },
@@ -37,21 +33,12 @@ export const useWorkStore = defineStore({
     getCategoryIDs(): Array<string> {
       return Array.from(new Set( this.getWorks.map(x=> x.data.categoryID)) );
     },
-    delModeIsEnabled(): boolean {
-      return this.isDelMode;
-    },
-    editCategoryIsEnabled(): boolean {
-      return this.editCategory;
-    },
-    editCaptionIsEnabled(): boolean {
-      return this.editCaption;
-    },
     getSelectedCategoryID(): string {
       return this.categoryTag.id;
     },
     isFirstLoaded(): boolean{
       return this.firstLoaded;
-    }
+    },
   },
   actions: {
     setWorks(newworks: Array<Work> ) {
@@ -85,25 +72,6 @@ export const useWorkStore = defineStore({
       if ( this.firstLoaded ) return;
       this.firstLoaded = true;
       console.log("firstloaded");
-    },
-    setDelModeEnabled(isEnabled:boolean) {
-      this.isDelMode = isEnabled;
-      if(isEnabled)
-        this.editCaption = false;
-        
-    },
-    setEditCategoryEnabled(isEnabled:boolean) {
-      this.editCategory = isEnabled;
-      if(isEnabled)
-        this.editCaption = false;
-    },
-    setEditCaptionEnabled(isEnabled:boolean) {
-      this.editCaption = isEnabled;
-      if(isEnabled)
-      {
-        this.editCategory = false;
-        this.isDelMode = false;
-      }
     },
   }
 });
