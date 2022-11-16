@@ -7,7 +7,12 @@ import firebaseConfig from './keys';
 firebase.initializeApp(firebaseConfig);
 const projectFirestore  = firebase.firestore();
 const projectAuth = firebase.auth();
+const projectGoogleAuth = new firebase.auth.GoogleAuthProvider()
+const authPersistence = firebase.auth.Auth.Persistence;
+
 export {
   projectFirestore,
-  projectAuth
+  projectAuth,
+  authPersistence,
+  projectGoogleAuth
 }
