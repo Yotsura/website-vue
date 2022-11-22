@@ -4,6 +4,7 @@ import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
 import WorkPanelListVue from "@/components/work/WorkPanelList.vue";
 import PostFormVue from '@/components/post/postForm.vue';
+import LinkBarVue from "@/components/LinkBar.vue";
 
 const param = window.location.href.includes('?id:') ? window.location.href.split('?id:')[1] : "";
 const categoryInfo = computed(() => useTagStore().getCategory(param));
@@ -23,6 +24,7 @@ onUpdated(() => {
 </script>
 
 <template>
+  <LinkBarVue />
   <PostFormVue :paramStr="param" :tagTitle="categoryInfo?.name??'カテゴリーの登録がありません。'" />
   <WorkPanelListVue v-if="categoryInfo && indicateWorks" />
 </template>
