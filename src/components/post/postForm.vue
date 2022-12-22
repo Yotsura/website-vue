@@ -48,7 +48,7 @@ const onSubmit = () => {
 		placeholder="感想/メッセージなど*"
 		v-model="input.message"
 		class="form-control mb-2" rows="6" type="text"></textarea>
-		<button :disabled="!didInput" class="btn btn-primary btn-lg btn-block float-end" type="button" @click="onSubmit">送信</button>
+		<button :disabled="!didInput" class="btn btn-dark btn-lg btn-block float-end" type="button" @click="onSubmit">送信</button>
 	</form>
 </template>
 
