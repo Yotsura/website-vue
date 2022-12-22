@@ -31,4 +31,10 @@ li{
   list-style: none;
   margin-right: 1rem;
 }
+
+@media (hover: hover) {
+  li:hover{
+    opacity: 0.5;
+  }
+}
 </style>
