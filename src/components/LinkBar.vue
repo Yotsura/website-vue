@@ -2,7 +2,7 @@
 </script>
 
 <template>
-<ul class="m-1">
+<ul class="my-1">
   <li>
     <a target="_blank" href="https://twitter.com/Yotsura"><img src="@/assets/imgs/logo_twitter_blk.png"/></a>
   </li>
