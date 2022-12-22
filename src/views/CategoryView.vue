@@ -25,7 +25,7 @@ onUpdated(() => {
 
 <template>
   <LinkBarVue />
-  <PostFormVue :paramStr="param" :tagTitle="categoryInfo?.name??'カテゴリーの登録がありません。'" />
+  <PostFormVue :paramStr="param"/>
   <WorkPanelListVue v-if="categoryInfo && indicateWorks" />
 </template>
 
