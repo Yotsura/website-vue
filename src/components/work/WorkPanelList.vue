@@ -87,7 +87,7 @@ const PrevImg = async() =>{
     // console.log ("■PrevImg");
     loadImg(prevImg.value).then(() => {
       // console.log ("■PrevImg_loaded");
-      targetImg.value?.showImg()
+      targetImg.value?.showImg();
     });
   }
 }
@@ -96,7 +96,7 @@ const NextImg = () =>{
   if(nextImg.value){
     loadImg(nextImg.value).then(() => {
       // console.log ("■NextImg_loaded");
-      targetImg.value?.showImg()
+      targetImg.value?.showImg();
     });
   }
 }
@@ -121,13 +121,14 @@ const NextImg = () =>{
     </transition-group>
   </div>
 	<transition name="fade" mode="out-in" @after-enter="ShowModalImg">
-		<div class="overlay container-fluid" v-if="showContent">
-      <!-- <a href="#" class="fixed-top cross_btn" @click="HideModalImg"></a> -->
-      <WorkModal style="position:relative;" @click="HideModal" :img="targetImg"/>
+		<div class="container-fluid overlay" v-if="showContent">
+      <WorkModal style="position:relative;" :img="targetImg"/>
       <div style="position:absolute;">
+        <a href="#" class="cross_btn" @click="HideModal"></a>
         <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
         <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
       </div>
+      <div class="clickArea" @click="HideModal"></div>
 		</div>
 	</transition>
 </template>
@@ -146,9 +147,19 @@ const NextImg = () =>{
   align-items: center;
   justify-content: center;
 }
+.clickArea{
+  z-index:2;
+  position:fixed;
+  width:100vw;
+  height:100%;
+}
+
+a{
+  opacity: 0.9;
+}
 
 .btnbase{
-  z-index: 500;
+  z-index: 20;
   position: relative;
   vertical-align: middle;
   text-decoration: none;
@@ -156,37 +167,44 @@ const NextImg = () =>{
 }
 .btnbase::before,
 .btnbase::after{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    content: "";
-    vertical-align: middle;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  content: "";
+  vertical-align: middle;
 }
 .btnbase::before{
-    box-sizing: border-box;
-    width: 50px;
-    height: 50px;
-    border: 2px solid white;
-    -webkit-border-radius: 25%;
-    border-radius: 25%;
-    background-color: rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  -webkit-border-radius: 25%;
+  border-radius: 25%;
+  background-color: rgba(0, 0, 0, 0.1);
+  
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	-ms-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	transition: all 0.3s;
 }
 @media (hover: hover) {
   .btnbase:hover::before{
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0.5;
   }
 }
 .arrow_right{
   position:fixed;
   top:50%;
-  right: calc(5vw + 50px);
+  right: calc(1rem + 50px);
 }
 .arrow_left{
   position:fixed;
   top:50%;
-  left: 5vw;
+  left: 1rem;
 }
 .arrow_right::after{
     left: 14px;
@@ -208,21 +226,31 @@ const NextImg = () =>{
 }
 
 .cross_btn {
-  display: block;
-  position: relative;
+  position:fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  
   width: 30px;
   height: 30px;
-  border: 2px solid #7a0;; /* 枠の調整 */
+  border: 2px solid white;
   border-radius: 25%;
+  background-color: rgba(0, 0, 0, 0.1);
+  
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	-ms-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	transition: all 0.3s;
 }
 .cross_btn::before, .cross_btn::after{
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 3px; /* 棒の幅（太さ） */
-  height: 27px; /* 棒の高さ */
-  background: #7a0; /* バツ印の色 */
+  width: 3px;
+  height: 27px;
+  background: white;
 }
 .cross_btn::before {
   transform: translate(-50%,-50%) rotate(45deg);
@@ -233,7 +261,8 @@ const NextImg = () =>{
 }
 @media (hover: hover) {
   .cross_btn:hover{
-    background-color: rgba(119, 170, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0.5;
   }
 }
 </style>
