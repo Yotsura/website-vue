@@ -139,7 +139,7 @@ const NextImg = () =>{
   top:0;
   left:0;
   width:100vw;
-  height:100vh;
+  height:100%;
   background-color:rgba(0,0,0,0.7);
 
   display: flex;
@@ -180,12 +180,12 @@ const NextImg = () =>{
 }
 .arrow_right{
   position:fixed;
-  top:50vh;
+  top:50%;
   right: calc(5vw + 50px);
 }
 .arrow_left{
   position:fixed;
-  top:50vh;
+  top:50%;
   left: 5vw;
 }
 .arrow_right::after{
