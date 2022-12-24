@@ -1,29 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import type{ PropType } from 'vue'
 import { Work } from './Work';
 defineProps({
     img:  {type: Object as PropType<Work>},
 });
-const emit = defineEmits(['leaved']);
-const delayCnt = ref(0.3);
-const ImgClicked = () => {
-    delayCnt.value = 0;
-}
-const AfterLeave = () => {
-    delayCnt.value = 0.3;
-    emit('leaved');
-}
 </script>
 
 <template>
     <div class="content" v-if="img">
-        <!-- <div class="content-txt lead">{{img.data.caption}}</div> -->
-        <transition name="fade" mode="out-in" @after-leave="AfterLeave">
+        <div class="content-txt lead">{{img.data.caption}}</div>
+        <transition name="fade" mode="out-in">
             <img v-show="img.show && img.img_large != ''"
-                @click="ImgClicked"
                 :src="img.img_large"
-                :style="{ 'transition-delay': `${delayCnt}s` }"
                 class="img-fluid content-img" alt="work">
         </transition>
     </div>
@@ -35,6 +23,8 @@ const AfterLeave = () => {
 }
 
 .content-img{
+    user-select: none;
+    transition-delay: 0.1s;
     max-height: 90vh;
     max-width: 95vw;
     width: auto;
@@ -42,5 +32,8 @@ const AfterLeave = () => {
 
 .content-txt{
     color: white;
+    position: fixed;
+    top:5vh;
+    left:1rem;
 }
 </style>

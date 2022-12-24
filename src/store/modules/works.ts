@@ -14,7 +14,7 @@ export const useWorkStore = defineStore({
   state: () : WorkDataList => ({
     works: [],
     categoryTag: new CategoryData(),
-    firstLoaded: false
+    firstLoaded: false,
   }),
   getters:{
     getWorks(): Array<Work> {
@@ -38,7 +38,7 @@ export const useWorkStore = defineStore({
     },
     isFirstLoaded(): boolean{
       return this.firstLoaded;
-    },
+    }
   },
   actions: {
     setWorks(newworks: Array<Work> ) {
@@ -62,8 +62,27 @@ export const useWorkStore = defineStore({
     setCategoryTag(category: CategoryData | undefined ) {
       this.categoryTag = category ?? new CategoryData();
     },
+    setHideAllWorks() {
+      this.getWorks.forEach(work => work.hideImg());
+    },
     getWork(id:string): Work | undefined {
       return this.getWorks.find(e => e.id == id);
+    },
+    getPrevWork(img:Work): Work | undefined {
+      let prevImg :Work = img;
+      for (const [index, value] of this.getFilteredWorks.entries()) {
+        if(value.id == img.id) break;
+        prevImg = value;
+      }
+      return img.id==prevImg.id? undefined : prevImg;
+    },
+    getNextWork(img:Work): Work | undefined {
+      let findFlg = false;
+      for (const [index, value] of this.getFilteredWorks.entries()) {
+        if(findFlg) return value;
+        if(value.id == img.id) findFlg = true;
+      }
+      return undefined;
     },
     loadThumbnails() {
       this.getWorks.forEach(dat => dat.loadImg());
