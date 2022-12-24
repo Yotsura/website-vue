@@ -39,11 +39,7 @@ const disableModal = computed(() =>
 )
 
 const loadImg = async (img:Work) => {
-  if(!img.img_large){
-    await img.loadLargeImg().then(() => {
-      // console.log('画像ダウンロード完了');
-    });
-  }
+  if(!img.img_large) await img.loadLargeImg();
   targetImg.value = img;
 }
 const showContent = ref(false);
@@ -93,8 +89,6 @@ const PrevImg = async() =>{
       // console.log ("■PrevImg_loaded");
       targetImg.value?.showImg()
     });
-  } else {
-    HideModal();
   }
 }
 const NextImg = () =>{
@@ -104,8 +98,6 @@ const NextImg = () =>{
       // console.log ("■NextImg_loaded");
       targetImg.value?.showImg()
     });
-  } else {
-    HideModal();
   }
 }
 </script>
@@ -133,8 +125,8 @@ const NextImg = () =>{
       <!-- <a href="#" class="fixed-top cross_btn" @click="HideModalImg"></a> -->
       <WorkModal style="position:relative;" @click="HideModal" :img="targetImg"/>
       <div style="position:absolute;">
-        <a href="#" class="btnbase arrow_left" @click="NextImg"></a>
-        <a href="#" class="btnbase arrow_right" @click="PrevImg"></a>
+        <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
+        <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
       </div>
 		</div>
 	</transition>
@@ -146,8 +138,8 @@ const NextImg = () =>{
   position:fixed;
   top:0;
   left:0;
-  width:100%;
-  height:100%;
+  width:100vw;
+  height:100vh;
   background-color:rgba(0,0,0,0.7);
 
   display: flex;
