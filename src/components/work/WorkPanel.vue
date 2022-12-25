@@ -107,7 +107,8 @@ img {
   margin: 0.2rem;
   padding: 0.2rem;
   font-weight: 600;
-  max-height: 95%;
+  font-size: 0.7rem;
+  max-height: 27%;
   color: #333;
   border-radius: 240px 15px 100px 15px / 15px 200px 15px 185px;
   background-color: rgba(255, 255, 255);
