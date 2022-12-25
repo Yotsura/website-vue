@@ -122,12 +122,12 @@ const NextImg = () =>{
   </div>
 	<transition name="fade" mode="out-in" @after-enter="ShowModalImg">
 		<div class="container-fluid overlay" v-if="showContent">
-      <WorkModal style="position:relative;" :img="targetImg"/>
       <div style="position:absolute;">
         <a href="#" class="cross_btn" @click="HideModal"></a>
         <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
         <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
       </div>
+      <WorkModal style="position:relative;" :img="targetImg"/>
       <div class="clickArea" @click="HideModal"></div>
 		</div>
 	</transition>
