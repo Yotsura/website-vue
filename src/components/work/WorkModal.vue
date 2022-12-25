@@ -9,9 +9,9 @@ defineProps({
 <template>
   <div class="content" v-if="img">
     <transition name="fade" mode="out-in">
-      <div v-show="img.show && img.img_large != ''">
+      <div>
         <div v-if="img.data.caption" class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
-        <img :src="img.img_large" class="img-fluid content-img" alt="work">
+        <img v-show="img.show && img.img_large != ''" :src="img.img_large" class="img-fluid content-img" alt="work">
       </div>
     </transition>
   </div>
