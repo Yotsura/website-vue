@@ -3,16 +3,20 @@ import type{ PropType } from 'vue'
 import { Work } from './Work';
 defineProps({
   img:  {type: Object as PropType<Work>},
+  showUI: {type: Boolean , required:true}
 });
+defineEmits(['imgClicked']);
 </script>
 
 <template>
   <div class="content" v-if="img">
     <transition name="fade" mode="out-in">
-      <div v-if="img.data.caption" class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
+      <div v-if="img.data.caption && showUI" class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
     </transition>
     <transition name="fade" mode="out-in">
-      <img v-show="img.show && img.img_large != ''" :src="img.img_large" class="img-fluid content-img" alt="work">
+      <img v-show="img.show && img.img_large != ''" 
+        @click="$emit('imgClicked')"
+        :src="img.img_large" class="img-fluid content-img" alt="work">
     </transition>
   </div>
 </template>

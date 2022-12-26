@@ -55,9 +55,13 @@ const nextImg = computed(()=>{
   return temp;
 });
 
+const showUI = ref(true);
+const changeShowUI = () => showUI.value = !showUI.value;
+
 const ShowModal = (img :Work) => {
   if(disableModal.value) return;
 	if(!img) return;
+  showUI.value = true;
   // console.log("■showModal："+img?.img_large);
 	loadImg(img).then(()=>{
     // console.log('画像をモーダルに設定完了');
@@ -122,12 +126,15 @@ const NextImg = () =>{
   </div>
 	<transition name="fade" mode="out-in" @after-enter="ShowModalImg">
 		<div class="container-fluid overlay" v-if="showContent">
-      <div style="position:absolute;">
-        <a href="#" class="cross_btn" @click="HideModal"></a>
-        <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
-        <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
-      </div>
-      <WorkModal style="position:relative;" :img="targetImg"/>
+      <transition name="fade" mode="out-in" @after-enter="ShowModalImg">
+        <div style="position:absolute;" v-if="showUI">
+          <a href="#" class="cross_btn" @click="HideModal"></a>
+          <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
+          <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
+        </div>
+      </transition>
+      <WorkModal style="position:relative;"
+        :img="targetImg" :showUI="showUI" @imgClicked="changeShowUI"/>
       <div class="clickArea" @click="HideModal"></div>
 		</div>
 	</transition>
