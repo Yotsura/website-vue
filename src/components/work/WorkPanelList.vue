@@ -126,11 +126,13 @@ const NextImg = () =>{
   </div>
 	<transition name="fade" mode="out-in" @after-enter="ShowModalImg">
 		<div class="container-fluid overlay" v-if="showContent">
-      <transition name="fade" mode="out-in" @after-enter="ShowModalImg">
-        <div style="position:absolute;" v-if="showUI">
-          <a href="#" class="cross_btn" @click="HideModal"></a>
-          <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
-          <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
+      <transition name="fade" mode="out-in">
+        <div class="UIarea" v-if="showUI">
+          <div style="position:absolute;" >
+            <a href="#" class="cross_btn" @click="HideModal"></a>
+            <a href="#" class="btnbase arrow_left" v-if="nextImg" @click="NextImg"></a>
+            <a href="#" class="btnbase arrow_right" v-if="prevImg" @click="PrevImg"></a>
+          </div>
         </div>
       </transition>
       <WorkModal style="position:relative;"
@@ -165,8 +167,10 @@ a{
   opacity: 0.9;
 }
 
-.btnbase{
+.UIarea{
   z-index: 20;
+}
+.btnbase{
   position: relative;
   vertical-align: middle;
   text-decoration: none;
@@ -236,7 +240,6 @@ a{
   position:fixed;
   top: 1rem;
   right: 1rem;
-  z-index: 20;
   
   width: 30px;
   height: 30px;
