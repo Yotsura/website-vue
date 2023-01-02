@@ -9,13 +9,12 @@ defineEmits(['imgClicked']);
 </script>
 
 <template>
-  <div class="content" v-if="img">
+  <div class="content" @click="$emit('imgClicked')" v-if="img">
     <transition name="fade" mode="out-in">
       <div v-if="img.data.caption && showUI" class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
     </transition>
     <transition name="fade" mode="out-in">
-      <img v-show="img.show && img.img_large != ''" 
-        @click="$emit('imgClicked')"
+      <img v-show="img.show && img.img_large != ''"
         :src="img.img_large" class="img-fluid content-img" alt="work">
     </transition>
   </div>
