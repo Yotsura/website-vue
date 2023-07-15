@@ -46,12 +46,12 @@ const showContent = ref(false);
 const targetImg = ref<Work>();
 const prevImg = computed(()=>{
   if(!targetImg.value) return undefined;
-  let temp = works.getPrevWork(targetImg.value);
+  const temp = works.getPrevWork(targetImg.value);
   return temp;
 });
 const nextImg = computed(()=>{
   if(!targetImg.value) return undefined;
-  let temp = works.getNextWork(targetImg.value);
+  const temp = works.getNextWork(targetImg.value);
   return temp;
 });
 
