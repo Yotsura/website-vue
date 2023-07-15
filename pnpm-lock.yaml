@@ -345,7 +345,7 @@ packages:
       '@firebase/logger': 0.3.3
       '@firebase/util': 1.6.3
       '@firebase/webchannel-wrapper': 0.6.2
-      '@grpc/grpc-js': 1.6.11
+      '@grpc/grpc-js': 1.8.18
       '@grpc/proto-loader': 0.6.13
       node-fetch: 2.6.7
       tslib: 2.4.0
@@ -583,8 +583,8 @@ packages:
     resolution: {integrity: sha512-zThUKcqIU6utWzM93uEvhlh8qj8A5LMPFJPvk/ODb+8GSSif19xM2Lw1M2ijyBy8+6skSkQBbavPzOU5Oh/8tQ==}
     dev: false
 
-  /@grpc/grpc-js@1.6.11:
-    resolution: {integrity: sha512-e/adiPjUxf5cKYiAlV4m+0jJS4k6g2w78X7WTZB3ISOBzcCwm+cwjB2dSRfBHbu46inGGzQMmWAmsgYLg8yT5g==}
+  /@grpc/grpc-js@1.8.18:
+    resolution: {integrity: sha512-2uWPtxhsXmVgd8WzDhfamSjHpZDXfMjMDciY6VRTq4Sn7rFzazyf0LLDa0oav+61UHIoEZb4KKaAV6S7NuJFbQ==}
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.2
@@ -1134,7 +1134,7 @@ packages:
       color-name: 1.1.4
 
   /color-name@1.1.3:
-    resolution: {integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=}
+    resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
     dev: true
 
   /color-name@1.1.4:
