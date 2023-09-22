@@ -4,5 +4,4 @@ import NavBarVue from '@/components/NavBar.vue';
 
 <template>
   <NavBarVue />
-  <h1>Home</h1>
 </template>

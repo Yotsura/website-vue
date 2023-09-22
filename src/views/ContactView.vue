@@ -6,7 +6,6 @@ import PostVue from '@/components/post/postForm.vue'
 
 <template>
   <NavBarVue />
-  <h1>ContactView</h1>
   <PostVue />
 </template>
 
