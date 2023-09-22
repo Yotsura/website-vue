@@ -87,22 +87,31 @@ const afterFirstLoad = () => {
 }
 
 const PrevImg = async() =>{
-  if(prevImg.value){
-    // console.log ("■PrevImg");
-    loadImg(prevImg.value).then(() => {
-      // console.log ("■PrevImg_loaded");
-      targetImg.value?.showImg();
-    });
-  }
+  showUI.value = false;
+  targetImg.value?.hideImg().then(() => {
+    if(prevImg.value){
+      // console.log ("■PrevImg");
+      loadImg(prevImg.value).then(() => {
+        // console.log ("■PrevImg_loaded");
+        targetImg.value?.showImg();
+        showUI.value = true;
+      });
+    }
+  });
 }
 const NextImg = () =>{
-  // console.log ("■NextImg");
-  if(nextImg.value){
-    loadImg(nextImg.value).then(() => {
-      // console.log ("■NextImg_loaded");
-      targetImg.value?.showImg();
-    });
-  }
+  showUI.value = false;
+  targetImg.value?.hideImg().then(() => {
+    // console.log ("■NextImg");
+    if(nextImg.value){
+      targetImg.value?.hideImg();
+      loadImg(nextImg.value).then(() => {
+        // console.log ("■NextImg_loaded");
+        targetImg.value?.showImg();
+        showUI.value = true;
+      });
+    }
+  });
 }
 </script>
 

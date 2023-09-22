@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
 import type{ PropType } from 'vue'
 import { Work } from './Work';
 defineProps({
@@ -6,14 +7,16 @@ defineProps({
   showUI: {type: Boolean , required:true}
 });
 defineEmits(['imgClicked']);
+const imgChangeing = ref(false);
 </script>
 
 <template>
   <div class="content" @click="$emit('imgClicked')" v-if="img">
     <transition name="fade" mode="out-in">
-      <div v-if="img.data.caption && showUI" class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
+      <div v-if="img.data.caption && img.img_large != '' && showUI && !imgChangeing"
+        class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
     </transition>
-    <transition name="fade" mode="out-in">
+    <transition name="fade" mode="out-in" @after-enter="imgChangeing = false" @before-leave="imgChangeing = true">
       <img v-show="img.show && img.img_large != ''"
         :src="img.img_large" class="img-fluid content-img" alt="work">
     </transition>
