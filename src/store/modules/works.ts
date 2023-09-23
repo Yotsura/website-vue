@@ -24,8 +24,8 @@ export const useWorkStore = defineStore({
       const modes = useEnabledModesStore();
       return this.getWorks.filter(work =>
         (!modes.editCategoryIsEnabled && this.categoryTag.id != "") ?
-          (this.categoryTag.id == work.data.categoryID)
-          : true);
+          (this.categoryTag.id == work.data.categoryID) : true)
+        .slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 );
     },
     getURLParam(): string {
       return this.categoryTag.id == "" ? `` : `/?id:${this.categoryTag.id}`;
@@ -68,7 +68,7 @@ export const useWorkStore = defineStore({
     getWork(id:string): Work | undefined {
       return this.getWorks.find(e => e.id == id);
     },
-    getPrevWork(img:Work): Work | undefined {
+    getNextWork(img:Work): Work | undefined {
       let prevImg :Work = img;
       for (const [index, value] of this.getFilteredWorks.entries()) {
         if(value.id == img.id) break;
@@ -76,7 +76,7 @@ export const useWorkStore = defineStore({
       }
       return img.id==prevImg.id? undefined : prevImg;
     },
-    getNextWork(img:Work): Work | undefined {
+    getPrevWork(img:Work): Work | undefined {
       let findFlg = false;
       for (const [index, value] of this.getFilteredWorks.entries()) {
         if(findFlg) return value;

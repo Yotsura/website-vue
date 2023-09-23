@@ -139,6 +139,10 @@ export class Work implements work {
     this.show = true;
   }
 
+  async DisposeLargeImg(){
+    this.img_large = '';
+  }
+
   updateCategory ( categoryID: string ){
     this.data.updateCategory(this.id, categoryID);
   }

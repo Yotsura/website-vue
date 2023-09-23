@@ -23,8 +23,7 @@ const mode = useEnabledModesStore();
 const works = useWorkStore();
 const alldata = computed(() => works.getFilteredWorks);
 //mount時にアニメーションさせたいのでそこで切り替え
-const sortedWorks = computed(() => !mounted.value ? new Array<Work>()
-  : (alldata.value.slice().sort((a: Work, b: Work) => Number(a.id) < Number(b.id) ? 1 : -1 )));
+const sortedWorks = computed(() => !mounted.value ? new Array<Work>() : (alldata.value));
 const delData = () => {
   if(confirm(`【${useTagStore().selectedCategoryTag?.name??""}】表示中の作品を削除しますか？`)){
     alldata.value.forEach(dat => dat.delImg());
@@ -86,32 +85,25 @@ const afterFirstLoad = () => {
   works.completeFirstLoad();
 }
 
+const hidemode = ref(0);
+const showCap = computed(() => showUI.value && hidemode.value == 0)
 const PrevImg = async() =>{
-  showUI.value = false;
-  targetImg.value?.hideImg().then(() => {
-    if(prevImg.value){
-      // console.log ("■PrevImg");
-      loadImg(prevImg.value).then(() => {
-        // console.log ("■PrevImg_loaded");
-        targetImg.value?.showImg();
-        showUI.value = true;
-      });
-    }
-  });
+  hidemode.value = 1;
+  targetImg.value?.hideImg();
 }
 const NextImg = () =>{
-  showUI.value = false;
-  targetImg.value?.hideImg().then(() => {
-    // console.log ("■NextImg");
-    if(nextImg.value){
-      targetImg.value?.hideImg();
-      loadImg(nextImg.value).then(() => {
-        // console.log ("■NextImg_loaded");
-        targetImg.value?.showImg();
-        showUI.value = true;
-      });
-    }
-  });
+  hidemode.value = 2;
+  targetImg.value?.hideImg();
+}
+const ChangeImg = () =>{
+  if(hidemode.value == 2 && nextImg.value){
+    targetImg.value?.DisposeLargeImg();
+    loadImg(nextImg.value).then(() => targetImg.value?.showImg());
+  } else if(hidemode.value == 1 && prevImg.value){
+    targetImg.value?.DisposeLargeImg();
+    loadImg(prevImg.value).then(() => targetImg.value?.showImg());
+  }
+  hidemode.value = 0;
 }
 </script>
 
@@ -145,7 +137,7 @@ const NextImg = () =>{
         </div>
       </transition>
       <WorkModal style="position:relative;"
-        :img="targetImg" :showUI="showUI" @imgClicked="changeShowUI"/>
+        :img="targetImg" :showCap="showCap" @imgClicked="changeShowUI" @imgHidden="ChangeImg"/>
       <div class="clickArea" @click="HideModal"></div>
 		</div>
 	</transition>
