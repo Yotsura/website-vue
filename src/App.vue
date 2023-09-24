@@ -61,6 +61,10 @@ onMounted(() => {
 </template>
 
 <style>
+	html{
+		scroll-behavior:auto !important;
+	}
+
   .list-move, .list-enter-active, .list-leave-active {
       -webkit-transition: all 0.8s;
       -moz-transition: all 0.8s;
