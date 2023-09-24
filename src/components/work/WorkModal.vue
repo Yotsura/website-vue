@@ -26,6 +26,7 @@ const imgChangeing = ref(false);
 <style scoped>
 .content{
   z-index:10;
+  cursor: pointer;
 }
 .content-img{
   user-select: none;

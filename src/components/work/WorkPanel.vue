@@ -124,6 +124,7 @@ img {
 	color: rgba(255, 255, 255, 0.8);
 }
 .p-veil{
+  cursor: pointer;
   position: absolute;
   bottom: 0;
   left: 0;
