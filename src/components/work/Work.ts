@@ -81,7 +81,7 @@ export class WorkData implements workData{
 interface work {
     id: string;
     data: WorkData;
-    url1?: string;
+    img?: string;
     img_large?: string;
     show: boolean;
     delFlg?: boolean;
@@ -95,15 +95,25 @@ export class Work implements work {
   show: boolean;
   delFlg?: boolean;
 
-  constructor(data:DocumentData){
-    this.id = data.id ?? '';
-    this.data = new WorkData (data.data());
-    this.show = false;
+  constructor(record:DocumentData | Work){
+    // console.log(record);
+    if (record instanceof Work){
+      this.id = record.id ?? '';
+      this.data = record.data ?? new WorkData();
+      this.img = record.img ?? '';
+      this.img_large = record.img_large ?? '';
+      this.show = record.show;
+      this.delFlg = record.delFlg;
+    } else {
+      this.id = record.id ?? '';
+      this.data = new WorkData (record.data());
+      this.show = false;
+    }
   }
 
   getDataObj():work {
     return {
-      id: this.id?? '',
+      id: this.id ?? '',
       data: this.data ?? new WorkData(),
       show:false
     }

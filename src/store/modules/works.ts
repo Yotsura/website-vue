@@ -68,7 +68,8 @@ export const useWorkStore = defineStore({
     getWork(id:string): Work | undefined {
       return this.getWorks.find(e => e.id == id);
     },
-    getNextWork(img:Work): Work | undefined {
+    getNextWork(img:Work | undefined ): Work | undefined {
+      if(!img) return undefined;
       let prevImg :Work = img;
       for (const [index, value] of this.getFilteredWorks.entries()) {
         if(value.id == img.id) break;
@@ -76,7 +77,8 @@ export const useWorkStore = defineStore({
       }
       return img.id==prevImg.id? undefined : prevImg;
     },
-    getPrevWork(img:Work): Work | undefined {
+    getPrevWork(img:Work | undefined ): Work | undefined {
+      if(!img) return undefined;
       let findFlg = false;
       for (const [index, value] of this.getFilteredWorks.entries()) {
         if(findFlg) return value;

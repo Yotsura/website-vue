@@ -39,17 +39,15 @@ const disableModal = computed(() =>
 
 const loadImg = async (img:Work) => {
   if(!img.img_large) await img.loadLargeImg();
-  targetImg.value = img;
+  targetImg.value = new Work(img);
 }
 const showContent = ref(false);
 const targetImg = ref<Work>();
 const prevImg = computed(()=>{
-  if(!targetImg.value) return undefined;
   const temp = works.getPrevWork(targetImg.value);
   return temp;
 });
 const nextImg = computed(()=>{
-  if(!targetImg.value) return undefined;
   const temp = works.getNextWork(targetImg.value);
   return temp;
 });
@@ -96,11 +94,11 @@ const NextImg = () =>{
   targetImg.value?.hideImg();
 }
 const ChangeImg = () =>{
+  if(hidemode.value == 0) return;
+  targetImg.value?.DisposeLargeImg();
   if(hidemode.value == 2 && nextImg.value){
-    targetImg.value?.DisposeLargeImg();
     loadImg(nextImg.value).then(() => targetImg.value?.showImg());
   } else if(hidemode.value == 1 && prevImg.value){
-    targetImg.value?.DisposeLargeImg();
     loadImg(prevImg.value).then(() => targetImg.value?.showImg());
   }
   hidemode.value = 0;
