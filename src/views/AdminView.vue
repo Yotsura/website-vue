@@ -6,7 +6,7 @@ import getUser from '@/utils/getUser';
 
 import CategoryCtrlVue from '@/components/category/CategoryCtrl.vue';
 import postListVue from '@/components/post/postList.vue';
-// import SettingsCtrl from '@/components/SettinsCtrl.vue';
+import SettingsCtrl from '@/components/SettinsCtrl.vue';
 
 const { error, logout } = useLogout();
 const router = useRouter();
@@ -41,8 +41,7 @@ const selectedMenu = ref<number>(0);
   <transition name="fade" mode="out-in">
     <div v-if="selectedMenu==0"><postListVue /></div>
     <div v-else-if="selectedMenu==1"><CategoryCtrlVue /></div>
-    <!-- <div v-else-if="selectedMenu==2"><CategoryCtrlVue :allWorks="allWorks" /></div> -->
-    <!-- <div v-else-if="selectedMenu==3"><SettingsCtrl /></div> -->
+    <div v-else-if="selectedMenu==2"><SettingsCtrl /></div>
   </transition>
 </template>
 
