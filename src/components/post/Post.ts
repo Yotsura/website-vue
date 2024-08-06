@@ -8,10 +8,11 @@ export interface postData  {
   name: string,
   message: string,
   qr: string,
+  locked?: boolean
 }
 
 const defaultPostData = ():postData => ({
-  id:'', date:new Date() ,name:'',message:'' ,qr:''
+  id:'', date:new Date() ,name:'',message:'' ,qr:'', locked: false
 });
 
 export class PostData implements postData{
@@ -21,6 +22,7 @@ export class PostData implements postData{
   name: string;
   message: string;
   qr: string;
+  locked: boolean;
   
   constructor(init:Partial<postData> = defaultPostData()){
     this.id = init.id ?? '';
@@ -29,6 +31,7 @@ export class PostData implements postData{
     this.date = init.date ?? new Date();
     this.dateStr = init.dateStr ?? '';
     this.qr = init.qr ?? '';
+    this.locked = init.locked ?? false;
   }
 
   newPost(doc:DocumentData){
@@ -38,6 +41,7 @@ export class PostData implements postData{
     this.date = doc.data()?.date ?? new Date();
     this.dateStr = doc.data()?.dateStr ?? '';
     this.qr = doc.data()?.qr ?? '';
+    this.locked = doc.data()?.locked ?? false;
     return this;
   }
 
@@ -48,7 +52,8 @@ export class PostData implements postData{
       message: this.message ?? '',
       date: this.date ?? new Date(),
       dateStr: this.dateStr ?? '',
-      qr: this.qr ?? ''
+      qr: this.qr ?? '',
+      locked: this.locked ?? false
     }
   }
 
@@ -65,5 +70,20 @@ export class PostData implements postData{
 
   deleteData() {
     this.doc().delete().then(() => console.log("deleted"));
+  }
+  
+  updateLock ( docID: string ,lockstat: boolean ){
+    const load = async () => {
+      try {
+        const obj = this.getDataObj();
+        obj.locked = lockstat;
+        projectFirestore.collection("posts").doc(docID).update(obj);
+      } catch ( err: unknown ) {
+        if ( err instanceof Error ) {
+          alert('送信失敗');
+        }
+      }
+    }
+    load();
   }
 }
