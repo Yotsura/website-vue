@@ -15,6 +15,9 @@ const delRecord = () => {
 }
 
 const lockRecord = (lock:boolean) => {
+    if(!lock && !confirm(props.post?.dateStr+'の投稿のロックを解除しますか？')){
+        return;
+    }
     const id = props.post?.id;
     if(id) props.post?.updateLock(id,lock);
 }

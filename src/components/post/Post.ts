@@ -36,8 +36,8 @@ export class PostData implements postData{
 
   newPost(doc:DocumentData){
     this.id = doc?.id ?? '';
-    this.name = doc.data()?.name ?? '';
-    this.message = doc.data().message ?? '';
+    this.name = doc.data()?.name.trim() ?? '';
+    this.message = doc.data().message.trim() ?? '';
     this.date = doc.data()?.date ?? new Date();
     this.dateStr = doc.data()?.dateStr ?? '';
     this.qr = doc.data()?.qr ?? '';
@@ -48,8 +48,8 @@ export class PostData implements postData{
   getDataObj():postData{
     return{
       id: this.id ?? '',
-      name: this.name ?? '',
-      message: this.message ?? '',
+      name: this.name.trim() ?? '',
+      message: this.message.trim() ?? '',
       date: this.date ?? new Date(),
       dateStr: this.dateStr ?? '',
       qr: this.qr ?? '',
