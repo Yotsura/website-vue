@@ -17,22 +17,22 @@ onMounted(() => {
 	const load = async () => {
 		try {
 			projectFirestore.collection("categories").onSnapshot(
-			snap => {
-				categories.setCategoryTagList(snap.docs.map(doc => new CategoryData().newCategory(doc)));
+			(snap: any) => {
+				categories.setCategoryTagList(snap.docs.map((doc: any) => new CategoryData().newCategory(doc)));
 				error.value = null;
 			},
-			err => {
+			(err: any) => {
 				console.log(err.message);
 				error.value = 'could not fetch data';
 			});
 			projectFirestore.collection("works").onSnapshot(
-			snap => {
-				works.setWorks(snap.docs.map(doc => new Work(doc)));
+			(snap: any) => {
+				works.setWorks(snap.docs.map((doc: any) => new Work(doc)));
 				works.loadThumbnails();
 				
 				error.value = null;
 			},
-			err => {
+			(err: any) => {
 				console.log(err.message);
 				error.value = 'could not fetch data';
 			});
