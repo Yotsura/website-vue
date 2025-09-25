@@ -9,9 +9,20 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "**/*.@(js|mjs)",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      }
+    ],
     "rewrites": [
       {
-        "source": "**",
+        "source": "!/@(assets|js)/**",
         "destination": "/index.html"
       }
     ]
