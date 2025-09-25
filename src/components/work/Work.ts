@@ -1,5 +1,5 @@
 import type { DocumentData } from 'firebase/firestore'
-import { uploadFile ,downloadFile, deleteFile } from './fileCtrl'
+import { uploadFile ,downloadFile, deleteFile } from './supabaseFileCtrl'
 import { projectFirestore } from '@/firebase/config'
 
 interface workData {

@@ -30,3 +30,7 @@ coverage
 *.sw?
 .firebase/
 src/firebase/keys.ts
+
+# 環境変数ファイル
+.env.local
+.env.production
