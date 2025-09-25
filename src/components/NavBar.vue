@@ -15,7 +15,6 @@ import { RouterLink, RouterView } from 'vue-router'
 		<!-- <RouterLink class="menulink px-2 flex-fill" :to="link" exact active-class="link--active">Home</RouterLink>
 		<RouterLink class="menulink px-2 flex-fill" :to="link_gallery" exact active-class="link--active">Gallery</RouterLink>
 		<RouterLink class="menulink px-2 flex-fill" :to="link_contact" exact active-class="link--active">Contact</RouterLink> -->
-		<RouterLink class="menulink px-2 flex-fill" to="/" exact active-class="link--active">Home</RouterLink>
 		<RouterLink class="menulink px-2 flex-fill" to="/gallery" exact active-class="link--active">Gallery</RouterLink>
 		<RouterLink class="menulink px-2 flex-fill" to="/contact" exact active-class="link--active">Contact</RouterLink>
 		<!-- <RouterLink class="menulink px-2 flex-fill" to="/admin" exact active-class="link--active">*Admin</RouterLink> -->
