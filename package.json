@@ -37,12 +37,5 @@
     "parserOptions": {
       "ecmaVersion": 2020
     }
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "protobufjs",
-      "vue-demi"
-    ]
   }
 }
