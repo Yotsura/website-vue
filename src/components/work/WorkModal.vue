@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type{ PropType } from 'vue'
-import { Work } from './Work';
+import type { Work } from './Work';
 defineProps({
   img:  {type: Object as PropType<Work>},
   showCap: {type: Boolean , required:true}

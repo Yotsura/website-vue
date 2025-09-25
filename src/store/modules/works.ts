@@ -1,5 +1,5 @@
 import { defineStore  } from 'pinia';
-import { Work } from '@/components/work/Work';
+import type { Work } from '@/components/work/Work';
 import { CategoryData } from '@/components/category/Category';
 import { useEnabledModesStore } from './mode';
 

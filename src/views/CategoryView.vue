@@ -7,7 +7,7 @@ import PostFormVue from '@/components/post/postForm.vue';
 import LinkBarVue from "@/components/LinkBar.vue";
 
 const param = window.location.href.includes('?id:') ? window.location.href.split('?id:')[1] : "";
-const categoryInfo = computed(() => useTagStore().getCategory(param));
+const categoryInfo = computed(() => useTagStore().getCategory(param || ""));
 
 const works = useWorkStore();
 const indicateWorks = computed(() => works.getFilteredWorks);

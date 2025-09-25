@@ -9,7 +9,7 @@ const works = useWorkStore();
 const modes = useEnabledModesStore();
 const selectedCategoryURL = computed(() => {
 	const head = window.location.href.split('//')[0]
-	const base = window.location.href.split('//')[1].split('/')[0];
+	const base = window.location.href.split('//')[1]?.split('/')[0] || '';
 	return `${head}//${base}${works.getURLParam}`;
 });
 

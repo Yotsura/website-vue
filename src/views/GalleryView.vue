@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { CategoryData } from '@/components/category/Category';
+import type { CategoryData } from '@/components/category/Category';
 import { useWorkStore } from '@/store/modules/works';
 import WorkPanelListVue from '@/components/work/WorkPanelList.vue';
 import NavBarVue from '@/components/NavBar.vue';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
-import { Work, WorkData } from './Work';
+import type { Work, WorkData } from './Work';
 import { useWorkStore } from '@/store/modules/works';
 import { useEnabledModesStore } from '@/store/modules/mode';
 import { projectFirestore } from '@/firebase/config';

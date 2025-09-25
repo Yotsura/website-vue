@@ -130,14 +130,14 @@ export class Work implements work {
   async loadLargeImg(){
     if(this.img_large) return;
     // console.log(`Dowloading:${this.id}`)
-    await downloadFile((this.id+'_large'??'') ,'works').then((imgUrl) => {
+    await downloadFile((this.id+'_large') ,'works').then((imgUrl) => {
       this.img_large = imgUrl??'';
     });
   }
 
   async delImg(){
     deleteFile((this.id ?? '') , 'works');
-    deleteFile((this.id + '_large' ?? '') ,'works');
+    deleteFile((this.id + '_large') ,'works');
     projectFirestore.collection("works").doc(this.id).delete();
   }
 

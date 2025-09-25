@@ -14,8 +14,8 @@ onMounted(() => {
 });
 
 onUpdated(() =>{
-	if(input.value.qr != props?.paramStr??'')
-		input.value.qr = props?.paramStr??'';
+	if(input.value.qr != (props?.paramStr || ''))
+		input.value.qr = props?.paramStr || '';
 })
 
 const onSubmit = () => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
 import { projectFirestore } from '@/firebase/config'
-import { PostData } from './Post'
+import type { PostData } from './Post'
 const props = defineProps({
 	delmode: Boolean,
     post: Object as PropType<PostData>,

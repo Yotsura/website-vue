@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type{ PropType } from 'vue'
-import { CategoryData } from './Category';
+import type { CategoryData } from './Category';
 import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
 import { useEnabledModesStore } from "@/store/modules/mode";
