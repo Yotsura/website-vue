@@ -1,4 +1,4 @@
-import type { DocumentData } from '@firebase/firestore-types'
+import type { DocumentData } from 'firebase/firestore'
 import { projectFirestore } from '@/firebase/config'
 
 export interface postData  {
