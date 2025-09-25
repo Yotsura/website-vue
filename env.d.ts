@@ -7,10 +7,6 @@ declare module '*.vue' {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_CLOUDINARY_CLOUD_NAME: string
-  readonly VITE_CLOUDINARY_UPLOAD_PRESET: string
-  readonly VITE_CLOUDINARY_BASE_FOLDER?: string
-  readonly VITE_CLOUDINARY_DELETE_API?: string
   readonly VITE_FIREBASE_API_KEY: string
   readonly VITE_FIREBASE_AUTH_DOMAIN: string
   readonly VITE_FIREBASE_PROJECT_ID: string
@@ -18,6 +14,10 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_MESSAGING_SENDER_ID: string
   readonly VITE_FIREBASE_APP_ID: string
   readonly VITE_FIREBASE_MEASUREMENT_ID?: string
+  // Supabase
+  readonly VITE_SUPABASE_URL?: string
+  readonly VITE_SUPABASE_ANON_KEY?: string
+  readonly VITE_SUPABASE_BUCKET?: string
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv
