@@ -24,23 +24,36 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
-yarn
+pnpm install
 ```
+
+### Environment Setup
+
+1. Copy `.env.example` to `.env.local`
+2. Fill in your Supabase credentials:
+   ```
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your_anon_key_here
+   ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-yarn dev
+pnpm run dev
 ```
 
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-yarn build
+pnpm run build
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
-yarn lint
+pnpm run lint
 ```
+
+## Storage Migration
+
+This project has been migrated from Firebase Storage to Supabase Storage for image management.
