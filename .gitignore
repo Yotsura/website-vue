@@ -29,5 +29,3 @@ coverage
 *.sw?
 .firebase/
 src/firebase/keys.ts
-.env
-
