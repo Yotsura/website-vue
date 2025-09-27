@@ -1,13 +1,51 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type{ PropType } from 'vue'
 import type { Work } from './Work';
-defineProps({
+
+const props = defineProps({
   img:  {type: Object as PropType<Work>},
   showCap: {type: Boolean , required:true}
 });
+
 defineEmits(['imgClicked' , 'imgHidden']);
+
 const imgChangeing = ref(false);
+const imageLoaded = ref(false);
+const showImage = ref(false);
+
+// 画像の変更を監視して、ロード状態をリセット
+watch(() => props.img?.img_large, () => {
+  imageLoaded.value = false;
+  showImage.value = false;
+});
+
+// imgのshowプロパティを監視して、trueになったら画像ロード完了を待つ
+watch(() => props.img?.show, (newShow) => {
+  if (newShow && props.img?.img_large) {
+    // 画像がすでにロード済みの場合はすぐに表示
+    if (imageLoaded.value) {
+      showImage.value = true;
+    }
+    // そうでなければ画像ロード完了を待つ（onImageLoadで処理）
+  } else {
+    showImage.value = false;
+  }
+});
+
+const onImageLoad = () => {
+  imageLoaded.value = true;
+  // img.showがtrueの場合のみ表示
+  if (props.img?.show) {
+    showImage.value = true;
+  }
+};
+
+const onImageError = () => {
+  console.error('画像の読み込みに失敗しました');
+  imageLoaded.value = false;
+  showImage.value = false;
+};
 </script>
 
 <template>
@@ -17,8 +55,12 @@ const imgChangeing = ref(false);
         class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
     </transition>
     <transition name="fade" mode="out-in" @after-enter="imgChangeing = false" @before-leave="imgChangeing = true" @after-leave="$emit('imgHidden')">
-      <img v-show="img.show && img.img_large != ''"
-        :src="img.img_large" class="img-fluid content-img" alt="work">
+      <img v-show="showImage && img.img_large != ''"
+        :src="img.img_large" 
+        @load="onImageLoad"
+        @error="onImageError"
+        class="img-fluid content-img" 
+        alt="work">
     </transition>
   </div>
 </template>
