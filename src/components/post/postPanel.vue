@@ -56,12 +56,7 @@ const lockRecord = (lock:boolean) => {
                     :class="{ 'collapsed': !isExpanded && shouldShowToggle, 'clickable': shouldShowToggle }"
                     style="white-space: pre-wrap;" 
                     v-text="processedMessage"
-                    @click="shouldShowToggle ? toggleExpand() : null" ></div>
-                <div v-if="shouldShowToggle && !isExpanded" 
-                    class="expand-hint"
-                    @click="toggleExpand">
-                    もっと見る
-                </div>
+                    @click="shouldShowToggle ? toggleExpand() : null"></div>
             </div>
             <div v-if="post?.qr" class="text-break panel-txt m-1 p-1">{{post?.qr}}</div>
             
@@ -97,13 +92,17 @@ const lockRecord = (lock:boolean) => {
 }
 
 .message-content {
-    transition: all 0.3s ease;
+    transition: max-height 0.4s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
 .message-content.collapsed {
     max-height: 200px;
-    overflow: hidden;
-    position: relative;
+}
+
+.message-content:not(.collapsed) {
+    max-height: 2000px; /* 十分に大きな値でアニメーション可能 */
 }
 
 .message-content.collapsed::after {
@@ -112,8 +111,8 @@ const lockRecord = (lock:boolean) => {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 30px;
-    background: linear-gradient(transparent, white);
+    height: 50px;
+    background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
     pointer-events: none;
 }
 
@@ -121,27 +120,9 @@ const lockRecord = (lock:boolean) => {
     cursor: pointer;
 }
 
-.expand-hint {
-    position: absolute;
-    bottom: 5px;
-    right: 10px;
-    background: rgba(0, 123, 255, 0.9);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 0.7rem;
-    cursor: pointer;
-    z-index: 1;
-    transition: background-color 0.2s;
-}
-
 @media (hover: hover) {
     .message-content.clickable:hover {
-        background-color: #f8f9fa;
-    }
-    
-    .expand-hint:hover {
-        background: rgba(0, 86, 179, 0.9);
+        background-color: rgba(255, 255, 255, 0.5);
     }
 }
 </style>
