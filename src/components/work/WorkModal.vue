@@ -54,6 +54,14 @@ const onImageError = () => {
       <div v-if="img.data.caption && img.img_large != '' && showCap && !imgChangeing"
         class="content-txt lead m-2 py-1 px-3">{{img.data.caption}}</div>
     </transition>
+    <!-- モーダル画像ローディング表示 - 絶対配置で中央固定 -->
+    <div v-if="!showImage && img.img_large" class="loading-overlay">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="mt-3 text-light">画像を読み込み中...</div>
+    </div>
+
     <transition name="fade" mode="out-in" @after-enter="imgChangeing = false" @before-leave="imgChangeing = true" @after-leave="$emit('imgHidden')">
       <img v-show="showImage && img.img_large != ''"
         :src="img.img_large" 
@@ -76,6 +84,19 @@ const onImageError = () => {
   max-height: 90vh;
   max-width: 95vw;
   width: auto;
+}
+.loading-overlay{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 15;
+  pointer-events: none;
 }
 .content-txt{
   z-index:11;

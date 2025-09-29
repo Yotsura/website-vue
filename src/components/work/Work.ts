@@ -122,7 +122,7 @@ export class Work implements work {
   async loadImg(){
     if(this.img) return;
     // テスト用の3秒遅延 - 本番では以下の行をコメントアウト
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // await new Promise(resolve => setTimeout(resolve, 3000));
     
     console.log(`Dowloading:${this.id}`)
     await downloadFile(this.id , 'works').then((imgUrl) => {

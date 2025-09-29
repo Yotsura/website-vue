@@ -114,6 +114,15 @@ const ChangeImg = () =>{
       <button type="button" class="btn btn-outline-danger" disabled>DELETE ALL</button>
     </div>
   </div>
+  <!-- ローディング表示 -->
+  <div v-if="mounted && !works.isThumbnailsLoaded" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="mt-3 text-muted">サムネイルを読み込み中...</div>
+  </div>
+
+  <!-- 作品リスト -->
   <div class="row g-lg-3 g-md-2 g-1">
     <transition-group name="list" @after-enter="afterFirstLoad">
       <WorkPanel
