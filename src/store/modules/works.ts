@@ -6,7 +6,8 @@ import { useEnabledModesStore } from './mode';
 interface WorkDataList {
   works: Array<Work>,
   categoryTag: CategoryData,
-  firstLoaded: boolean
+  firstLoaded: boolean,
+  thumbnailsLoaded: boolean
 }
 
 export const useWorkStore = defineStore({
@@ -15,6 +16,7 @@ export const useWorkStore = defineStore({
     works: [],
     categoryTag: new CategoryData(),
     firstLoaded: false,
+    thumbnailsLoaded: false,
   }),
   getters:{
     getWorks(): Array<Work> {
@@ -38,6 +40,9 @@ export const useWorkStore = defineStore({
     },
     isFirstLoaded(): boolean{
       return this.firstLoaded;
+    },
+    isThumbnailsLoaded(): boolean{
+      return this.thumbnailsLoaded;
     }
   },
   actions: {
@@ -86,13 +91,22 @@ export const useWorkStore = defineStore({
       }
       return undefined;
     },
-    loadThumbnails() {
-      this.getWorks.forEach(dat => dat.loadImg());
+    async loadThumbnails() {
+      console.log("loadThumbnails");
+      const loadPromises = this.getWorks.map(dat => dat.loadImg());
+      await Promise.all(loadPromises);
+      
+      // サムネイルロード完了チェック
+      const allLoaded = this.getWorks.every(work => work.img);
+      if (allLoaded && !this.thumbnailsLoaded) {
+        this.thumbnailsLoaded = true;
+        console.log("All thumbnails loaded");
+      }
     },
     completeFirstLoad() {
       if ( this.firstLoaded ) return;
       this.firstLoaded = true;
       console.log("firstloaded");
-    },
+    }
   }
 });

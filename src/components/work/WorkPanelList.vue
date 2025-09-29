@@ -23,7 +23,7 @@ const mode = useEnabledModesStore();
 const works = useWorkStore();
 const alldata = computed(() => works.getFilteredWorks);
 //mount時にアニメーションさせたいのでそこで切り替え
-const sortedWorks = computed(() => !mounted.value ? new Array<Work>() : (alldata.value));
+const sortedWorks = computed(() => mounted.value && works.isThumbnailsLoaded ? (alldata.value) : new Array<Work>());
 const delData = () => {
   if(confirm(`【${useTagStore().selectedCategoryTag?.name??""}】表示中の作品を削除しますか？`)){
     alldata.value.forEach(dat => dat.delImg());
