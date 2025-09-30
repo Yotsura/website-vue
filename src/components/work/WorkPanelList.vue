@@ -31,7 +31,7 @@ const delData = () => {
 }
 
 const disableModal = computed(() =>
-  props.adminmode ||
+  // props.adminmode ||
   mode.deleteModeIsEnabled ||
   mode.editCategoryIsEnabled ||
   mode.editCaptionIsEnabled
