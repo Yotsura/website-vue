@@ -1,0 +1,55 @@
+name: Supabase Heartbeat
+
+on:
+  schedule:
+    # 毎日 UTC 02:00 実行 (JST 11:00)。時間を変えたい場合は cron を調整。
+    - cron: '0 2 * * *'
+  # 手動実行用トリガー
+  workflow_dispatch:
+
+# 不要な権限は付与しない(読み取りのみ)
+permissions:
+  contents: read
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call Supabase heartbeat RPC
+        id: rpc
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -e
+          echo "Calling: $SUPABASE_URL/rest/v1/rpc/touch_heartbeat"
+          # curl 実行。HTTP ステータスを最後に取得
+          STATUS=$(curl -s -D headers.txt -o body.txt -w "%{http_code}" \
+            -X POST "$SUPABASE_URL/rest/v1/rpc/touch_heartbeat" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json")
+
+          echo "HTTP Status: $STATUS"
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+            # 失敗時の詳細表示
+          if [ "$STATUS" -ge 400 ]; then
+            echo '--- Response Headers ---'
+            cat headers.txt || true
+            echo '--- Response Body ---'
+            cat body.txt || true
+            exit 1
+          fi
+
+          echo '--- Response Body ---'
+          cat body.txt || true
+
+      - name: Simple status check
+        run: |
+          if [ "${{ steps.rpc.outputs.status }}" -ge 400 ]; then
+            echo "Heartbeat failed." >&2
+            exit 1
+          fi
+          echo "Heartbeat succeeded."
