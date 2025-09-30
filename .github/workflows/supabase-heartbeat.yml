@@ -2,8 +2,8 @@ name: Supabase Heartbeat
 
 on:
   schedule:
-    # 毎日 UTC 11:08 実行 (JST 20:08)。時間を変えたい場合は cron を調整。
-    - cron: '8 11 * * *'
+    # 毎日 UTC 11:15 実行 (JST 20:15)。時間を変えたい場合は cron を調整。
+    - cron: '15 11 * * *'
   # 手動実行用トリガー
   workflow_dispatch:
 
