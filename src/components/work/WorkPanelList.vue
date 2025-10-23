@@ -8,6 +8,7 @@ import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from "@/store/modules/works";
 import { useEnabledModesStore } from '@/store/modules/mode';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
   adminmode: Boolean,
   showButton: Boolean
@@ -158,17 +159,36 @@ const ChangeImg = () =>{
   left:0;
   width:100vw;
   height:100%;
+  /* Safari 用の高さ指定を追加 */
+  height:100vh;
+  /* iOS Safari のバウンススクロール防止 */
+  height: -webkit-fill-available;
   background-color:rgba(0,0,0,0.7);
 
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  /* Safari での transform ちらつき防止 */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  
+  /* iOS Safari でのスムーズレンダリング */
+  -webkit-font-smoothing: antialiased;
+  will-change: transform;
 }
+
 .clickArea{
   z-index:2;
   position:fixed;
+  top:0;
+  left:0;
   width:100vw;
   height:100%;
+  height:100vh;
+  height: -webkit-fill-available;
 }
 
 a{

@@ -77,6 +77,7 @@ const onImageError = () => {
 .content{
   z-index:10;
   cursor: pointer;
+  /* transform は position:fixed の基準点を変えるため使用しない */
 }
 .content-img{
   user-select: none;
@@ -84,12 +85,19 @@ const onImageError = () => {
   max-height: 90vh;
   max-width: 95vw;
   width: auto;
+  /* 画像のみに Safari レンダリング最適化を適用 */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 .loading-overlay{
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  /* Safari 用の transform 最適化 */
+  -webkit-transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,6 +105,8 @@ const onImageError = () => {
   text-align: center;
   z-index: 15;
   pointer-events: none;
+  /* position:fixed の基準点を維持 */
+  will-change: opacity;
 }
 .content-txt{
   z-index:11;
@@ -109,6 +119,8 @@ const onImageError = () => {
   left:1rem;
   right: 1rem;
   border-radius: 0.5rem;
+  /* position:fixed の基準点を維持 */
+  will-change: opacity;
 }
 
 .slide-enter-active, .slide-leave-active {
