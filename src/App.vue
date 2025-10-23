@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref ,onMounted } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { projectFirestore } from '@/firebase/config'
 import { Work } from '@/components/work/Work';
 import { CategoryData } from '@/components/category/Category';
@@ -14,33 +14,35 @@ const categories = useTagStore();
 const works = useWorkStore();
 onMounted(() => {
 	console.log(param);
-	const error :any = ref(null);
+	const error = ref<string | null>(null);
 	const load = async () => {
 		try {
 			projectFirestore.collection("categories").onSnapshot(
-			(snap: any) => {
-				categories.setCategoryTagList(snap.docs.map((doc: any) => new CategoryData().newCategory(doc)));
+			(snap) => {
+				categories.setCategoryTagList(snap.docs.map((doc) => new CategoryData().newCategory(doc)));
 				error.value = null;
 			},
-			(err: any) => {
+			(err) => {
 				console.log(err.message);
 				error.value = 'could not fetch data';
 			});
 			projectFirestore.collection("works").onSnapshot(
-			(snap: any) => {
-				works.setWorks(snap.docs.map((doc: any) => new Work(doc)));
+			(snap) => {
+				works.setWorks(snap.docs.map((doc) => new Work(doc)));
 				works.loadThumbnails();
 				
 				error.value = null;
 			},
-			(err: any) => {
+			(err) => {
 				console.log(err.message);
 				error.value = 'could not fetch data';
 			});
-		} catch (err: any) {
-			error.value = err.message;
-			console.log(error.value);
-			alert('取得失敗');
+		} catch (err) {
+			if (err instanceof Error) {
+				error.value = err.message;
+				console.log(error.value);
+				alert('取得失敗');
+			}
 		}
 	}
 	load();

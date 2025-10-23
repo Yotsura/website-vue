@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { PropType } from 'vue';
-import type { Work, WorkData } from './Work';
+import type { Work } from './Work';
 import { useWorkStore } from '@/store/modules/works';
 import { useEnabledModesStore } from '@/store/modules/mode';
 import { projectFirestore } from '@/firebase/config';
@@ -43,9 +43,9 @@ const delRecord = () => {
 
 <template>
   <div class="col-md-2 col-3">
-    <div class="border panel" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
-      <div v-if="workDat.data.caption && !modes.editCaptionIsEnabled"
-        v-text="workDat.data.caption"
+    <div class="border panel position-relative" :style="'background: url(\''+props.workDat?.img+'\') center/cover;'">
+      <div v-if="props.workDat.data.caption && !modes.editCaptionIsEnabled"
+        v-text="props.workDat.data.caption"
         class="d-flex panel-txt"></div>
       <transition name="fade" mode="out-in">
         <div v-if="modes.editCategoryIsEnabled && !modes.deleteModeIsEnabled && enableCategoryVeil"

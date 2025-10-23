@@ -35,7 +35,7 @@ const deletePreview = () => {
 const submitting = ref(false);
 const onSubmit = () => {
 	submitting.value = true;
-	const error = ref(null);
+	const error = ref<string | null>(null);
 	const load = async () => {
 		try {
 			console.log('送信開始');
@@ -48,9 +48,11 @@ const onSubmit = () => {
 				alert('作品の投稿が完了しました。');
 				submitting.value = false;
 			});
-		} catch (err: any) {
-			error.value = err.message;
-			console.log(error.value);
+		} catch (err) {
+			if (err instanceof Error) {
+				error.value = err.message;
+				console.log(error.value);
+			}
 			alert('送信失敗');
 			submitting.value = false;
 		}
