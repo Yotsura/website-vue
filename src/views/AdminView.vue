@@ -33,22 +33,22 @@ const selectedMenu = ref<number>(0);
     <input type="radio" id="option1" :value="0" v-model="selectedMenu" class="d-none" />
     <label for="option1" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==0">
       <i class="bi bi-envelope d-inline d-sm-none"></i>
-      <span class="d-none d-sm-inline">Messages</span>
+      <span class="d-none d-sm-inline"><i class="bi bi-envelope me-1"></i>Messages</span>
     </label>
     <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
     <label for="option2" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==1">
       <i class="bi bi-palette d-inline d-sm-none"></i>
-      <span class="d-none d-sm-inline">Works</span>
+      <span class="d-none d-sm-inline"><i class="bi bi-palette me-1"></i>Works</span>
     </label>
     <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
     <label for="option3" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==2">
       <i class="bi bi-graph-up d-inline d-sm-none"></i>
-      <span class="d-none d-sm-inline">Statistics</span>
+      <span class="d-none d-sm-inline"><i class="bi bi-graph-up me-1"></i>Statistics</span>
     </label>
     <input type="radio" id="option4" :value="3" v-model="selectedMenu" class="d-none" />
     <label for="option4" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==3">
       <i class="bi bi-gear d-inline d-sm-none"></i>
-      <span class="d-none d-sm-inline">Settings</span>
+      <span class="d-none d-sm-inline"><i class="bi bi-gear me-1"></i>Settings</span>
     </label>
     <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>

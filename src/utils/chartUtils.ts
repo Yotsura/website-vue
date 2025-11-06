@@ -6,7 +6,9 @@ export interface UrlStat {
   url: string;
   count: number;
   sessions: string[];
+  visitors?: string[];
   uniqueSessions?: number;
+  uniqueVisitors?: number;
   lastUpdated?: unknown;
 }
 
@@ -93,7 +95,7 @@ export function calculateTotalStats(rangeStats: DailyStatsData[]) {
 }
 
 // URL別統計を集計
-export function aggregateUrlStats(rangeStats: DailyStatsData[]) {
+export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors' = 'sessions') {
   if (rangeStats.length === 0) {
     return [];
   }
@@ -106,12 +108,24 @@ export function aggregateUrlStats(rangeStats: DailyStatsData[]) {
       if (existing) {
         existing.count += urlStat.count;
         existing.sessions = [...new Set([...existing.sessions, ...urlStat.sessions])];
+        if (mode === 'visitors' && urlStat.visitors) {
+          existing.visitors = [...new Set([...(existing.visitors || []), ...urlStat.visitors])];
+        }
+        if (urlStat.uniqueSessions !== undefined) {
+          existing.uniqueSessions = (existing.uniqueSessions || 0) + urlStat.uniqueSessions;
+        }
+        if (urlStat.uniqueVisitors !== undefined) {
+          existing.uniqueVisitors = (existing.uniqueVisitors || 0) + urlStat.uniqueVisitors;
+        }
       } else {
         urlMap.set(urlStat.urlKey, {
           urlKey: urlStat.urlKey,
           url: urlStat.url,
           count: urlStat.count,
-          sessions: [...urlStat.sessions]
+          sessions: [...urlStat.sessions],
+          visitors: urlStat.visitors ? [...urlStat.visitors] : [],
+          uniqueSessions: urlStat.uniqueSessions,
+          uniqueVisitors: urlStat.uniqueVisitors
         });
       }
     });
@@ -144,7 +158,7 @@ export function generateTotalChartData(rangeStats: DailyStatsData[]) {
 }
 
 // URL別グラフデータ生成
-export function generateUrlChartData(rangeStats: DailyStatsData[], aggregatedUrls: UrlStat[]) {
+export function generateUrlChartData(rangeStats: DailyStatsData[], aggregatedUrls: UrlStat[], mode: 'sessions' | 'visitors' = 'sessions') {
   if (rangeStats.length === 0) {
     return { labels: [], datasets: [] };
   }
@@ -155,7 +169,14 @@ export function generateUrlChartData(rangeStats: DailyStatsData[], aggregatedUrl
   const datasets = aggregatedUrls.map((urlStat: UrlStat, index: number) => {
     const data = rangeStats.map(day => {
       const found = day.urlStats?.find((u: UrlStat) => u.urlKey === urlStat.urlKey);
-      return found ? found.count : 0;
+      if (!found) return 0;
+      
+      // モードに応じてユニーク数を返す
+      if (mode === 'visitors') {
+        return found.uniqueVisitors ?? (found.visitors?.length || 0);
+      } else {
+        return found.uniqueSessions ?? (found.sessions?.length || 0);
+      }
     });
 
     const color = colors[index] ?? { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' };

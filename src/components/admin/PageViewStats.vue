@@ -33,6 +33,7 @@ const loading = ref<boolean>(true);
 const rangeStats = ref<DailyStatsData[]>([]);
 const startDate = ref<string>('');
 const endDate = ref<string>('');
+const displayMode = ref<'sessions' | 'visitors'>('sessions');
 
 // 初期化
 const initializeDates = () => {
@@ -68,39 +69,34 @@ const fetchStats = async () => {
 
 // 統計計算（Computed）
 const totalStats = computed(() => calculateTotalStats(rangeStats.value));
-const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value));
+const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value, displayMode.value));
 
 // グラフ用データ（Computed）
 const totalChartData = computed(() => generateTotalChartData(rangeStats.value));
-const urlChartData = computed(() => generateUrlChartData(rangeStats.value, aggregatedUrlStats.value));
+const urlChartData = computed(() => generateUrlChartData(rangeStats.value, aggregatedUrlStats.value, displayMode.value));
 
-onMounted(() => {
-  fetchStats();
-});
+onMounted(() => fetchStats());
 </script>
 
 <template>
   <div class="page-view-stats">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>アクセス統計</h2>
-      <!-- テスト機能は一時的に無効化
       <div class="btn-group" role="group">
-        <button 
-          type="button" 
-          class="btn btn-sm btn-success"
-          :disabled="generatingSample"
-          @click="handleGenerateSample">
-          {{ generatingSample ? '生成中...' : 'サンプルデータ生成' }}
-        </button>
-        <button 
-          type="button" 
-          class="btn btn-sm btn-danger"
-          :disabled="deletingSample"
-          @click="handleDeleteSample">
-          {{ deletingSample ? '削除中...' : 'データ削除' }}
-        </button>
+        <input type="radio" class="btn-check" name="displayMode" 
+          id="modeSession" value="sessions" v-model="displayMode">
+        <label class="btn btn-outline-primary btn-sm" for="modeSession">
+          <i class="bi bi-window-stack"></i>
+          <span class="d-none d-sm-inline ms-1">セッション</span>
+        </label>
+        
+        <input type="radio" class="btn-check" name="displayMode" 
+          id="modeVisitor" value="visitors" v-model="displayMode">
+        <label class="btn btn-outline-primary btn-sm" for="modeVisitor">
+          <i class="bi bi-people"></i>
+          <span class="d-none d-sm-inline ms-1">ビジター</span>
+        </label>
       </div>
-      -->
     </div>
     
     <!-- 集計期間設定 -->
@@ -136,7 +132,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    
+
     <!-- グラフ表示エリア -->
     <div class="mb-4 position-relative">
       <!-- ローディング中のオーバーレイ -->
@@ -161,7 +157,7 @@ onMounted(() => {
         <!-- URL別グラフ -->
         <div class="card mb-4">
           <div class="card-body">
-            <h4>URL別アクセス数の推移</h4>
+            <h4>URL別ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数の推移</h4>
             <div style="height: 300px;">
               <Line :data="urlChartData" :options="chartOptions" />
             </div>

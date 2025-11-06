@@ -1,6 +1,14 @@
 import { projectFirestore } from '@/firebase/config';
 import firebase from 'firebase/compat/app';
 
+// 設定
+const CONFIG = {
+  MAX_SESSION_ARRAY: 200,    // セッション配列の上限
+  MAX_VISITOR_ARRAY: 100,    // ビジター配列の上限
+  VISITOR_EXPIRE_DAYS: 30,   // ビジターIDの有効期限（日数）
+  COUNT_COOLDOWN: 30         // 再カウント防止のクールダウン時間（秒）
+};
+
 /**
  * URLを正規化してキーを生成
  * ?id:パラメータがある場合のみパラメータを含め、それ以外は"main"にまとめる
@@ -42,15 +50,72 @@ function getDateKey(): string {
 }
 
 /**
- * セッションIDを取得または生成
+ * セッションIDを取得または生成（ブラウザを閉じるまで有効）
  */
 function getSessionId(): string {
   let sessionId = sessionStorage.getItem('pageview_session_id');
   if (!sessionId) {
-    sessionId = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
     sessionStorage.setItem('pageview_session_id', sessionId);
   }
   return sessionId;
+}
+
+/**
+ * ビジターIDを取得または生成（30日間有効、ブラウザに永続保存）
+ */
+function getVisitorId(): string {
+  const STORAGE_KEY = 'pageview_visitor_id';
+  const CREATED_KEY = 'pageview_visitor_created';
+  
+  let visitorId = localStorage.getItem(STORAGE_KEY);
+  const createdDate = localStorage.getItem(CREATED_KEY);
+  
+  // 有効期限チェック
+  if (visitorId && createdDate) {
+    const created = new Date(createdDate);
+    const now = new Date();
+    const daysDiff = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysDiff > CONFIG.VISITOR_EXPIRE_DAYS) {
+      // 期限切れ：新しいIDを生成
+      visitorId = null;
+    }
+  }
+  
+  // 新規ビジターIDを生成
+  if (!visitorId) {
+    visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    localStorage.setItem(STORAGE_KEY, visitorId);
+    localStorage.setItem(CREATED_KEY, new Date().toISOString());
+  }
+  
+  return visitorId;
+}
+
+/**
+ * 最後にカウントした時刻をチェック（クールダウン機能）
+ */
+function checkCooldown(urlKey: string, dateKey: string): boolean {
+  const storageKey = `pageview_last_${dateKey}_${urlKey}`;
+  const lastCountTime = sessionStorage.getItem(storageKey);
+  
+  if (lastCountTime) {
+    const elapsed = Date.now() - parseInt(lastCountTime);
+    if (elapsed < CONFIG.COUNT_COOLDOWN * 1000) {
+      return false; // クールダウン中
+    }
+  }
+  
+  return true; // カウント可能
+}
+
+/**
+ * 最後のカウント時刻を記録
+ */
+function updateCooldown(urlKey: string, dateKey: string): void {
+  const storageKey = `pageview_last_${dateKey}_${urlKey}`;
+  sessionStorage.setItem(storageKey, Date.now().toString());
 }
 
 /**
@@ -72,12 +137,14 @@ function markAsCounted(urlKey: string, dateKey: string): void {
 /**
  * ページビューをFirestoreに記録
  * 構造: pageViews/{date} (サマリーはフィールド) + urls/{urlKey} (サブコレクション)
+ * ユニークセッション数とユニークビジター数を追跡
  */
 export async function trackPageView(): Promise<void> {
   try {
     const { urlKey, displayUrl } = normalizeUrl();
     const dateKey = getDateKey();
     const sessionId = getSessionId();
+    const visitorId = getVisitorId();
     
     // 同じセッション内での二重カウントを防止
     if (isAlreadyCounted(urlKey, dateKey)) {
@@ -85,25 +152,71 @@ export async function trackPageView(): Promise<void> {
       return;
     }
     
-    const batch = projectFirestore.batch();
+    // クールダウンチェック（30秒以内の再カウント防止）
+    if (!checkCooldown(urlKey, dateKey)) {
+      console.log('[PageView] Cooldown active');
+      return;
+    }
     
-    // URL別のカウント（サブコレクション）
+    // 現在のデータを取得して配列サイズをチェック
     const urlDocRef = projectFirestore
       .collection('pageViews')
       .doc(dateKey)
       .collection('urls')
       .doc(urlKey);
     
-    batch.set(
-      urlDocRef,
-      {
-        count: firebase.firestore.FieldValue.increment(1),
-        url: displayUrl,
-        sessions: firebase.firestore.FieldValue.arrayUnion(sessionId),
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-      },
-      { merge: true }
-    );
+    const urlDoc = await urlDocRef.get();
+    const currentData = urlDoc.data();
+    
+    const sessionArray = currentData?.sessions || [];
+    const visitorArray = currentData?.visitors || [];
+    
+    // 新しいセッション/ビジターかチェック
+    const isNewSession = !sessionArray.includes(sessionId);
+    const isNewVisitor = !visitorArray.includes(visitorId);
+    
+    const batch = projectFirestore.batch();
+    
+    // URL別のカウント（サブコレクション）
+    const updateData: {
+      count: firebase.firestore.FieldValue;
+      url: string;
+      lastUpdated: firebase.firestore.FieldValue;
+      sessions?: firebase.firestore.FieldValue;
+      uniqueSessionCount?: firebase.firestore.FieldValue;
+      visitors?: firebase.firestore.FieldValue;
+      uniqueVisitorCount?: firebase.firestore.FieldValue;
+    } = {
+      count: firebase.firestore.FieldValue.increment(1),
+      url: displayUrl,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // セッション配列の更新
+    if (isNewSession) {
+      if (sessionArray.length < CONFIG.MAX_SESSION_ARRAY) {
+        // 配列に追加
+        updateData.sessions = firebase.firestore.FieldValue.arrayUnion(sessionId);
+        updateData.uniqueSessionCount = firebase.firestore.FieldValue.increment(1);
+      } else {
+        // 配列は更新せず、カウントのみ増加
+        updateData.uniqueSessionCount = firebase.firestore.FieldValue.increment(1);
+      }
+    }
+    
+    // ビジター配列の更新
+    if (isNewVisitor) {
+      if (visitorArray.length < CONFIG.MAX_VISITOR_ARRAY) {
+        // 配列に追加
+        updateData.visitors = firebase.firestore.FieldValue.arrayUnion(visitorId);
+        updateData.uniqueVisitorCount = firebase.firestore.FieldValue.increment(1);
+      } else {
+        // 配列は更新せず、カウントのみ増加
+        updateData.uniqueVisitorCount = firebase.firestore.FieldValue.increment(1);
+      }
+    }
+    
+    batch.set(urlDocRef, updateData, { merge: true });
     
     // 日付ドキュメントのサマリーフィールド
     const dateDocRef = projectFirestore
@@ -123,11 +236,15 @@ export async function trackPageView(): Promise<void> {
     
     // セッション内でカウント済みとしてマーク
     markAsCounted(urlKey, dateKey);
+    updateCooldown(urlKey, dateKey);
     
     console.log('[PageView] Tracked:', {
       url: displayUrl,
       date: dateKey,
-      sessionId: sessionId
+      sessionId: sessionId,
+      visitorId: visitorId,
+      isNewSession,
+      isNewVisitor
     });
   } catch (error) {
     console.error('[PageView] Failed to track:', error);
@@ -167,7 +284,9 @@ export async function getDailyStats(date: string) {
         url: data.url,
         count: data.count,
         sessions: data.sessions || [],
-        uniqueSessions: (data.sessions || []).length,
+        visitors: data.visitors || [],
+        uniqueSessions: data.uniqueSessionCount || (data.sessions || []).length,
+        uniqueVisitors: data.uniqueVisitorCount || (data.visitors || []).length,
         lastUpdated: data.lastUpdated
       };
     });
