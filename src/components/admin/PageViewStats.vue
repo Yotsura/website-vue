@@ -1,17 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, defineAsyncComponent } from 'vue';
 import { getRangeStats } from '@/utils/pageViewTracker';
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
 import {
   chartOptions,
   calculateTotalStats,
@@ -21,16 +10,23 @@ import {
   type DailyStatsData
 } from '@/utils/chartUtils';
 
-// Chart.jsコンポーネントを登録
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// Chart.jsコンポーネントを動的インポート
+const Line = defineAsyncComponent(async () => {
+  const chartJS = await import('chart.js');
+  const vueChartJS = await import('vue-chartjs');
+  
+  chartJS.Chart.register(
+    chartJS.CategoryScale,
+    chartJS.LinearScale,
+    chartJS.PointElement,
+    chartJS.LineElement,
+    chartJS.Title,
+    chartJS.Tooltip,
+    chartJS.Legend
+  );
+  
+  return vueChartJS.Line;
+});
 
 // リアクティブデータ
 const loading = ref<boolean>(true);

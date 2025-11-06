@@ -17,6 +17,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // Chart.jsを別チャンクに
+          if (id.includes('chart.js') || id.includes('vue-chartjs')) {
+            return 'charts';
+          }
+          // Firebaseを別チャンクに
+          if (id.includes('firebase') || id.includes('@firebase')) {
+            return 'firebase';
+          }
+          // その他のnode_modules
           if (id.includes('node_modules')) {
             return 'vendor';
           }
