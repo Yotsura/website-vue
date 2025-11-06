@@ -6,6 +6,7 @@ import getUser from '@/utils/getUser';
 
 import CategoryCtrlVue from '@/components/category/CategoryCtrl.vue';
 import postListVue from '@/components/post/postList.vue';
+import PageViewStats from '@/components/admin/PageViewStats.vue';
 
 const { error, logout } = useLogout();
 const router = useRouter();
@@ -34,13 +35,16 @@ const selectedMenu = ref<number>(0);
     <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
     <label for="option2" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==1">Works</label>
     <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
-    <label for="option3" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==2">Setings</label>
+    <label for="option3" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==2">Statistics</label>
+    <input type="radio" id="option4" :value="3" v-model="selectedMenu" class="d-none" />
+    <label for="option4" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==3">Settings</label>
     <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>
   <transition name="fade" mode="out-in">
     <div v-if="selectedMenu==0"><postListVue /></div>
     <div v-else-if="selectedMenu==1"><CategoryCtrlVue /></div>
-    <div v-else-if="selectedMenu==2">
+    <div v-else-if="selectedMenu==2"><PageViewStats /></div>
+    <div v-else-if="selectedMenu==3">
       <p class="text-muted p-3">設定機能は現在利用できません</p>
     </div>
   </transition>
