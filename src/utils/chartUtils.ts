@@ -21,6 +21,31 @@ export interface DailyStatsData {
   urlStats: UrlStat[];
 }
 
+// ユーティリティ: 指定モードのIDを取得
+function getIdsForMode(urlStat: UrlStat, mode: 'sessions' | 'visitors'): string[] {
+  return mode === 'sessions' ? urlStat.sessions : (urlStat.visitors || []);
+}
+
+// ユーティリティ: 日別のユニークID数を計算
+export function calculateDailyUniqueCount(day: DailyStatsData, mode: 'sessions' | 'visitors'): number {
+  const uniqueIds = new Set<string>();
+  day.urlStats?.forEach(urlStat => {
+    getIdsForMode(urlStat, mode).forEach(id => uniqueIds.add(id));
+  });
+  return uniqueIds.size;
+}
+
+// ユーティリティ: 期間全体のユニークID数を計算
+export function calculateTotalUniqueCount(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors'): number {
+  const allIds = new Set<string>();
+  rangeStats.forEach(day => {
+    day.urlStats?.forEach(urlStat => {
+      getIdsForMode(urlStat, mode).forEach(id => allIds.add(id));
+    });
+  });
+  return allIds.size;
+}
+
 // 色を動的に生成
 export function generateColors(count: number) {
   const baseColors = [
@@ -75,25 +100,6 @@ export const chartOptions: ChartOptions<'line'> = {
   }
 };
 
-// 統計計算
-export function calculateTotalStats(rangeStats: DailyStatsData[]) {
-  if (rangeStats.length === 0) {
-    return { totalCount: 0, urlCount: 0 };
-  }
-  
-  const total = rangeStats.reduce((sum, day) => sum + (day.summary?.totalCount || 0), 0);
-  const allUrls = new Set<string>();
-  
-  rangeStats.forEach(day => {
-    day.urlStats?.forEach((url: UrlStat) => allUrls.add(url.urlKey));
-  });
-  
-  return {
-    totalCount: total,
-    urlCount: allUrls.size
-  };
-}
-
 // URL別統計を集計
 export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors' = 'sessions') {
   if (rangeStats.length === 0) {
@@ -135,19 +141,20 @@ export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions'
 }
 
 // 総計グラフデータ生成
-export function generateTotalChartData(rangeStats: DailyStatsData[]) {
+export function generateTotalChartData(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors' = 'sessions') {
   if (rangeStats.length === 0) {
     return { labels: [], datasets: [] };
   }
 
   const labels = rangeStats.map(day => day.summary?.date || '');
-  const data = rangeStats.map(day => day.summary?.totalCount || 0);
+  const data = rangeStats.map(day => calculateDailyUniqueCount(day, mode));
+  const label = mode === 'sessions' ? '総ユニークセッション数' : '総ユニークビジター数';
 
   return {
     labels,
     datasets: [
       {
-        label: '総アクセス数',
+        label: label,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         data,

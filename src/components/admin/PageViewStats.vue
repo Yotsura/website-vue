@@ -3,10 +3,10 @@ import { ref, onMounted, computed, defineAsyncComponent } from 'vue';
 import { getRangeStats } from '@/utils/pageViewTracker';
 import {
   chartOptions,
-  calculateTotalStats,
   aggregateUrlStats,
   generateTotalChartData,
   generateUrlChartData,
+  calculateTotalUniqueCount,
   type DailyStatsData
 } from '@/utils/chartUtils';
 
@@ -68,11 +68,13 @@ const fetchStats = async () => {
 };
 
 // 統計計算（Computed）
-const totalStats = computed(() => calculateTotalStats(rangeStats.value));
 const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value, displayMode.value));
 
+// 累計ユニーク数の計算
+const totalUniqueCount = computed(() => calculateTotalUniqueCount(rangeStats.value, displayMode.value));
+
 // グラフ用データ（Computed）
-const totalChartData = computed(() => generateTotalChartData(rangeStats.value));
+const totalChartData = computed(() => generateTotalChartData(rangeStats.value, displayMode.value));
 const urlChartData = computed(() => generateUrlChartData(rangeStats.value, aggregatedUrlStats.value, displayMode.value));
 
 onMounted(() => fetchStats());
@@ -126,8 +128,10 @@ onMounted(() => fetchStats());
             </div>
           </div>
           <div class="w-100 w-sm-auto text-start text-sm-end">
-            <small class="text-muted d-block">累計アクセス数</small>
-            <h3 class="mb-0">{{ totalStats.totalCount }}</h3>
+            <small class="text-muted d-block">
+              累計ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数
+            </small>
+            <h3 class="mb-0">{{ totalUniqueCount }}</h3>
           </div>
         </div>
       </div>
@@ -147,7 +151,7 @@ onMounted(() => fetchStats());
         <!-- 総アクセス数グラフ -->
         <div class="card mb-4">
           <div class="card-body">
-            <h4>総アクセス数の推移</h4>
+            <h4>総ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数の推移</h4>
             <div style="height: 300px;">
               <Line :data="totalChartData" :options="chartOptions" />
             </div>
