@@ -22,31 +22,39 @@ service cloud.firestore {
       allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
     }
     
-    // ページビュー統計のルール（新構造: pageViews/{date}/urls/{urlKey}）
-    match /pageViews/{date}/urls/{urlKey} {
+    // ページビュー統計のルール（新構造: pageViews/{date} + urls/{urlKey}サブコレクション）
+    // 日付ドキュメント（サマリーフィールド）
+    match /pageViews/{date} {
       // 誰でも読み取り可能（統計表示用）
       allow read: if true;
       
       // カウントの書き込みは誰でも可能（フロントエンドからのアクセス記録用）
-      // _summaryドキュメントとURL別ドキュメントで異なる検証
       allow create, update: if (
-        // _summaryドキュメントの場合
-        (urlKey == '_summary' && 
-         request.resource.data.keys().hasAll(['totalCount', 'lastUpdated']) &&
-         request.resource.data.totalCount is number &&
-         request.resource.data.lastUpdated is timestamp)
-        ||
-        // URL別ドキュメントの場合
-        (urlKey != '_summary' &&
-         request.resource.data.keys().hasAll(['count', 'url', 'sessions', 'lastUpdated']) &&
-         request.resource.data.count is number &&
-         request.resource.data.url is string &&
-         request.resource.data.sessions is list &&
-         request.resource.data.lastUpdated is timestamp)
+        request.resource.data.keys().hasAll(['totalCount', 'lastUpdated']) &&
+        request.resource.data.totalCount is number &&
+        request.resource.data.lastUpdated is timestamp
       );
       
       // 削除は管理者のみ
       allow delete: if request.auth != null && request.auth.token.email == 'gxb65358@gmail.com';
+      
+      // URL別サブコレクション
+      match /urls/{urlKey} {
+        // 誰でも読み取り可能
+        allow read: if true;
+        
+        // カウントの書き込みは誰でも可能
+        allow create, update: if (
+          request.resource.data.keys().hasAll(['count', 'url', 'sessions', 'lastUpdated']) &&
+          request.resource.data.count is number &&
+          request.resource.data.url is string &&
+          request.resource.data.sessions is list &&
+          request.resource.data.lastUpdated is timestamp
+        );
+        
+        // 削除は管理者のみ
+        allow delete: if request.auth != null && request.auth.token.email == 'gxb65358@gmail.com';
+      }
     }
   }
 }

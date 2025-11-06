@@ -3,17 +3,26 @@ import firebase from 'firebase/compat/app';
 
 /**
  * URLを正規化してキーを生成
- * パラメータも含めてユニークなキーにする
+ * ?id:パラメータがある場合のみパラメータを含め、それ以外は"main"にまとめる
  */
-function normalizeUrl(): string {
+function normalizeUrl(): { urlKey: string; displayUrl: string } {
   const pathname = window.location.pathname;
   const search = window.location.search;
+  const href = window.location.href;
   
-  // パラメータがある場合は含める
-  const fullPath = pathname + search;
+  // ?id:パラメータがあるかチェック
+  const hasIdParam = href.includes('?id:');
+  
+  // フルパスを表示用に保持
+  const displayUrl = pathname + search;
+  
+  // ?id:パラメータがある場合のみそのまま、それ以外は"main"にまとめる
+  const keyPath = hasIdParam ? displayUrl : 'main';
   
   // Firestoreのドキュメント名として使えるよう、特殊文字をエンコード
-  return encodeURIComponent(fullPath).replace(/%/g, '_');
+  const urlKey = encodeURIComponent(keyPath).replace(/%/g, '_');
+  
+  return { urlKey, displayUrl };
 }
 
 /**
@@ -62,14 +71,13 @@ function markAsCounted(urlKey: string, dateKey: string): void {
 
 /**
  * ページビューをFirestoreに記録
- * 構造: pageViews/{date}/{urlKey}
+ * 構造: pageViews/{date} (サマリーはフィールド) + urls/{urlKey} (サブコレクション)
  */
 export async function trackPageView(): Promise<void> {
   try {
-    const urlKey = normalizeUrl();
+    const { urlKey, displayUrl } = normalizeUrl();
     const dateKey = getDateKey();
     const sessionId = getSessionId();
-    const fullUrl = window.location.pathname + window.location.search;
     
     // 同じセッション内での二重カウントを防止
     if (isAlreadyCounted(urlKey, dateKey)) {
@@ -79,7 +87,7 @@ export async function trackPageView(): Promise<void> {
     
     const batch = projectFirestore.batch();
     
-    // URL別のカウント
+    // URL別のカウント（サブコレクション）
     const urlDocRef = projectFirestore
       .collection('pageViews')
       .doc(dateKey)
@@ -90,22 +98,20 @@ export async function trackPageView(): Promise<void> {
       urlDocRef,
       {
         count: firebase.firestore.FieldValue.increment(1),
-        url: fullUrl,
+        url: displayUrl,
         sessions: firebase.firestore.FieldValue.arrayUnion(sessionId),
         lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
       },
       { merge: true }
     );
     
-    // 日付ごとの全体サマリー
-    const summaryDocRef = projectFirestore
+    // 日付ドキュメントのサマリーフィールド
+    const dateDocRef = projectFirestore
       .collection('pageViews')
-      .doc(dateKey)
-      .collection('urls')
-      .doc('_summary');
+      .doc(dateKey);
     
     batch.set(
-      summaryDocRef,
+      dateDocRef,
       {
         totalCount: firebase.firestore.FieldValue.increment(1),
         lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
@@ -119,7 +125,7 @@ export async function trackPageView(): Promise<void> {
     markAsCounted(urlKey, dateKey);
     
     console.log('[PageView] Tracked:', {
-      url: fullUrl,
+      url: displayUrl,
       date: dateKey,
       sessionId: sessionId
     });
@@ -134,34 +140,37 @@ export async function trackPageView(): Promise<void> {
  */
 export async function getDailyStats(date: string) {
   try {
-    const snapshot = await projectFirestore
+    // 日付ドキュメントからサマリーを取得
+    const dateDoc = await projectFirestore
+      .collection('pageViews')
+      .doc(date)
+      .get();
+    
+    const dateData = dateDoc.data();
+    const summary = dateDoc.exists && dateData ? {
+      date: date,
+      totalCount: dateData.totalCount || 0,
+      lastUpdated: dateData.lastUpdated
+    } : null;
+    
+    // URLサブコレクションを取得
+    const urlsSnapshot = await projectFirestore
       .collection('pageViews')
       .doc(date)
       .collection('urls')
       .get();
     
-    let summary = null;
-    const urlStats = [];
-    
-    for (const doc of snapshot.docs) {
+    const urlStats = urlsSnapshot.docs.map(doc => {
       const data = doc.data();
-      if (doc.id === '_summary') {
-        summary = {
-          date: date,
-          totalCount: data.totalCount,
-          lastUpdated: data.lastUpdated
-        };
-      } else {
-        urlStats.push({
-          urlKey: doc.id,
-          url: data.url,
-          count: data.count,
-          sessions: data.sessions || [],
-          uniqueSessions: (data.sessions || []).length,
-          lastUpdated: data.lastUpdated
-        });
-      }
-    }
+      return {
+        urlKey: doc.id,
+        url: data.url,
+        count: data.count,
+        sessions: data.sessions || [],
+        uniqueSessions: (data.sessions || []).length,
+        lastUpdated: data.lastUpdated
+      };
+    });
     
     // カウント数で降順ソート
     urlStats.sort((a, b) => b.count - a.count);
