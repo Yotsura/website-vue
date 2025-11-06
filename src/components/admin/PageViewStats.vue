@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { getRangeStats } from '@/utils/pageViewTracker';
-import { generateSampleData, deleteSampleData } from '@/utils/generateSampleData';
+// import { generateSampleData, deleteSampleData } from '@/utils/generateSampleData';
 import { Line } from 'vue-chartjs';
 import type { ChartOptions } from 'chart.js';
 import {
@@ -50,8 +50,8 @@ const loading = ref<boolean>(true);
 const rangeStats = ref<DailyStatsData[]>([]);
 const startDate = ref<string>('');
 const endDate = ref<string>('');
-const generatingSample = ref<boolean>(false);
-const deletingSample = ref<boolean>(false);
+// const generatingSample = ref<boolean>(false);
+// const deletingSample = ref<boolean>(false);
 
 // 初期化
 const initializeDates = () => {
@@ -85,7 +85,8 @@ const fetchStats = async () => {
   }
 };
 
-// サンプルデータ操作
+// サンプルデータ操作（一時的に無効化）
+/*
 const handleGenerateSample = async () => {
   if (!confirm('30日分のサンプルデータを生成しますか？既存のデータに追加されます。')) {
     return;
@@ -119,6 +120,7 @@ const handleDeleteSample = async () => {
     alert('データの削除に失敗しました。');
   }
 };
+*/
 
 // 統計計算（Computed）
 const totalStats = computed(() => {
@@ -280,6 +282,7 @@ onMounted(() => {
   <div class="page-view-stats">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>アクセス統計</h2>
+      <!-- テスト機能は一時的に無効化
       <div class="btn-group" role="group">
         <button 
           type="button" 
@@ -296,29 +299,36 @@ onMounted(() => {
           {{ deletingSample ? '削除中...' : 'データ削除' }}
         </button>
       </div>
+      -->
     </div>
     
     <!-- 集計期間設定 -->
     <div class="card mb-4">
       <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <label class="form-label me-2 mb-0">集計期間:</label>
-            <input 
-              type="date" 
-              v-model="startDate" 
-              @change="fetchStats"
-              class="form-control form-control-sm d-inline-block me-2"
-              style="width: auto;">
-            <span>〜</span>
-            <input 
-              type="date" 
-              v-model="endDate" 
-              @change="fetchStats"
-              class="form-control form-control-sm d-inline-block ms-2"
-              style="width: auto;">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+          <div class="w-100 w-sm-auto">
+            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+              <div class="d-flex align-items-center gap-2">
+                <label class="form-label mb-0 text-nowrap">START:</label>
+                <input 
+                  type="date" 
+                  v-model="startDate" 
+                  @change="fetchStats"
+                  class="form-control form-control-sm"
+                  style="max-width: 150px;">
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <label class="form-label mb-0 text-nowrap">END:</label>
+                <input 
+                  type="date" 
+                  v-model="endDate" 
+                  @change="fetchStats"
+                  class="form-control form-control-sm"
+                  style="max-width: 150px;">
+              </div>
+            </div>
           </div>
-          <div class="text-end">
+          <div class="w-100 w-sm-auto text-start text-sm-end">
             <small class="text-muted d-block">累計アクセス数</small>
             <h3 class="mb-0">{{ totalStats.totalCount }}</h3>
           </div>

@@ -31,13 +31,25 @@ const selectedMenu = ref<number>(0);
   <h1>Admin Control <button class="float-end btn btn-danger m-2" @click="signout">Sign out</button></h1>
   <div class="col-lg-6 col-12 d-flex flex-row">
     <input type="radio" id="option1" :value="0" v-model="selectedMenu" class="d-none" />
-    <label for="option1" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==0">Messages</label>
+    <label for="option1" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==0">
+      <i class="bi bi-envelope d-inline d-sm-none"></i>
+      <span class="d-none d-sm-inline">Messages</span>
+    </label>
     <input type="radio" id="option2" :value="1" v-model="selectedMenu" class="d-none" />
-    <label for="option2" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==1">Works</label>
+    <label for="option2" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==1">
+      <i class="bi bi-palette d-inline d-sm-none"></i>
+      <span class="d-none d-sm-inline">Works</span>
+    </label>
     <input type="radio" id="option3" :value="2" v-model="selectedMenu" class="d-none" />
-    <label for="option3" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==2">Statistics</label>
+    <label for="option3" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==2">
+      <i class="bi bi-graph-up d-inline d-sm-none"></i>
+      <span class="d-none d-sm-inline">Statistics</span>
+    </label>
     <input type="radio" id="option4" :value="3" v-model="selectedMenu" class="d-none" />
-    <label for="option4" class="menulink px-2 pb-2 flex-fill text-nowrap" :isChecked="selectedMenu==3">Settings</label>
+    <label for="option4" class="menulink px-2 pb-2 flex-fill text-center" :isChecked="selectedMenu==3">
+      <i class="bi bi-gear d-inline d-sm-none"></i>
+      <span class="d-none d-sm-inline">Settings</span>
+    </label>
     <!-- <label class="menulink px-2 pb-2 flex-fill text-nowrap" @click="signout">-Sign out</label> -->
   </div>
   <transition name="fade" mode="out-in">
