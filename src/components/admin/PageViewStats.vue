@@ -26,6 +26,7 @@ ChartJS.register(
   Legend
 );
 
+// 型定義
 interface UrlStat {
   urlKey: string;
   url: string;
@@ -44,29 +45,34 @@ interface DailyStatsData {
   urlStats: UrlStat[];
 }
 
-const loading = ref<boolean>(false);
+// リアクティブデータ
+const loading = ref<boolean>(true);
 const rangeStats = ref<DailyStatsData[]>([]);
-
-// 共通の期間設定
 const startDate = ref<string>('');
 const endDate = ref<string>('');
+const generatingSample = ref<boolean>(false);
+const deletingSample = ref<boolean>(false);
 
-// 今日の日付と30日前を初期値に
-const today = new Date();
-const thirtyDaysAgo = new Date(today);
-thirtyDaysAgo.setDate(today.getDate() - 30);
+// 初期化
+const initializeDates = () => {
+  const today = new Date();
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(today.getDate() - 30);
+  
+  const formatDate = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+  
+  startDate.value = formatDate(thirtyDaysAgo);
+  endDate.value = formatDate(today);
+};
 
-startDate.value = formatDateValue(thirtyDaysAgo);
-endDate.value = formatDateValue(today);
+initializeDates();
 
-function formatDateValue(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
-// 統計を取得
+// データ取得
 const fetchStats = async () => {
   loading.value = true;
   
@@ -79,8 +85,7 @@ const fetchStats = async () => {
   }
 };
 
-// サンプルデータ生成
-const generatingSample = ref<boolean>(false);
+// サンプルデータ操作
 const handleGenerateSample = async () => {
   if (!confirm('30日分のサンプルデータを生成しますか？既存のデータに追加されます。')) {
     return;
@@ -98,8 +103,6 @@ const handleGenerateSample = async () => {
   }
 };
 
-// サンプルデータ削除
-const deletingSample = ref<boolean>(false);
 const handleDeleteSample = async () => {
   if (!confirm('30日分のデータを削除しますか？この操作は取り消せません。')) {
     return;
@@ -117,54 +120,56 @@ const handleDeleteSample = async () => {
   }
 };
 
-// 累計計算
+// 統計計算（Computed）
 const totalStats = computed(() => {
-  if (rangeStats.value.length > 0) {
-    const total = rangeStats.value.reduce((sum, day) => sum + (day.summary?.totalCount || 0), 0);
-    const allUrls = new Set();
-    rangeStats.value.forEach(day => {
-      day.urlStats?.forEach((url: UrlStat) => allUrls.add(url.urlKey));
-    });
-    return {
-      totalCount: total,
-      urlCount: allUrls.size
-    };
+  if (rangeStats.value.length === 0) {
+    return { totalCount: 0, urlCount: 0 };
   }
-  return { totalCount: 0, urlCount: 0 };
+  
+  const total = rangeStats.value.reduce((sum, day) => sum + (day.summary?.totalCount || 0), 0);
+  const allUrls = new Set<string>();
+  
+  rangeStats.value.forEach(day => {
+    day.urlStats?.forEach((url: UrlStat) => allUrls.add(url.urlKey));
+  });
+  
+  return {
+    totalCount: total,
+    urlCount: allUrls.size
+  };
 });
 
-// URL統計を集計
 const aggregatedUrlStats = computed(() => {
-  if (rangeStats.value.length > 0) {
-    const urlMap = new Map<string, UrlStat>();
-    rangeStats.value.forEach(day => {
-      day.urlStats?.forEach((urlStat: UrlStat) => {
-        const existing = urlMap.get(urlStat.urlKey);
-        if (existing) {
-          existing.count += urlStat.count;
-          existing.sessions = [...new Set([...existing.sessions, ...urlStat.sessions])];
-        } else {
-          urlMap.set(urlStat.urlKey, {
-            urlKey: urlStat.urlKey,
-            url: urlStat.url,
-            count: urlStat.count,
-            sessions: [...urlStat.sessions]
-          });
-        }
-      });
-    });
-    return Array.from(urlMap.values()).sort((a, b) => b.count - a.count);
+  if (rangeStats.value.length === 0) {
+    return [];
   }
-  return [];
+  
+  const urlMap = new Map<string, UrlStat>();
+  
+  rangeStats.value.forEach(day => {
+    day.urlStats?.forEach((urlStat: UrlStat) => {
+      const existing = urlMap.get(urlStat.urlKey);
+      if (existing) {
+        existing.count += urlStat.count;
+        existing.sessions = [...new Set([...existing.sessions, ...urlStat.sessions])];
+      } else {
+        urlMap.set(urlStat.urlKey, {
+          urlKey: urlStat.urlKey,
+          url: urlStat.url,
+          count: urlStat.count,
+          sessions: [...urlStat.sessions]
+        });
+      }
+    });
+  });
+  
+  return Array.from(urlMap.values()).sort((a, b) => b.count - a.count);
 });
 
-// グラフ用データ（総計）
+// グラフ用データ（Computed）
 const totalChartData = computed(() => {
   if (rangeStats.value.length === 0) {
-    return {
-      labels: [],
-      datasets: []
-    };
+    return { labels: [], datasets: [] };
   }
 
   const labels = rangeStats.value.map(day => day.summary?.date || '');
@@ -184,20 +189,13 @@ const totalChartData = computed(() => {
   };
 });
 
-// グラフ用データ（URL別）
 const urlChartData = computed(() => {
   if (rangeStats.value.length === 0) {
-    return {
-      labels: [],
-      datasets: []
-    };
+    return { labels: [], datasets: [] };
   }
 
   const labels = rangeStats.value.map(day => day.summary?.date || '');
-  
-  // 全URLを表示
   const allUrls = aggregatedUrlStats.value;
-  
   const colors = generateColors(allUrls.length);
 
   const datasets = allUrls.map((urlStat: UrlStat, index: number) => {
@@ -216,13 +214,10 @@ const urlChartData = computed(() => {
     };
   });
 
-  return {
-    labels,
-    datasets
-  };
+  return { labels, datasets };
 });
 
-// 色を動的に生成
+// ユーティリティ関数
 function generateColors(count: number) {
   const baseColors = [
     { bg: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 1)' },
@@ -242,8 +237,7 @@ function generateColors(count: number) {
     if (i < baseColors.length) {
       colors.push(baseColors[i]);
     } else {
-      // ランダムな色を生成
-      const hue = (i * 137.508) % 360; // Golden angle approximation
+      const hue = (i * 137.508) % 360;
       colors.push({
         bg: `hsla(${hue}, 70%, 60%, 0.2)`,
         border: `hsla(${hue}, 70%, 50%, 1)`
@@ -324,7 +318,7 @@ onMounted(() => {
               class="form-control form-control-sm d-inline-block ms-2"
               style="width: auto;">
           </div>
-          <div v-if="!loading" class="text-end">
+          <div class="text-end">
             <small class="text-muted d-block">累計アクセス数</small>
             <h3 class="mb-0">{{ totalStats.totalCount }}</h3>
           </div>
@@ -332,31 +326,34 @@ onMounted(() => {
       </div>
     </div>
     
-    <!-- ローディング -->
-    <div v-if="loading" class="text-center p-4">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-    
-    <!-- グラフ表示 -->
-    <div v-if="!loading" class="mb-4">
-      <!-- 総アクセス数グラフ -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h4>総アクセス数の推移</h4>
-          <div style="height: 300px;">
-            <Line :data="totalChartData" :options="chartOptions" />
-          </div>
+    <!-- グラフ表示エリア -->
+    <div class="mb-4 position-relative">
+      <!-- ローディング中のオーバーレイ -->
+      <div v-if="loading" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
       </div>
       
-      <!-- URL別グラフ -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h4>URL別アクセス数の推移</h4>
-          <div style="height: 300px;">
-            <Line :data="urlChartData" :options="chartOptions" />
+      <!-- グラフコンテンツ -->
+      <div :class="{ 'content-loading': loading }">
+        <!-- 総アクセス数グラフ -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4>総アクセス数の推移</h4>
+            <div style="height: 300px;">
+              <Line :data="totalChartData" :options="chartOptions" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- URL別グラフ -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4>URL別アクセス数の推移</h4>
+            <div style="height: 300px;">
+              <Line :data="urlChartData" :options="chartOptions" />
+            </div>
           </div>
         </div>
       </div>
@@ -367,6 +364,26 @@ onMounted(() => {
 <style scoped>
 .page-view-stats {
   padding: 1rem;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 0.25rem;
+}
+
+.content-loading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 .card {
