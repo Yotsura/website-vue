@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { getRangeStats } from '@/utils/pageViewTracker';
-// import { generateSampleData, deleteSampleData } from '@/utils/generateSampleData';
 import { Line } from 'vue-chartjs';
-import type { ChartOptions } from 'chart.js';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +12,14 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import {
+  chartOptions,
+  calculateTotalStats,
+  aggregateUrlStats,
+  generateTotalChartData,
+  generateUrlChartData,
+  type DailyStatsData
+} from '@/utils/chartUtils';
 
 // Chart.jsコンポーネントを登録
 ChartJS.register(
@@ -26,32 +32,11 @@ ChartJS.register(
   Legend
 );
 
-// 型定義
-interface UrlStat {
-  urlKey: string;
-  url: string;
-  count: number;
-  sessions: string[];
-  uniqueSessions?: number;
-  lastUpdated?: unknown;
-}
-
-interface DailyStatsData {
-  summary: {
-    date: string;
-    totalCount: number;
-    lastUpdated: unknown;
-  } | null;
-  urlStats: UrlStat[];
-}
-
 // リアクティブデータ
 const loading = ref<boolean>(true);
 const rangeStats = ref<DailyStatsData[]>([]);
 const startDate = ref<string>('');
 const endDate = ref<string>('');
-// const generatingSample = ref<boolean>(false);
-// const deletingSample = ref<boolean>(false);
 
 // 初期化
 const initializeDates = () => {
@@ -85,193 +70,13 @@ const fetchStats = async () => {
   }
 };
 
-// サンプルデータ操作（一時的に無効化）
-/*
-const handleGenerateSample = async () => {
-  if (!confirm('30日分のサンプルデータを生成しますか？既存のデータに追加されます。')) {
-    return;
-  }
-  
-  generatingSample.value = true;
-  const success = await generateSampleData(30);
-  generatingSample.value = false;
-  
-  if (success) {
-    alert('サンプルデータを生成しました！');
-    await fetchStats();
-  } else {
-    alert('サンプルデータの生成に失敗しました。');
-  }
-};
-
-const handleDeleteSample = async () => {
-  if (!confirm('30日分のデータを削除しますか？この操作は取り消せません。')) {
-    return;
-  }
-  
-  deletingSample.value = true;
-  const success = await deleteSampleData(30);
-  deletingSample.value = false;
-  
-  if (success) {
-    alert('データを削除しました。');
-    await fetchStats();
-  } else {
-    alert('データの削除に失敗しました。');
-  }
-};
-*/
-
 // 統計計算（Computed）
-const totalStats = computed(() => {
-  if (rangeStats.value.length === 0) {
-    return { totalCount: 0, urlCount: 0 };
-  }
-  
-  const total = rangeStats.value.reduce((sum, day) => sum + (day.summary?.totalCount || 0), 0);
-  const allUrls = new Set<string>();
-  
-  rangeStats.value.forEach(day => {
-    day.urlStats?.forEach((url: UrlStat) => allUrls.add(url.urlKey));
-  });
-  
-  return {
-    totalCount: total,
-    urlCount: allUrls.size
-  };
-});
-
-const aggregatedUrlStats = computed(() => {
-  if (rangeStats.value.length === 0) {
-    return [];
-  }
-  
-  const urlMap = new Map<string, UrlStat>();
-  
-  rangeStats.value.forEach(day => {
-    day.urlStats?.forEach((urlStat: UrlStat) => {
-      const existing = urlMap.get(urlStat.urlKey);
-      if (existing) {
-        existing.count += urlStat.count;
-        existing.sessions = [...new Set([...existing.sessions, ...urlStat.sessions])];
-      } else {
-        urlMap.set(urlStat.urlKey, {
-          urlKey: urlStat.urlKey,
-          url: urlStat.url,
-          count: urlStat.count,
-          sessions: [...urlStat.sessions]
-        });
-      }
-    });
-  });
-  
-  return Array.from(urlMap.values()).sort((a, b) => b.count - a.count);
-});
+const totalStats = computed(() => calculateTotalStats(rangeStats.value));
+const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value));
 
 // グラフ用データ（Computed）
-const totalChartData = computed(() => {
-  if (rangeStats.value.length === 0) {
-    return { labels: [], datasets: [] };
-  }
-
-  const labels = rangeStats.value.map(day => day.summary?.date || '');
-  const data = rangeStats.value.map(day => day.summary?.totalCount || 0);
-
-  return {
-    labels,
-    datasets: [
-      {
-        label: '総アクセス数',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        data,
-        tension: 0.3
-      }
-    ]
-  };
-});
-
-const urlChartData = computed(() => {
-  if (rangeStats.value.length === 0) {
-    return { labels: [], datasets: [] };
-  }
-
-  const labels = rangeStats.value.map(day => day.summary?.date || '');
-  const allUrls = aggregatedUrlStats.value;
-  const colors = generateColors(allUrls.length);
-
-  const datasets = allUrls.map((urlStat: UrlStat, index: number) => {
-    const data = rangeStats.value.map(day => {
-      const found = day.urlStats?.find((u: UrlStat) => u.urlKey === urlStat.urlKey);
-      return found ? found.count : 0;
-    });
-
-    const color = colors[index] ?? { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' };
-    return {
-      label: urlStat.url,
-      backgroundColor: color.bg,
-      borderColor: color.border,
-      data,
-      tension: 0.3
-    };
-  });
-
-  return { labels, datasets };
-});
-
-// ユーティリティ関数
-function generateColors(count: number) {
-  const baseColors = [
-    { bg: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 1)' },
-    { bg: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 1)' },
-    { bg: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206, 86, 1)' },
-    { bg: 'rgba(75, 192, 192, 0.2)', border: 'rgba(75, 192, 192, 1)' },
-    { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' },
-    { bg: 'rgba(255, 159, 64, 0.2)', border: 'rgba(255, 159, 64, 1)' },
-    { bg: 'rgba(199, 199, 199, 0.2)', border: 'rgba(199, 199, 199, 1)' },
-    { bg: 'rgba(83, 102, 255, 0.2)', border: 'rgba(83, 102, 255, 1)' },
-    { bg: 'rgba(255, 102, 146, 0.2)', border: 'rgba(255, 102, 146, 1)' },
-    { bg: 'rgba(102, 255, 178, 0.2)', border: 'rgba(102, 255, 178, 1)' }
-  ];
-  
-  const colors = [];
-  for (let i = 0; i < count; i++) {
-    if (i < baseColors.length) {
-      colors.push(baseColors[i]);
-    } else {
-      const hue = (i * 137.508) % 360;
-      colors.push({
-        bg: `hsla(${hue}, 70%, 60%, 0.2)`,
-        border: `hsla(${hue}, 70%, 50%, 1)`
-      });
-    }
-  }
-  return colors;
-}
-
-// グラフオプション
-const chartOptions: ChartOptions<'line'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true,
-      position: 'top'
-    },
-    tooltip: {
-      mode: 'index',
-      intersect: false
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: {
-        precision: 0
-      }
-    }
-  }
-};
+const totalChartData = computed(() => generateTotalChartData(rangeStats.value));
+const urlChartData = computed(() => generateUrlChartData(rangeStats.value, aggregatedUrlStats.value));
 
 onMounted(() => {
   fetchStats();
