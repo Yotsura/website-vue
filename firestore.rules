@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /posts/{postid} {
+      allow create;
+      allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
+    }
+    match /works/{workid} {
+      allow list;
+      allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
+    }
+    match /categories/{categoryid} {
+      allow list;
+      allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
+    }
+    match /thanksImg/{tyid} {
+      allow list;
+      allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
+    }
+    match /backImg/{bgid} {
+      allow list;
+      allow read, write: if request.auth.token.email == 'gxb65358@gmail.com';
+    }
+    
+    // ページビュー統計のルール（新構造: pageViews/{date}/urls/{urlKey}）
+    match /pageViews/{date}/urls/{urlKey} {
+      // 誰でも読み取り可能（統計表示用）
+      allow read: if true;
+      
+      // カウントの書き込みは誰でも可能（フロントエンドからのアクセス記録用）
+      // _summaryドキュメントとURL別ドキュメントで異なる検証
+      allow create, update: if (
+        // _summaryドキュメントの場合
+        (urlKey == '_summary' && 
+         request.resource.data.keys().hasAll(['totalCount', 'lastUpdated']) &&
+         request.resource.data.totalCount is number &&
+         request.resource.data.lastUpdated is timestamp)
+        ||
+        // URL別ドキュメントの場合
+        (urlKey != '_summary' &&
+         request.resource.data.keys().hasAll(['count', 'url', 'sessions', 'lastUpdated']) &&
+         request.resource.data.count is number &&
+         request.resource.data.url is string &&
+         request.resource.data.sessions is list &&
+         request.resource.data.lastUpdated is timestamp)
+      );
+      
+      // 削除は管理者のみ
+      allow delete: if request.auth != null && request.auth.token.email == 'gxb65358@gmail.com';
+    }
+  }
+}

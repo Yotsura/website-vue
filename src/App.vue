@@ -7,6 +7,7 @@ import { CategoryData } from '@/components/category/Category';
 import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from '@/store/modules/works';
 import CategoryViewVue from './views/CategoryView.vue';
+import { trackPageView } from '@/utils/pageViewTracker';
 
 const param = window.location.href.includes('?id:') ? (`?id:` + window.location.href.split('?id:')[1]) : "";
 
@@ -14,6 +15,10 @@ const categories = useTagStore();
 const works = useWorkStore();
 onMounted(() => {
 	console.log(param);
+	
+	// ページビューを記録
+	trackPageView();
+	
 	const error = ref<string | null>(null);
 	const load = async () => {
 		try {
