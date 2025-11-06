@@ -17,13 +17,18 @@ function normalizeUrl(): string {
 }
 
 /**
- * 現在の日付をYYYY-MM-DD形式で取得
+ * 現在の日付をYYYY-MM-DD形式で取得（日本時間基準）
  */
 function getDateKey(): string {
+  // 日本時間（UTC+9）で日付を取得
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
+  const jstOffset = 9 * 60; // 日本時間のオフセット（分単位）
+  const localOffset = now.getTimezoneOffset(); // ローカル時間のUTCからのオフセット（分単位、負の値）
+  const jstTime = new Date(now.getTime() + (jstOffset + localOffset) * 60 * 1000);
+  
+  const year = jstTime.getFullYear();
+  const month = String(jstTime.getMonth() + 1).padStart(2, '0');
+  const day = String(jstTime.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
