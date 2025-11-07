@@ -100,8 +100,8 @@ export const chartOptions: ChartOptions<'line'> = {
   }
 };
 
-// URL別統計を集計
-export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors' = 'sessions') {
+// URL別統計を集計（モード不要 - 全データを集計）
+export function aggregateUrlStats(rangeStats: DailyStatsData[]) {
   if (rangeStats.length === 0) {
     return [];
   }
@@ -114,15 +114,9 @@ export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions'
       if (existing) {
         existing.count += urlStat.count;
         existing.sessions = [...new Set([...existing.sessions, ...urlStat.sessions])];
-        if (mode === 'visitors' && urlStat.visitors) {
-          existing.visitors = [...new Set([...(existing.visitors || []), ...urlStat.visitors])];
-        }
-        if (urlStat.uniqueSessions !== undefined) {
-          existing.uniqueSessions = (existing.uniqueSessions || 0) + urlStat.uniqueSessions;
-        }
-        if (urlStat.uniqueVisitors !== undefined) {
-          existing.uniqueVisitors = (existing.uniqueVisitors || 0) + urlStat.uniqueVisitors;
-        }
+        existing.visitors = [...new Set([...(existing.visitors || []), ...(urlStat.visitors || [])])];
+        existing.uniqueSessions = (existing.uniqueSessions || 0) + (urlStat.uniqueSessions || 0);
+        existing.uniqueVisitors = (existing.uniqueVisitors || 0) + (urlStat.uniqueVisitors || 0);
       } else {
         urlMap.set(urlStat.urlKey, {
           urlKey: urlStat.urlKey,
@@ -140,61 +134,66 @@ export function aggregateUrlStats(rangeStats: DailyStatsData[], mode: 'sessions'
   return Array.from(urlMap.values()).sort((a, b) => b.count - a.count);
 }
 
-// 総計グラフデータ生成
-export function generateTotalChartData(rangeStats: DailyStatsData[], mode: 'sessions' | 'visitors' = 'sessions') {
-  if (rangeStats.length === 0) {
-    return { labels: [], datasets: [] };
+// URL表示名を生成するヘルパー関数
+function generateUrlDisplayLabel(url: string): string {
+  if (url === '/') {
+    return 'main';
+  } else if (url.includes('?id:')) {
+    // ?id:以降を抽出
+    const match = url.match(/\?id:(.+)/);
+    return match?.[1] ?? url;
+  } else {
+    return url;
   }
-
-  const labels = rangeStats.map(day => day.summary?.date || '');
-  const data = rangeStats.map(day => calculateDailyUniqueCount(day, mode));
-  const label = mode === 'sessions' ? '総ユニークセッション数' : '総ユニークビジター数';
-
-  return {
-    labels,
-    datasets: [
-      {
-        label: label,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        data,
-        tension: 0.3
-      }
-    ]
-  };
 }
 
-// URL別グラフデータ生成
-export function generateUrlChartData(rangeStats: DailyStatsData[], aggregatedUrls: UrlStat[], mode: 'sessions' | 'visitors' = 'sessions') {
+// ユニーク数を取得するヘルパー関数
+function getUniqueCount(urlStat: UrlStat, mode: 'sessions' | 'visitors'): number {
+  if (mode === 'visitors') {
+    return urlStat.uniqueVisitors ?? (urlStat.visitors?.length || 0);
+  } else {
+    return urlStat.uniqueSessions ?? (urlStat.sessions?.length || 0);
+  }
+}
+
+// 総計とURL別を統合したグラフデータ生成
+export function generateCombinedChartData(rangeStats: DailyStatsData[], aggregatedUrls: UrlStat[], mode: 'sessions' | 'visitors' = 'sessions') {
   if (rangeStats.length === 0) {
     return { labels: [], datasets: [] };
   }
 
   const labels = rangeStats.map(day => day.summary?.date || '');
-  const colors = generateColors(aggregatedUrls.length);
+  const colors = generateColors(aggregatedUrls.length + 1); // +1 for total line
+  
+  // 総計データセット
+  const totalData = rangeStats.map(day => calculateDailyUniqueCount(day, mode));
+  
+  const totalDataset = {
+    label: 'Total',
+    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    borderColor: 'rgba(54, 162, 235, 1)',
+    data: totalData,
+    tension: 0.3,
+    borderWidth: 3 // 総計を太線で強調
+  };
 
-  const datasets = aggregatedUrls.map((urlStat: UrlStat, index: number) => {
+  // URL別データセット
+  const urlDatasets = aggregatedUrls.map((urlStat: UrlStat, index: number) => {
     const data = rangeStats.map(day => {
       const found = day.urlStats?.find((u: UrlStat) => u.urlKey === urlStat.urlKey);
-      if (!found) return 0;
-      
-      // モードに応じてユニーク数を返す
-      if (mode === 'visitors') {
-        return found.uniqueVisitors ?? (found.visitors?.length || 0);
-      } else {
-        return found.uniqueSessions ?? (found.sessions?.length || 0);
-      }
+      return found ? getUniqueCount(found, mode) : 0;
     });
 
-    const color = colors[index] ?? { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' };
+    const color = colors[index + 1] ?? { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' };
     return {
-      label: urlStat.url,
+      label: generateUrlDisplayLabel(urlStat.url),
       backgroundColor: color.bg,
       borderColor: color.border,
       data,
-      tension: 0.3
+      tension: 0.3,
+      borderWidth: 2
     };
   });
 
-  return { labels, datasets };
+  return { labels, datasets: [totalDataset, ...urlDatasets] };
 }

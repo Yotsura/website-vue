@@ -4,8 +4,7 @@ import { getRangeStats } from '@/utils/pageViewTracker';
 import {
   chartOptions,
   aggregateUrlStats,
-  generateTotalChartData,
-  generateUrlChartData,
+  generateCombinedChartData,
   calculateTotalUniqueCount,
   type DailyStatsData
 } from '@/utils/chartUtils';
@@ -33,7 +32,7 @@ const loading = ref<boolean>(true);
 const rangeStats = ref<DailyStatsData[]>([]);
 const startDate = ref<string>('');
 const endDate = ref<string>('');
-const displayMode = ref<'sessions' | 'visitors'>('sessions');
+const displayMode = ref<'sessions' | 'visitors'>('visitors');
 
 // 初期化
 const initializeDates = () => {
@@ -68,14 +67,13 @@ const fetchStats = async () => {
 };
 
 // 統計計算（Computed）
-const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value, displayMode.value));
+const aggregatedUrlStats = computed(() => aggregateUrlStats(rangeStats.value));
 
 // 累計ユニーク数の計算
 const totalUniqueCount = computed(() => calculateTotalUniqueCount(rangeStats.value, displayMode.value));
 
-// グラフ用データ（Computed）
-const totalChartData = computed(() => generateTotalChartData(rangeStats.value, displayMode.value));
-const urlChartData = computed(() => generateUrlChartData(rangeStats.value, aggregatedUrlStats.value, displayMode.value));
+// 統合グラフ用データ（Computed）
+const combinedChartData = computed(() => generateCombinedChartData(rangeStats.value, aggregatedUrlStats.value, displayMode.value));
 
 onMounted(() => fetchStats());
 </script>
@@ -148,22 +146,12 @@ onMounted(() => fetchStats());
       
       <!-- グラフコンテンツ -->
       <div :class="{ 'content-loading': loading }">
-        <!-- 総アクセス数グラフ -->
+        <!-- 統合グラフ（総計 + URL別） -->
         <div class="card mb-4">
           <div class="card-body">
-            <h4>総ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数の推移</h4>
-            <div style="height: 300px;">
-              <Line :data="totalChartData" :options="chartOptions" />
-            </div>
-          </div>
-        </div>
-        
-        <!-- URL別グラフ -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <h4>URL別ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数の推移</h4>
-            <div style="height: 300px;">
-              <Line :data="urlChartData" :options="chartOptions" />
+            <h4>ユニーク{{ displayMode === 'sessions' ? 'セッション' : 'ビジター' }}数の推移</h4>
+            <div style="height: 400px;">
+              <Line :data="combinedChartData" :options="chartOptions" />
             </div>
           </div>
         </div>
