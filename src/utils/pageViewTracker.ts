@@ -11,21 +11,34 @@ const CONFIG = {
 
 /**
  * URLを正規化してキーを生成
- * ?id:パラメータがある場合のみパラメータを含め、それ以外は"main"にまとめる
+ * パラメータあり：?id:以降のみで集計（パス部分は無視）
+ * パラメータなし：mainとして集計
+ * admin、loginページは除外（nullを返す）
  */
-function normalizeUrl(): { urlKey: string; displayUrl: string } {
+function normalizeUrl(): { urlKey: string; displayUrl: string } | null {
   const pathname = window.location.pathname;
   const search = window.location.search;
   const href = window.location.href;
   
-  // ?id:パラメータがあるかチェック
-  const hasIdParam = href.includes('?id:');
+  // admin、loginページは集計から除外
+  if (pathname.includes('/admin') || pathname.includes('/login')) {
+    return null;
+  }
   
   // フルパスを表示用に保持
   const displayUrl = pathname + search;
   
-  // ?id:パラメータがある場合のみそのまま、それ以外は"main"にまとめる
-  const keyPath = hasIdParam ? displayUrl : 'main';
+  // ?id:パラメータがあるかチェックして抽出
+  const idParamMatch = href.match(/\?id:([^&]+)/);
+  
+  let keyPath: string;
+  if (idParamMatch) {
+    // ?id:がある場合は、id:以降の値のみをキーとする（パス部分は無視）
+    keyPath = `?id:${idParamMatch[1]}`;
+  } else {
+    // ?id:がない場合は"main"にまとめる
+    keyPath = 'main';
+  }
   
   // Firestoreのドキュメント名として使えるよう、特殊文字をエンコード
   const urlKey = encodeURIComponent(keyPath).replace(/%/g, '_');
@@ -141,7 +154,15 @@ function markAsCounted(urlKey: string, dateKey: string): void {
  */
 export async function trackPageView(): Promise<void> {
   try {
-    const { urlKey, displayUrl } = normalizeUrl();
+    const urlData = normalizeUrl();
+    
+    // admin、loginページは集計しない
+    if (!urlData) {
+      console.log('[PageView] Excluded page (admin/login)');
+      return;
+    }
+    
+    const { urlKey, displayUrl } = urlData;
     const dateKey = getDateKey();
     const sessionId = getSessionId();
     const visitorId = getVisitorId();
