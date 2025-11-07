@@ -7,6 +7,7 @@ import { CategoryData } from '@/components/category/Category';
 import { useTagStore } from '@/store/modules/category';
 import { useWorkStore } from '@/store/modules/works';
 import CategoryViewVue from './views/CategoryView.vue';
+import LinkBarVue from '@/components/LinkBar.vue';
 import { trackPageView } from '@/utils/pageViewTracker';
 
 const param = window.location.href.includes('?id:') ? (`?id:` + window.location.href.split('?id:')[1]) : "";
@@ -58,7 +59,10 @@ onMounted(() => {
 <template>
 	<div id="wrapper" class="container" ontouchstart="">
     <div class="row">
-      <h1>弓張月/<small>寄弦</small></h1>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">弓張月/<small>寄弦</small></h1>
+        <LinkBarVue />
+      </div>
 			<CategoryViewVue v-if="param" />
       <RouterView v-else />
 			<!-- <transition v-else name="fade" mode="out-in">

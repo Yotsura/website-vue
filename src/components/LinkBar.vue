@@ -162,22 +162,43 @@
 </template>
 
 <style scoped>
-img{
-  height: 30px;
-}
 ul{
-  display: flex; 
-}
-li{
-  display:list-item;
-  text-decoration: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
   list-style: none;
-  margin-right: 1rem;
+}
+
+li{
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
+
+li:last-child {
+  margin-right: 0;
+}
+
+a {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+svg {
+  height: 24px;
 }
 
 @media (hover: hover) {
-  li:hover{
-    opacity: 0.5;
+  a:hover{
+    opacity: 0.6;
+  }
+}
+
+@media (hover: none) {
+  a:active{
+    opacity: 0.6;
   }
 }
 </style>
