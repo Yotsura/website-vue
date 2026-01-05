@@ -1,0 +1,7 @@
+{
+  "url": "https://YOUR_PROJECT.supabase.co",
+  "key": "YOUR_SERVICE_ROLE_OR_ANON_KEY",
+  "clientId": "machine-name-or-custom-id",
+  "bucket": "images",
+  "objectPrefix": "heartbeat"
+}
