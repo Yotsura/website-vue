@@ -18,14 +18,22 @@ try
 {
     await supabase.InitializeAsync();
 
-    Heartbeat heartbeat = await HeartbeatSender.SendAsync(supabase, config.ClientId ?? Environment.MachineName);
-
     StateStore stateStore = new(AppDefaults.StateFileName);
     HeartbeatState state = await stateStore.LoadAsync();
+
+    DateOnly todayLocal = DateOnly.FromDateTime(DateTime.Now);
+    if (state.LastRunDateLocal is DateOnly last && last == todayLocal)
+    {
+        Console.WriteLine("今日のハートビートは実行済みのためスキップします。");
+        return;
+    }
+
+    Heartbeat heartbeat = await HeartbeatSender.SendAsync(supabase, config.ClientId ?? Environment.MachineName);
 
     string objectPath = await DummyStorageCycler.RunAsync(supabase, config, state);
 
     state.LastObjectPath = objectPath;
+    state.LastRunDateLocal = todayLocal;
     await stateStore.SaveAsync(state);
 }
 finally
