@@ -1,6 +1,6 @@
 namespace SupabaseHeartBeat;
 
-internal static class AppDefaults
+public static class AppDefaults
 {
     public const string ConfigFileName = "supabase-heartbeat.json";
     public const string StateFileName = "supabase-heartbeat-state.json";

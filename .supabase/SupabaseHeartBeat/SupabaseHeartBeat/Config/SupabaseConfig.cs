@@ -1,6 +1,6 @@
 namespace SupabaseHeartBeat.Config;
 
-internal sealed class SupabaseConfig
+public sealed class SupabaseConfig
 {
     public string? Url { get; set; }
     public string? Key { get; set; }
