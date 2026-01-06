@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupabaseHeartBeat", "SupabaseHeartBeat\SupabaseHeartBeat.csproj", "{923523CD-0856-4758-B958-639D0D445AAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartBeatSetting", "HeartBeatSetting\HeartBeatSetting.csproj", "{CDE0F55E-4444-4BC4-850E-AAC61317DD0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{923523CD-0856-4758-B958-639D0D445AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923523CD-0856-4758-B958-639D0D445AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923523CD-0856-4758-B958-639D0D445AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923523CD-0856-4758-B958-639D0D445AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDE0F55E-4444-4BC4-850E-AAC61317DD0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDE0F55E-4444-4BC4-850E-AAC61317DD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDE0F55E-4444-4BC4-850E-AAC61317DD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDE0F55E-4444-4BC4-850E-AAC61317DD0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C441EAE-7FD1-4F18-B031-102D35FB45DA}
+	EndGlobalSection
+EndGlobal

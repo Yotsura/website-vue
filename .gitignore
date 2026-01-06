@@ -26,7 +26,6 @@ coverage
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 .firebase/
 src/firebase/keys.ts
