@@ -1,12 +1,11 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
 using HeartBeatSetting.Services;
 using HeartBeatSetting.Utilities;
 using SupabaseHeartBeat;
 using SupabaseHeartBeat.Config;
-using SupabaseHeartBeat.Models;
 
 namespace HeartBeatSetting.ViewModels;
 
@@ -39,6 +38,7 @@ internal sealed class MainViewModel : INotifyPropertyChanged
     public RelayCommand SaveCommand { get; }
     public RelayCommand RegisterTaskCommand { get; }
     public RelayCommand DeleteTaskCommand { get; }
+    public RelayCommand RunHeartbeatCommand { get; }
 
     public MainViewModel()
     {
@@ -46,6 +46,7 @@ internal sealed class MainViewModel : INotifyPropertyChanged
         SaveCommand = new RelayCommand(async _ => await SaveAsync());
         RegisterTaskCommand = new RelayCommand(_ => RegisterTask());
         DeleteTaskCommand = new RelayCommand(_ => DeleteTask());
+        RunHeartbeatCommand = new RelayCommand(async _ => await RunHeartbeatAsync());
 
         // デフォルトでハートビート exe を同階層に想定
         string defaultExe = Path.Combine(AppContext.BaseDirectory, "SupabaseHeartBeat.exe");
@@ -114,6 +115,47 @@ internal sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    private async Task RunHeartbeatAsync()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(HeartbeatExePath) || !File.Exists(HeartbeatExePath))
+            {
+                StatusMessage = "Heartbeat exe が見つかりません。";
+                return;
+            }
+
+            string workingDir = Directory.Exists(WorkingDirectory)
+                ? WorkingDirectory
+                : Path.GetDirectoryName(HeartbeatExePath) ?? AppContext.BaseDirectory;
+
+            StatusMessage = "Heartbeat 実行中...";
+
+            ProcessStartInfo psi = new()
+            {
+                FileName = HeartbeatExePath,
+                WorkingDirectory = workingDir,
+                UseShellExecute = false
+            };
+
+            using Process? process = Process.Start(psi);
+            if (process is null)
+            {
+                StatusMessage = "Heartbeat の起動に失敗しました。";
+                return;
+            }
+
+            await process.WaitForExitAsync();
+            StatusMessage = process.ExitCode == 0
+                ? "Heartbeat を実行しました。"
+                : $"Heartbeat 実行に失敗しました (ExitCode: {process.ExitCode})";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Heartbeat 実行エラー: {ex.Message}";
+        }
+    }
+
     private void RegisterTask()
     {
         try
@@ -142,23 +184,11 @@ internal sealed class MainViewModel : INotifyPropertyChanged
     }
 
     private static TimeSpan? ParseDailyTime(string text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return null;
-        }
-
-        if (TimeSpan.TryParse(text, out TimeSpan ts))
-        {
-            return ts;
-        }
-
-        throw new FormatException("毎日実行時刻は HH:mm 形式で入力してください。");
-    }
+        => string.IsNullOrWhiteSpace(text) ? null :
+            TimeSpan.TryParse(text, out TimeSpan ts) ? ts :
+            throw new FormatException("毎日実行時刻は HH:mm 形式で入力してください。");
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

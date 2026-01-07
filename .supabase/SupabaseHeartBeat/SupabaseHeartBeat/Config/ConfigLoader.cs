@@ -41,22 +41,8 @@ internal static class ConfigLoader
     }
 
     private static string Normalize(string? value, string fallback)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return fallback;
-        }
-
-        return value.Trim('/');
-    }
+        => string.IsNullOrWhiteSpace(value) ? fallback : value.Trim('/');
 
     private static int? ParseInt(string? value)
-    {
-        if (int.TryParse(value, out int parsed))
-        {
-            return parsed;
-        }
-
-        return null;
-    }
+        => int.TryParse(value, out int parsed) ? parsed : null;
 }

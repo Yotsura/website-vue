@@ -51,6 +51,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="160" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -60,15 +61,16 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Heartbeat exe パス" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,6" />
-                <TextBox Text="{Binding HeartbeatExePath, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,6" />
+                <TextBox Text="{Binding HeartbeatExePath, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,0,8,6" />
+                <Button Content="実行" Command="{Binding RunHeartbeatCommand}" Grid.Row="0" Grid.Column="2" Width="70" Margin="0,0,0,6" />
 
                 <TextBlock Text="作業ディレクトリ" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,6" />
-                <TextBox Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,6" />
+                <TextBox Text="{Binding WorkingDirectory, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,6" Grid.ColumnSpan="2" />
 
                 <TextBlock Text="毎日実行時刻 (HH:mm)" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,6" />
-                <TextBox Text="{Binding DailyTimeText, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,6" />
+                <TextBox Text="{Binding DailyTimeText, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,6" Grid.ColumnSpan="2" />
 
-                <CheckBox Content="ログオン時も実行" IsChecked="{Binding AddLogonTrigger}" Grid.Row="3" Grid.ColumnSpan="2" />
+                <CheckBox Content="ログオン時も実行" IsChecked="{Binding AddLogonTrigger}" Grid.Row="3" Grid.ColumnSpan="3" />
             </Grid>
 
             <Separator Margin="0,0,0,12" />
