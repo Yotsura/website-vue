@@ -73,7 +73,7 @@ internal sealed class MainViewModel : INotifyPropertyChanged
 
             Url = config.Url ?? string.Empty;
             Key = config.Key ?? string.Empty;
-            ClientId = config.ClientId ?? string.Empty;
+            ClientId = config.ClientId?.ToString() ?? string.Empty;
             Bucket = config.Bucket ?? AppDefaults.Bucket;
             ObjectPrefix = config.ObjectPrefix ?? AppDefaults.ObjectPrefix;
 
@@ -90,11 +90,17 @@ internal sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             StatusMessage = "設定保存中...";
+
+            if (!int.TryParse(ClientId, out int clientId))
+            {
+                throw new FormatException("ClientId は整数で入力してください。");
+            }
+
             SupabaseConfig config = new()
             {
                 Url = Url,
                 Key = Key,
-                ClientId = string.IsNullOrWhiteSpace(ClientId) ? Environment.MachineName : ClientId,
+                ClientId = clientId,
                 Bucket = string.IsNullOrWhiteSpace(Bucket) ? AppDefaults.Bucket : Bucket,
                 ObjectPrefix = string.IsNullOrWhiteSpace(ObjectPrefix) ? AppDefaults.ObjectPrefix : ObjectPrefix
             };

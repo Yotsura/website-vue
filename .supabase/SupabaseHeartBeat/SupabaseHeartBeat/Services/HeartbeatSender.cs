@@ -5,16 +5,15 @@ namespace SupabaseHeartBeat.Services;
 
 internal static class HeartbeatSender
 {
-    public static async Task<Heartbeat> SendAsync(Client supabase, string clientId)
+    public static async Task<Heartbeat> SendAsync(Client supabase, int clientId)
     {
         Heartbeat heartbeat = new()
         {
-            Id = string.IsNullOrWhiteSpace(clientId) ? Environment.MachineName : clientId.Trim(),
+            Id = clientId,
             PingedAt = DateTimeOffset.UtcNow
         };
 
-        await supabase.From<Heartbeat>()
-            .Upsert(heartbeat);
+        await supabase.From<Heartbeat>().Upsert(heartbeat);
 
         Console.WriteLine($"Heartbeat sent for {heartbeat.Id} at {heartbeat.PingedAt:u}");
 

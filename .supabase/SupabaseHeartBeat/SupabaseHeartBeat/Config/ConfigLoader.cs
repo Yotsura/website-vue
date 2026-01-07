@@ -24,7 +24,7 @@ internal static class ConfigLoader
         {
             Url = Environment.GetEnvironmentVariable("SUPABASE_URL"),
             Key = Environment.GetEnvironmentVariable("SUPABASE_KEY"),
-            ClientId = Environment.MachineName,
+            ClientId = ParseInt(Environment.GetEnvironmentVariable("SUPABASE_CLIENT_ID")),
             Bucket = AppDefaults.Bucket,
             ObjectPrefix = AppDefaults.ObjectPrefix
         };
@@ -48,5 +48,15 @@ internal static class ConfigLoader
         }
 
         return value.Trim('/');
+    }
+
+    private static int? ParseInt(string? value)
+    {
+        if (int.TryParse(value, out int parsed))
+        {
+            return parsed;
+        }
+
+        return null;
     }
 }

@@ -18,6 +18,8 @@ try
 {
     await supabase.InitializeAsync();
 
+    int clientId = config.ClientId ?? throw new($"設定ファイルにclientId（整数）が設定されていません。：{AppDefaults.ConfigFileName}");
+
     StateStore stateStore = new(AppDefaults.StateFileName);
     HeartbeatState state = await stateStore.LoadAsync();
 
@@ -28,7 +30,7 @@ try
         return;
     }
 
-    Heartbeat heartbeat = await HeartbeatSender.SendAsync(supabase, config.ClientId ?? Environment.MachineName);
+    Heartbeat heartbeat = await HeartbeatSender.SendAsync(supabase, clientId);
 
     string objectPath = await DummyStorageCycler.RunAsync(supabase, config, state);
 
