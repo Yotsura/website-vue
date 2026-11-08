@@ -327,7 +327,7 @@ export async function getDailyStats(date: string) {
  */
 export async function getRangeStats(startDate: string, endDate: string) {
   try {
-    const maxConcurrentDays = 5;
+    const maxConcurrentDays = 31;
     const dates = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
