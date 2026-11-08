@@ -278,25 +278,22 @@ export async function trackPageView(): Promise<void> {
  */
 export async function getDailyStats(date: string) {
   try {
-    // 日付ドキュメントからサマリーを取得
-    const dateDoc = await projectFirestore
+    const dateDocRef = projectFirestore
       .collection('pageViews')
-      .doc(date)
-      .get();
-    
+      .doc(date);
+
+    // サマリーとURL別データを並列で取得
+    const [dateDoc, urlsSnapshot] = await Promise.all([
+      dateDocRef.get(),
+      dateDocRef.collection('urls').get()
+    ]);
+
     const dateData = dateDoc.data();
     const summary = dateDoc.exists && dateData ? {
       date: date,
       totalCount: dateData.totalCount || 0,
       lastUpdated: dateData.lastUpdated
     } : null;
-    
-    // URLサブコレクションを取得
-    const urlsSnapshot = await projectFirestore
-      .collection('pageViews')
-      .doc(date)
-      .collection('urls')
-      .get();
     
     const urlStats = urlsSnapshot.docs.map(doc => {
       const data = doc.data();
@@ -330,6 +327,7 @@ export async function getDailyStats(date: string) {
  */
 export async function getRangeStats(startDate: string, endDate: string) {
   try {
+    const maxConcurrentDays = 5;
     const dates = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -343,10 +341,13 @@ export async function getRangeStats(startDate: string, endDate: string) {
     }
     
     const allStats = [];
-    for (const date of dates) {
-      const stats = await getDailyStats(date);
-      if (stats.summary) {
-        allStats.push(stats);
+    for (let index = 0; index < dates.length; index += maxConcurrentDays) {
+      const dateBatch = dates.slice(index, index + maxConcurrentDays);
+      const statsBatch = await Promise.all(dateBatch.map(getDailyStats));
+      for (const stats of statsBatch) {
+        if (stats.summary) {
+          allStats.push(stats);
+        }
       }
     }
     
